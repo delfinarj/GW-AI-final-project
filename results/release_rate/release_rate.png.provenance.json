@@ -1,0 +1,30 @@
+{
+  "output": "results/release_rate/release_rate.png",
+  "output_sha256": "32017dfc09a176ff1affbfd7501294dffe4bc92afeb0e150666b0f0f1cd48654",
+  "script": "analysis/figure_release_rate.py",
+  "git": {
+    "commit": "aaff1d0523eab1390b67c637d15b60644ea921ea",
+    "dirty": false
+  },
+  "git_at_write": {
+    "commit": "aaff1d0523eab1390b67c637d15b60644ea921ea",
+    "dirty": false
+  },
+  "inputs": [
+    {
+      "path": "results/release_rate/release_rate.json",
+      "sha256": "bf42c2802dd7a5e7a0fd22d2b104cf62653ec3a268241c9b82ec96448c5a3eba"
+    }
+  ],
+  "parameters": {},
+  "seed": null,
+  "results": {},
+  "notes": "figure of R1",
+  "created": "2026-09-14T16:36:11+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}
