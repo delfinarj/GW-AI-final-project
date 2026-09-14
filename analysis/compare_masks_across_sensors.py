@@ -149,9 +149,10 @@ def adaptive_masks(sensor, calibration, frames):
     return out
 
 
-def main(n_images):
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    rng = np.random.default_rng(SEED)
+def main(n_images, seed=SEED, out_dir=OUT_DIR):
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
     started = time.time()
     frames = {}
     for name, sensor in PRESETS.items():
@@ -196,13 +197,19 @@ def main(n_images):
                 print(f"{mask_name:<7} {label:<34} target {r['target']:>6} removed {removed}  clean kept "
                       f"{r['clean_kept']:.3f}  signal eff {r['signal_efficiency']:.3f}  FoM {r['fom']:.1f}")
 
-    output = OUT_DIR / "compare_masks.json"
+    output = out_dir / "compare_masks.json"
     output.write_text(json.dumps(results, indent=2, default=float), encoding="utf-8")
     write_sidecar(output, __file__, parameters={"n_images_per_stack": n_images, "alpha": ALPHA, "grids": GRIDS,
                                                 "presets": {k: v.__dict__ for k, v in PRESETS.items()}},
-                  seed=SEED, notes="oracle = fixed mask tuned with truth on the same sensor's calibration stack")
+                  seed=seed, notes="oracle = fixed mask tuned with truth on the same sensor's calibration stack")
     print(f"done in {time.time() - started:.0f} s")
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 4)
+    import argparse
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("n_images", nargs="?", type=int, default=4, help="images per calibration and test stack")
+    parser.add_argument("--seed", type=int, default=SEED, help="random seed of the whole run")
+    parser.add_argument("--out", default=str(OUT_DIR), help="output directory")
+    args = parser.parse_args()
+    main(args.n_images, args.seed, args.out)

@@ -147,6 +147,19 @@ mean of uniform rates, the muon count and mean cos(theta) = 4/5 for a cos^2 inte
 horizontal plane, the mean projected halo distance (pi/4 of the absorption length), CTI trails
 only downstream with the set mean length, and serial hits confined to single rows.
 
+### Figures
+
+All figures share `src/skmask/plotstyle.py`: solid hairline grid and axes, markers with a
+surface-coloured ring, text in ink colours only, and two series colours (blue `#2a78d6`, orange
+`#eb6834`; dark-surface steps `#3987e5`, `#d95926`) from a reference categorical palette.
+
+**Check:** the palette was run through the colour validator of the data-visualisation guidance
+used for this project (`validate_palette.js`, Node 2026-09-14), light and dark:
+all checks pass — adjacent colour-vision-deficiency separation Delta E 24.7 (light) and 26.8 (dark)
+against a target of 8, normal-vision separation 33.6 and 31.8 against a floor of 15, contrast
+>= 3:1 on both surfaces. Series identity never relies on colour alone: the R4 figure also uses
+marker shape, and every figure has a legend or a single labelled series.
+
 ## Results
 
 ### R1. Single-electron rate of the public SENSEI SNOLAB release
@@ -193,3 +206,25 @@ only downstream with the set mean length, and serial hits confined to single row
   no > 100 e- charge in the same quadrant, as expected for crosstalk from other quadrants; not
   distinguishable from each other by geometry. **Noisy row (0x20): never set inside the active
   area of this file, so its bit is not verified.**
+
+### R3. How often the adaptive masks fire when their target is absent
+
+- **Output:** `results/null_false_positive_rates/null_rates.json`, sidecar, and figure
+  `null_rates.png` (`analysis/figure_null_rates.py`).
+- **Produced by:** `analysis/null_false_positive_rates.py`, 200 independent runs (3 images each)
+  of two defect-free 800 x 400 sensors: one with only dark current and signal, one adding sparse
+  2-7 keV deposits so that the halo and CTI calibrations have triggers. Seed 20260914.
+- **Code state:** started at commit `26acd81` (clean), which contains the halo redesign; the
+  sidecar also records the state when it was written (a later commit with uncommitted edits),
+  which does not affect the run.
+- **Written from scratch:** the run loop and the Clopper-Pearson interval (`scipy.stats.beta`).
+- **Choice with an alternative:** "fires" is per run (any flag at all in the stack), the strictest
+  reading; per-pixel or per-column false-positive fractions would be smaller.
+- **Result (fired / runs, 95 % interval):** hot columns 1/200 [0.000, 0.028]; CTI 0/200
+  [0.000, 0.018]; halo 2/200 [0.001, 0.036]; serial register 0/200 [0.000, 0.018]; low-energy
+  clusters 1/200 [0.000, 0.028].
+- **Check:** every interval contains alpha = 0.01, so each adaptive mask's false-positive rate is
+  consistent with the rate it was built to have. The earlier far-field version of the halo test is
+  the one that failed this kind of check (a single realisation gave radius 45 with no halo).
+  Limitation: 200 runs cannot distinguish 0.01 from 0.03; the muon mask is not included because it
+  has no false-positive parameter (it is tested against point-like deposits in `tests/test_masks.py`).

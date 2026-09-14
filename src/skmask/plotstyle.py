@@ -22,7 +22,8 @@ def apply():
         "figure.facecolor": SURFACE,
         "axes.facecolor": SURFACE,
         "savefig.facecolor": SURFACE,
-        "font.family": ["Segoe UI", "system-ui", "DejaVu Sans", "sans-serif"],
+        # matplotlib takes installed font names, not the CSS "system-ui"; DejaVu ships with matplotlib
+        "font.family": ["Segoe UI", "DejaVu Sans", "sans-serif"],
         "font.size": 9,
         "text.color": INK,
         "axes.labelcolor": INK_SECONDARY,
