@@ -1,0 +1,56 @@
+{
+  "rate_e_per_pix_day": 1.3864367821431055e-05,
+  "rate_err": 1.0849870329329417e-06,
+  "intercept_e_per_superpix": 6.91036252601195e-05,
+  "chi2": 0.402831303868592,
+  "dof": 2,
+  "published_rate": 1.39e-05,
+  "published_err": 1.1e-06,
+  "pull": -0.02306206855073328,
+  "per_exposure": [
+    {
+      "exposure_s": 0,
+      "exposure_days": 0.005018285099502029,
+      "exposure_days_sd": 0.0025786885168120896,
+      "n_images": 14.0,
+      "mu": 7.379704046232548e-05,
+      "mu_err": 1.0705286571091994e-05,
+      "noise": 0.14197172254504065,
+      "n_pixels": 658937,
+      "converged": true
+    },
+    {
+      "exposure_s": 7200,
+      "exposure_days": 0.08837367228938059,
+      "exposure_days_sd": 0.0025764956009225477,
+      "n_images": 14.0,
+      "mu": 0.00010213675175675354,
+      "mu_err": 1.2618289336714196e-05,
+      "noise": 0.14174402213991275,
+      "n_pixels": 650119,
+      "converged": true
+    },
+    {
+      "exposure_s": 21600,
+      "exposure_days": 0.2550377761569228,
+      "exposure_days_sd": 0.0025774553291382945,
+      "n_images": 14.0,
+      "mu": 0.00018788093429157176,
+      "mu_err": 1.7161072507730885e-05,
+      "noise": 0.14152029687124576,
+      "n_pixels": 645922,
+      "converged": true
+    },
+    {
+      "exposure_s": 72000,
+      "exposure_days": 0.838395755843128,
+      "exposure_days_sd": 0.0025848937503128097,
+      "n_images": 13.0,
+      "mu": 0.00043958814013599334,
+      "mu_err": 2.82372216908648e-05,
+      "noise": 0.1412741439476029,
+      "n_pixels": 555633,
+      "converged": true
+    }
+  ]
+}

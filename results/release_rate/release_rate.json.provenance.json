@@ -1,0 +1,53 @@
+{
+  "output": "results/release_rate/release_rate.json",
+  "output_sha256": "bf42c2802dd7a5e7a0fd22d2b104cf62653ec3a268241c9b82ec96448c5a3eba",
+  "script": "analysis/reproduce_release_rate.py",
+  "git": {
+    "commit": "fc3b0ea3f13d4e565d1eb7b1a9a3eaeb30874f22",
+    "dirty": false
+  },
+  "inputs": [
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP0_13.root",
+      "sha256": "e38824424e019e2e5096786e8fa38834da7c2bf61a6087214fe0ec11df02a585"
+    },
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP7200_13.root",
+      "sha256": "21d7294f4238dd83450b9aec56178599ff4eabf62729aeb16a94621b6b58e712"
+    },
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP21600_13.root",
+      "sha256": "9864c9e342b34077759560ee4240faab42f57a8c960f8e832ee517cd71d0f7e6"
+    },
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP72000_13.root",
+      "sha256": "79a09c60ecf8e05ca2f742b7816985cf5a31b3ce51b9f925c96f0e47fe4624fb"
+    }
+  ],
+  "parameters": {
+    "mask_bits": "0x67d",
+    "hist_bins": 400,
+    "hist_range": [
+      -1.1,
+      1.6
+    ],
+    "fit_range": [
+      -1.0,
+      1.5
+    ]
+  },
+  "seed": null,
+  "results": {
+    "rate": 1.3864367821431055e-05,
+    "rate_err": 1.0849870329329417e-06,
+    "pull": -0.02306206855073328
+  },
+  "notes": "Python re-implementation of the release macro plotRate.C",
+  "created": "2026-09-14T15:55:42+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

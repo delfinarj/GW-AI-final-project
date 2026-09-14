@@ -1,0 +1,41 @@
+{
+  "output": "results/release_mask_bits/mask_bit_signatures.json",
+  "output_sha256": "b1ed2d607f341aa7d6f4d3182ac944665bd932e78721fb148c7058620f2a7fa6",
+  "script": "analysis/check_release_mask_bits.py",
+  "git": {
+    "commit": "fc3b0ea3f13d4e565d1eb7b1a9a3eaeb30874f22",
+    "dirty": false
+  },
+  "inputs": [
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP21600_13.root",
+      "sha256": "9864c9e342b34077759560ee4240faab42f57a8c960f8e832ee517cd71d0f7e6"
+    }
+  ],
+  "parameters": {
+    "exposure_s": 21600,
+    "hypothesis": {
+      "0x1": "neighbour",
+      "0x4": "bleeding",
+      "0x8": "halo",
+      "0x10": "crosstalk",
+      "0x20": "noisy row",
+      "0x40": "edge",
+      "0x200": "bad pixel",
+      "0x400": "bad column"
+    },
+    "full_line_fraction": 0.9,
+    "bright_threshold_e": 100,
+    "touch_threshold_e": 0.5
+  },
+  "seed": null,
+  "results": {},
+  "notes": "Bit-to-name mapping of the public release, tested by geometric signature",
+  "created": "2026-09-14T15:55:52+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}
