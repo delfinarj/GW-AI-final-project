@@ -73,7 +73,8 @@ sensors" is a configuration change:
 - defects: hot columns and hot pixels with their rates;
 - backgrounds: muons (rate and angular distribution), high-energy electrons, halo 1e events
   around high-energy deposits, clustered low-energy events;
-- diffusion: sigma_xy(z) = -A ln|1 - b z| (public SENSEI model);
+- diffusion: sigma_xy(z) = sqrt(-A ln|1 - b z|), A = 218.715 um^2, b = 1.015e-3 /um
+  (SENSEI, arXiv:2004.11378), with z measured from the back of the sensor;
 - a uniform injected signal, to measure signal efficiency.
 
 Every simulated charge carries a **label of its origin**, so each mask's efficiency against each

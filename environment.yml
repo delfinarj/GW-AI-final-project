@@ -12,3 +12,6 @@ dependencies:
   - pandas
   - pytest
   - pyyaml
+  - pip
+  - pip:
+      - -e .
