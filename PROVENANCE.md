@@ -58,6 +58,52 @@ All marked `CHOICE` in `src/skmask/simulate.py`:
 5. High-energy background is point-like (diffusion-limited). Alternative: extended electron tracks.
 6. Deferred CTI charge is added without removing it from the source pixel (bias ~p << 1).
 7. The MINOS 1e rate is used as dark rate, although part of it is halo.
+8. Hot-column and hot-pixel positions are drawn from a per-sensor `defect_seed`, so they are the
+   same in every image of a sensor (an earlier version redrew them per image, which would have
+   made every stack-based calibration meaningless; caught by the hot-column injection test).
+
+### Masks (`src/skmask/masks.py`) — written from scratch
+
+Library calls: `scipy.ndimage` (labelling, distance transform, dilation), `scipy.signal.fftconvolve`
+(neighbour counts in discs), `scipy.stats.poisson` and `binom` (tail probabilities).
+
+Choices with a defensible alternative:
+
+1. A pixel with >= 20 e (`TRIGGER_E`) triggers halo and CTI masks. Alternatives: 100 e (public
+   SENSEI 2020 cuts) or a per-sensor trigger.
+2. The single-electron threshold is the Bayes cut c = 1/2 + sigma^2 ln((1-mu)/mu) from the measured
+   noise and density (`events.py`). Alternatives: a fixed 0.7 e, or maximising F1.
+3. Every adaptive threshold is a Bonferroni-corrected tail probability at alpha = 0.01.
+   Alternatives: false-discovery-rate control; a likelihood-ratio scan.
+4. CTI length uses the downstream-over-upstream excess (binomial test), so symmetric sources
+   (halo, dark current, signal) cancel without being modelled.
+5. The halo radius is calibrated against a far field more than `max_radius` from every trigger;
+   with fewer than 10 000 far-field pixels the procedure reports `calibrated = False` and returns
+   the maximum radius instead of a number it cannot justify.
+6. The muon mask uses only physical properties of the sensor (thickness, pixel size, back-surface
+   diffusion) and the minimum-ionising charge per length; tolerance factor 2 on the charge.
+
+Errors found by the tests and fixed (kept here because they are part of how the masks were checked):
+
+- **Hot columns flagged their neighbours.** In the first version every group of 2-3 adjacent
+  columns containing one hot column was significant because of that column, so 17 innocent
+  neighbours were flagged. Fix: single columns take precedence; wider groups are tested only when
+  none of their columns is flagged, restarting from width 1 after every new flag.
+- **The halo test treated the far-field rate as exact.** A 4-sigma fluctuation of the uniform
+  field (seed 5 of the test configuration, present in the true charge maps) gave radius 45 with no
+  halo. Fix: a conditional binomial test of the annulus count against the far-field count, which
+  carries the far field's own Poisson uncertainty. The false-positive *rate* is measured over many
+  realisations in R3, not by one unit test.
+- **An underpowered injection test.** Hot columns adding ~4.5 counts per column over a stack
+  cannot pass a Bonferroni cut that needs >= 8; the test now injects a defect it can detect, with
+  the power calculation written next to it.
+- **A halo null test that passed for the wrong reason** (see above, no far field).
+
+**Check:** `tests/test_masks.py` — hand-computed geometry for each mask; a **null test** for every
+adaptive mask (defect absent, mask does not fire) and an **injection test** (defect present,
+most of its events removed, scored against the simulator's truth). An earlier halo null test
+passed for the wrong reason (no far field, so no significance was possible); it now also asserts
+that the calibration actually ran.
 
 **Check:** `tests/test_simulator.py` compares the simulator with answers derived independently
 of the code: the diffusion width at a depth, the minimum-ionising charge per length, the Poisson

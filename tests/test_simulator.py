@@ -75,6 +75,28 @@ def test_hot_columns_are_where_truth_says():
     assert per_pixel == pytest.approx(0.5, abs=5 * np.sqrt(0.5 / (400 * 3)))
 
 
+def test_defects_belong_to_the_sensor_not_the_image():
+    sensor = Sensor(nx=300, ny=200, n_hot_columns=4, hot_column_e_per_pix=0.2, n_hot_pixels=10,
+                    hot_pixel_e=2.0, defect_seed=42)
+    rng = np.random.default_rng(1)
+    a, b = simulate(sensor, rng), simulate(sensor, rng)
+    np.testing.assert_array_equal(a.truth["hot_columns"], b.truth["hot_columns"])
+    np.testing.assert_array_equal(a.truth["hot_pixels"], b.truth["hot_pixels"])
+    other = simulate(sensor.with_(defect_seed=43), rng)
+    assert not np.array_equal(a.truth["hot_columns"], other.truth["hot_columns"])
+
+
+def test_high_energy_count_and_charge():
+    sensor = Sensor(nx=400, ny=400, exposure_days=1.0, highE_dru=1e6, highE_keV=(1.0, 3.0))
+    image = simulate(sensor, 14)
+    expected = 1e6 * sensor.mass_kg * 1.0 * 2.0
+    deposits = image.truth["highE"]
+    assert abs(len(deposits) - expected) < 5 * np.sqrt(expected)
+    # mean energy 2 keV -> 533 electrons; charge landing inside the sensor cannot exceed the total
+    assert deposits[:, 3].mean() == pytest.approx(2000 / 3.75, rel=0.05)
+    assert image.charge["highE"].sum() <= deposits[:, 3].sum()
+
+
 def test_cti_trails_only_downstream_with_the_set_length():
     sensor = Sensor(nx=3000, ny=50, cti_h_prob=1e-2, cti_h_length_pix=20.0)
     total = np.zeros((50, 3000), dtype=np.int32)

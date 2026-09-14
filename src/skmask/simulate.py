@@ -82,6 +82,9 @@ class Sensor:
     serial_hit_electrons: tuple = (4, 40)
     serial_hit_span_pix: tuple = (5, 60)
 
+    # Defect positions belong to the sensor, not to an image: they are drawn from `defect_seed`
+    # so that every image of the same sensor has its hot columns and pixels in the same place.
+    defect_seed: int = 0
     n_hot_columns: int = 0
     hot_column_e_per_pix: float = 0.0            # extra electrons per pixel per image
     n_hot_pixels: int = 0
@@ -226,13 +229,14 @@ def _high_energy(sensor, rng, charge, truth):
     xc = rng.uniform(0, sensor.nx * sensor.pixel_um, n)
     yc = rng.uniform(0, sensor.ny * sensor.pixel_um, n)
     zc = rng.uniform(0, sensor.thickness_um, n)
-    for i in range(n):
-        x = np.full(n_e[i], xc[i])
-        y = np.full(n_e[i], yc[i])
-        z = np.full(n_e[i], zc[i])
-        xd, yd = diffuse(sensor, x, y, z, rng)
-        _deposit(charge["highE"], sensor, xd, yd)
-        _emit_halo(sensor, rng, charge["halo"], x, y, z, n_e[i])
+    # all deposits at once; drawing the halo photons of all of them together, each photon from a
+    # uniformly chosen electron, has the same distribution as one Poisson draw per deposit
+    x = np.repeat(xc, n_e)
+    y = np.repeat(yc, n_e)
+    z = np.repeat(zc, n_e)
+    xd, yd = diffuse(sensor, x, y, z, rng)
+    _deposit(charge["highE"], sensor, xd, yd)
+    _emit_halo(sensor, rng, charge["halo"], x, y, z, len(x))
     truth["highE"] = np.column_stack([xc, yc, zc, n_e]).reshape(-1, 4)
 
 
@@ -307,13 +311,15 @@ def simulate(sensor, rng=None):
     if sensor.signal_e_per_pix > 0:
         charge["signal"] += rng.poisson(sensor.signal_e_per_pix, shape).astype(np.int32)
 
-    hot_columns = rng.choice(sensor.nx, size=sensor.n_hot_columns, replace=False)
+    defects = np.random.default_rng(sensor.defect_seed)
+    hot_columns = defects.choice(sensor.nx, size=sensor.n_hot_columns, replace=False)
+    hot_flat = defects.choice(sensor.nx * sensor.ny, size=sensor.n_hot_pixels, replace=False)
+
     if len(hot_columns):
         charge["hot_column"][:, hot_columns] += rng.poisson(
             sensor.hot_column_e_per_pix, (sensor.ny, len(hot_columns))).astype(np.int32)
     truth["hot_columns"] = np.sort(hot_columns)
 
-    hot_flat = rng.choice(sensor.nx * sensor.ny, size=sensor.n_hot_pixels, replace=False)
     if len(hot_flat):
         hy, hx = np.unravel_index(hot_flat, shape)
         charge["hot_pixel"][hy, hx] += rng.poisson(sensor.hot_pixel_e, len(hot_flat)).astype(np.int32)
