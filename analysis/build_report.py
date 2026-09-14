@@ -68,6 +68,29 @@ def main():
     rel = summary["relative_fom"]
     n_seeds = summary["n_seeds"]
 
+    # Seeds run only after the last change to the code, never looked at during development.
+    holdout_seeds = {"seed_20260918", "seed_20260919"}
+    holdout = [(p, run) for p, run in zip(seed_files, seeds) if p.parent.name in holdout_seeds]
+
+    def worst_relative(runs, adaptive_only):
+        worst = (np.inf, None)
+        for _, run in runs:
+            for sensor, rows in run["per_sensor"].items():
+                for mask, forms in rows.items():
+                    if mask == "all":
+                        continue
+                    oracle = forms["oracle"]["fom"]
+                    for label, r in forms.items():
+                        if label == "oracle" or (label == "adaptive") != adaptive_only or oracle <= 0:
+                            continue
+                        value = r["fom"] / oracle
+                        if value < worst[0]:
+                            worst = (value, f"{sensor}/{mask}/{label}")
+        return worst
+
+    holdout_adaptive = worst_relative(holdout, True) if holdout else None
+    holdout_transplant = worst_relative(holdout, False) if holdout else None
+
     for src in (RES / "release_rate" / "release_rate.png", RES / "null_false_positive_rates" / "null_rates.png",
                 RES / "compare_masks" / "compare_masks.png"):
         shutil.copy2(src, FIG / src.name)
@@ -219,6 +242,7 @@ The same masks written as procedures that calibrate themselves from the images n
 ({n_adaptive_below_half} of {len(adaptive)} cases below half); their worst case was {describe(worst_adaptive_key)},
 at {adaptive[worst_adaptive_key]['min']:.2f}.</p>
 <p>On sensors without the defect they target, they fired at the false-positive rate they were built for.</p>
+{"" if not holdout else f"<p>On the {len(holdout)} seeds run only after the last code change (never used while developing the masks), the worst adaptive case was {holdout_adaptive[0]:.2f} of the oracle and the worst transplanted case {holdout_transplant[0]:.2f}.</p>"}
 </div>
 
 <h2>The question</h2>
@@ -284,6 +308,7 @@ order was checked against them. The noisy-row bit never appears in the active ar
 <li>At the surface no pixel is far from every muon track: the first halo calibration fell back to its largest radius and masked the whole image. It now compares each annulus with everything outside it.</li>
 <li>Crossing muons merged into wide clusters that the track criterion rejected (24 % of muon pixels missed); tracks cut by the image border were missed too.</li>
 <li>Hot columns were calibrated before charge-transfer trails, whose vertical trails from muons made 69 of 81 flagged columns false.</li>
+<li>In one seed the halo radius, chosen by significance alone, reached 125 px on the surface sensor and masked 99.9 % of the image. The radius now maximises a figure of merit estimated from the data within the significant range; all seeds were re-run, plus two seeds never used during development.</li>
 </ul>
 
 <h2>Limitations</h2>
@@ -292,6 +317,7 @@ order was checked against them. The noisy-row bit never appears in the active ar
 <li>One figure of merit; the oracle is tuned mask by mask, not jointly, so a combined adaptive mask can exceed it.</li>
 <li>Adaptive trail lengths are limited by the number of bright pixels in the calibration stack: they are short when data are few.</li>
 <li>The muon figure of merit counts pixels, which weighs every missed track pixel heavily.</li>
+<li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The evaluation was fixed before this was seen and was not changed.</li>
 <li>The adaptive masks were not yet run on the real public images beyond the rate reproduction.</li>
 </ul>
 

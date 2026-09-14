@@ -259,3 +259,33 @@ marker shape, and every figure has a legend or a single labelled series.
   favourable reading; (d) the figure was inspected by eye for hidden markers (an earlier version
   hid transplant markers under the oracle line; series are now offset within each row).
 - **Every number on the page** is read from these files by `analysis/build_report.py`; none is typed.
+- **A failure found by the second seed, and what was done about it.** Seed 20260916 (4 images)
+  showed the adaptive masks failing catastrophically on the surface sensor: combined, 0.1 % of
+  clean pixels kept (figure of merit 0.2 against the oracle's 2.2). Cause, from the adaptive
+  calibration recorded in the result file: the halo radius came out at 125 px, significant up to
+  the last testable annulus, with muon tracks ~90 px apart, so the halo mask covered the image; the
+  hot-column calibration, which excludes the halo mask, then had no valid pixels and found no hot
+  columns. The significance radius ignores the exposure a mask costs, whereas the oracle is chosen
+  by figure of merit. Fix: within the significant range the radius maximises a figure of merit
+  estimated from the data alone (excess of each annulus over the outside density; kept pixels),
+  so the null behaviour of R3 is unchanged (no significant annulus, radius 0). R3 was run before
+  this change and is not re-run: the new radius is never larger than the significance radius and is
+  0 whenever that is 0, so the halo mask can fire only in runs where the previous version fired, and
+  the R3 halo rate is an upper bound for the current code. A unit test with
+  dense triggers and a faint extended excess checks that the chosen radius is below the
+  significance radius and masks less than half the image.
+- **Guarding against fitting the method to the seeds it was debugged on:** seeds 20260915-17 were
+  seen during development. After the fix all three are re-run, and two further seeds, 20260918 and
+  20260919, are run once, with no change to the code in between, and reported separately.
+- **After the fix (all five seeds, code at commit `8041c76`):** no catastrophic adaptive result on any
+  sensor or seed; on the surface sensor the six adaptive masks combined reach a figure of merit of
+  2.0-2.3 against 1.8-2.7 for the oracle and 0.0-1.8 for transplanted constants. The held-out seeds
+  fall inside the ranges of the development seeds.
+- **A finding the fix exposed, reported and not tuned away:** on the surface sensor the adaptive halo
+  radius is 0 in all five seeds, so the halo mask alone reaches ~0.7 of the oracle. Cause: the
+  adaptive radius estimates "signal" as all uniform single electrons, because from data alone signal
+  cannot be separated from dark current; at the surface dark current is ~20 times the injected
+  signal, so masking looks unfavourable. The evaluation figure of merit counts only the injected
+  signal as S and does not count dark current in B. Both are choices; the evaluation was fixed
+  before this was seen and is deliberately not changed now, since changing it after seeing the
+  result would tune the test to the method.
