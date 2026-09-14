@@ -22,7 +22,9 @@ def git_state():
     def run(*args):
         return subprocess.run(["git", "-C", str(REPO_ROOT), *args],
                               capture_output=True, text=True).stdout.strip()
-    return {"commit": run("rev-parse", "HEAD"), "dirty": bool(run("status", "--porcelain"))}
+    # dirty = uncommitted changes to tracked files; new untracked files cannot affect this output
+    return {"commit": run("rev-parse", "HEAD"),
+            "dirty": bool(run("status", "--porcelain", "--untracked-files=no"))}
 
 
 def _relative(path):

@@ -84,3 +84,25 @@ only downstream with the set mean length, and serial hits confined to single row
   published 0.14 e-. File contents confirmed directly: tree `calPixTree` with branches `x`, `y`,
   `ePix`, `mask`, `ohdu`, `RUNID`, `LTANAME`; 14, 14, 14 and 13 images (0, 2, 6, 20 h), each
   3200 x 20 superpixels, one quadrant (`ohdu` 2).
+
+### R2. Which bit of the public release's mask is which mask
+
+- **Output:** `results/release_mask_bits/mask_bit_signatures.json` and sidecar.
+- **Produced by:** `analysis/check_release_mask_bits.py` on the 6-hour file (the one with the most
+  bits present).
+- **Hypothesis:** the eight masks named in the public README appear in bit order: 0x1 neighbour,
+  0x4 bleeding, 0x8 halo, 0x10 crosstalk, 0x20 noisy row, 0x40 edge, 0x200 bad pixel,
+  0x400 bad column.
+- **Written from scratch:** the per-image reshaping and the geometric signatures; `scipy.ndimage`
+  for the distance transform and the 3x3 neighbourhood.
+- **Choices with an alternative:** a column or row counts as fully masked at >= 90 % of its
+  length; "bright" means > 100 e-; physical distance uses 32 rows per superpixel.
+- **Check (the result is the check):** every bit with a distinctive geometry shows the geometry
+  its name predicts. Neighbour: 96 % of masked superpixels touch charge > 0.5 e-. Bleeding: 100 %
+  have a > 100 e- superpixel upstream and 0 % only downstream (one-sided, as charge-transfer
+  trails are). Halo: masked superpixels at a median 51 px from > 100 e- charge, with upstream and
+  downstream-only fractions 0.20 and 0.18 (symmetric). Edge: whole columns at a median 12 px from
+  the border. Bad column: whole columns in the interior. Crosstalk and bad pixel: isolated, with
+  no > 100 e- charge in the same quadrant, as expected for crosstalk from other quadrants; not
+  distinguishable from each other by geometry. **Noisy row (0x20): never set inside the active
+  area of this file, so its bit is not verified.**
