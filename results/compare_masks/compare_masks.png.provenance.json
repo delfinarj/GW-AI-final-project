@@ -1,26 +1,42 @@
 {
   "output": "results/compare_masks/compare_masks.png",
-  "output_sha256": "7c0e2fd7aef36869bbe6a04be7779f4577caf4d139050625015184d206745e60",
+  "output_sha256": "7b7a801b3a3344a7bb8d40cab6d90c60e2a0687008916c431e45841e6e5c72e1",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "46570be17fb015062925927f4458787d3e55960d",
-    "dirty": true
+    "commit": "3b1bc3b7dc00f0124f9b73ccf6352f276eeb3bf1",
+    "dirty": false
   },
   "git_at_write": {
-    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "commit": "3b1bc3b7dc00f0124f9b73ccf6352f276eeb3bf1",
     "dirty": true
   },
   "inputs": [
     {
-      "path": "results/compare_masks/compare_masks.json",
-      "sha256": "e01d98b9a4d5564d060589a761262e6e0d7ca8002ffd77fdde4241891f9a5e6a"
+      "path": "results/compare_masks/seed_20260915/compare_masks.json",
+      "sha256": "84c860365dba0382ea75ef82b7b9b583a7622bd2fb112ab25fdf42e9549e006a"
+    },
+    {
+      "path": "results/compare_masks/seed_20260916/compare_masks.json",
+      "sha256": "6a7da1738d978fdb7da16872de529330b0820df5cbde73ed25236a666e72a2a8"
+    },
+    {
+      "path": "results/compare_masks/seed_20260917/compare_masks.json",
+      "sha256": "9982b5b9ec1279a54c09bf454ac4c4e6947e65dece2f7fd97ea9bb014b753bfa"
+    },
+    {
+      "path": "results/compare_masks/seed_20260918/compare_masks.json",
+      "sha256": "5824153d6381571c431e9e66bd12c1a9163390ddeb5d326295602506692047f8"
+    },
+    {
+      "path": "results/compare_masks/seed_20260919/compare_masks.json",
+      "sha256": "0fa6b98a659a372bb323b3911c995802682a23e92dcc7c4c22318b6b86044ec8"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
-  "notes": "figure of R4 over 1 seeds",
-  "created": "2026-09-14T17:04:21+00:00",
+  "notes": "figure of R4 over 5 seeds",
+  "created": "2026-09-14T18:52:30+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

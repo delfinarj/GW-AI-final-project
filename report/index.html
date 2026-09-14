@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Self-calibrating Skipper-CCD masks</title>
+<style>
+:root {
+  --bg: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --rule: #e1e0d9; --accent: #2a78d6; --callout: #eef4fc;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+    --muted: #898781; --rule: #2c2c2a; --accent: #3987e5; --callout: #16222f; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+  --muted: #898781; --rule: #2c2c2a; --accent: #3987e5; --callout: #16222f; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.6 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+main { max-width: 46rem; margin: 0 auto; padding-inline: 1.25rem; padding-block: 3rem 4rem; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .5rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.3rem; margin: 3rem 0 .75rem; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+h3 { font-size: 1.05rem; margin: 1.75rem 0 .5rem; }
+p, li { color: var(--ink); }
+.lede { font-size: 1.15rem; color: var(--ink-2); margin: 0 0 1.5rem; }
+.meta { color: var(--muted); font-size: .9rem; }
+.answer { background: var(--callout); border-left: 3px solid var(--accent); padding: 1rem 1.25rem;
+  border-radius: 4px; margin: 1.5rem 0; }
+.answer p { margin: .25rem 0; }
+figure { margin: 1.5rem 0; }
+figure img { width: 100%; height: auto; display: block; background: #fcfcfb; border-radius: 6px;
+  border: 1px solid var(--rule); }
+figcaption { color: var(--ink-2); font-size: .9rem; margin-top: .5rem; }
+.wide { width: min(64rem, calc(100vw - 2.5rem)); margin-left: 50%; transform: translateX(-50%); }
+.table-wrap { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .88rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: .4rem .6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; }
+.range { color: var(--muted); }
+code { font-family: Consolas, "SFMono-Regular", Menlo, monospace; font-size: .88em; }
+pre { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: .9rem 1rem;
+  overflow-x: auto; font-size: .85rem; line-height: 1.5; }
+details { margin: .75rem 0; }
+summary { cursor: pointer; color: var(--ink-2); }
+a { color: var(--accent); }
+@media print {
+  body { background: #fff; font-size: 11pt; }
+  main { max-width: none; padding: 0; }
+  .wide { width: 100%; margin-left: 0; transform: none; }
+  figure, table, .answer { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  details { display: block; }
+  details > summary { display: none; }
+  @page { margin: 16mm 14mm; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Masks that calibrate themselves</h1>
+<p class="lede">Can the pixel masks of Skipper-CCD analyses do their job without being tuned to the particular sensor they run on?</p>
+<p class="meta">Delfina Rodr&iacute;guez Juiz &middot; final project, <em>Gravitational Waves and AI-Assisted Research</em> &middot;
+<a href="https://github.com/delfinarj/GW-AI-final-project">repository</a> &middot; <a href="https://github.com/delfinarj/GW-AI-final-project/blob/main/PROVENANCE.md">provenance of every result</a></p>
+</header>
+
+<div class="answer">
+<p><strong>Short answer, from simulations of three different sensors (5 independent seeds).</strong>
+Masks tuned by hand on one sensor and moved unchanged to another fell below half of the best achievable figure of merit
+in 5 of 36 mask&ndash;sensor cases; the worst was low-energy clusters on the surface laboratory sensor (tuned on deep underground),
+at 0.00.
+The same masks written as procedures that calibrate themselves from the images never did
+(0 of 18 cases below half); their worst case was halo on the surface laboratory sensor (adaptive),
+at 0.66.</p>
+<p>On sensors without the defect they target, they fired at the false-positive rate they were built for.</p>
+<p>On the 2 seeds run only after the last code change (never used while developing the masks), the worst adaptive case was 0.69 of the oracle and the worst transplanted case 0.16.</p>
+</div>
+
+<h2>The question</h2>
+<p>A Skipper-CCD counts single electrons in millions of pixels. Before any physics is extracted, analyses discard pixels
+with masks, each aimed at one problem: charge left behind during transfer, hits in the serial register, hot columns and
+pixels, photons emitted around high-energy tracks (the halo), clusters of low-energy events, and muons. Every mask has sizes
+and thresholds &mdash; a radius, a trail length, a rate cut &mdash; chosen by hand for one sensor, readout and site.</p>
+<p>The working hypothesis: what transfers between sensors is not the numbers but the <em>procedure</em> used to choose
+them. So each mask was written twice: a <strong>fixed</strong> form with hand-set constants, and an <strong>adaptive</strong>
+form that measures its own sizes on the images it is applied to and sets its threshold by a false-positive rate
+(&alpha; = 0.01, corrected for the number of tests) or by measurable physical properties of the sensor.</p>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Mask</th><th scope='col'>Fixed form</th><th scope='col'>Adaptive form</th></tr></thead><tbody><tr><td>Hot columns & pixels</td><td>column rate above k &times; median</td><td>Poisson tail of each column's count against its own exposure, Bonferroni over columns, single columns before groups</td></tr><tr><td>Charge-transfer trails</td><td>L pixels after every bright pixel</td><td>downstream vs. upstream excess of single electrons around the same bright pixel (binomial); symmetric sources cancel</td></tr><tr><td>Halo</td><td>disc of radius R around bright pixels</td><td>each annulus against everything outside it (conditional binomial); no far field needed</td></tr><tr><td>Serial-register hits</td><td>rows with n charged pixels in a window of w</td><td>densest window of each row against the image's own occupancy, at several widths</td></tr><tr><td>Low-energy clusters</td><td>disc around events with &ge; m neighbours</td><td>neighbours within r against a Poisson count for the local valid area, at several radii</td></tr><tr><td>Muon tracks</td><td>charge and length cuts</td><td>charge of a minimum-ionising track for the measured length and this sensor's thickness; straight, piled-up or cut by the border</td></tr></tbody></table></div>
+
+<h2>How it was tested</h2>
+<h3>A simulator that remembers where every electron came from</h3>
+<p>Each source of charge fills its own map, so a mask can be scored against exactly the events it should remove.
+Three sensors differ the way real deployments do. Their geometry, noise, dark rates, background rates and muon fluxes come
+from public measurements (SENSEI at SNOLAB and MINOS, Oscura sensors at the surface, SNO, PDG); defect populations are not
+published in a transferable form and are scenario values chosen to differ between sensors.</p>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Sensor</th><th scope='col'>Pixels</th><th scope='col'>Thickness (&micro;m)</th><th scope='col'>Noise (e&minus;)</th><th scope='col'>Exposure</th><th scope='col'>Dark rate (e&minus;/pix/day)</th><th scope='col'>Muons (cm&minus;2 day&minus;1)</th><th scope='col'>High-E (dru)</th><th scope='col'>Halo &micro;m / trail px / hot cols</th></tr></thead><tbody><tr><td>Deep underground</td><td>3072 &times; 512</td><td>665</td><td>0.14</td><td>20 h</td><td>1.4 &times; 10<sup>-5</sup></td><td>2.9e-05</td><td>50</td><td>100 / 30 / 4</td></tr><tr><td>Shallow underground</td><td>3072 &times; 443</td><td>675</td><td>0.14</td><td>20 h</td><td>1.6 &times; 10<sup>-4</sup></td><td>6.9</td><td>3.37e+03</td><td>150 / 60 / 10</td></tr><tr><td>Surface laboratory</td><td>1278 &times; 1058</td><td>725</td><td>0.17</td><td>1 h</td><td>3.0 &times; 10<sup>-2</sup></td><td>1.4e+03</td><td>3e+04</td><td>250 / 100 / 25</td></tr></tbody></table></div>
+<p>Three versions of every mask were compared on an independent test stack of each sensor: the <strong>oracle</strong>
+(fixed form tuned with the simulator's truth on that sensor), the <strong>transplant</strong> (the oracle constants of a
+different sensor) and the <strong>adaptive</strong> form, calibrated without truth. The figure of merit is S/&radic;(S+B):
+surviving injected signal against surviving target background.</p>
+
+<h3>A check against real images</h3>
+<p>Before relying on anything, the public SENSEI SNOLAB data release was read and its single-electron rate reproduced:
+1.39 &times; 10<sup>-5</sup> &plusmn; 1.1 &times; 10<sup>-6</sup> e&minus;/pix/day against the published
+1.39 &times; 10<sup>-5</sup> &plusmn; 1.1 &times; 10<sup>-6</sup> (pull -0.02).</p>
+<figure><img src='figures/release_rate.png' alt='Single-electron density against exposure for four exposures of the public SENSEI release, on a straight line whose slope reproduces the published rate.' loading='lazy'><figcaption>Single-electron density per exposure in the public SENSEI SNOLAB release, with the weighted straight line. The slope is the rate.</figcaption></figure>
+<details><summary>Which bit of the public mask is which (geometric check)</summary>
+<p>The release names its masks but not their bits. Each mask leaves a signature independent of its parameters; the bit
+order was checked against them. The noisy-row bit never appears in the active area, so it is not verified.</p>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Bit</th><th scope='col'>Name (hypothesis)</th><th scope='col'>Fraction in whole columns</th><th scope='col'>Bright pixel upstream / only downstream</th><th scope='col'>Median distance to &gt;100 e (px)</th></tr></thead><tbody><tr><td>0x1</td><td>neighbour</td><td>0.06</td><td>0.15 / 0.06</td><td>inf</td></tr><tr><td>0x4</td><td>bleeding</td><td>0.05</td><td>1.00 / 0.00</td><td>104</td></tr><tr><td>0x8</td><td>halo</td><td>0.00</td><td>0.20 / 0.18</td><td>51</td></tr><tr><td>0x10</td><td>crosstalk</td><td>0.01</td><td>0.07 / 0.00</td><td>inf</td></tr><tr><td>0x40</td><td>edge</td><td>1.00</td><td>0.02 / 0.04</td><td>inf</td></tr><tr><td>0x200</td><td>bad pixel</td><td>0.00</td><td>0.04 / 0.01</td><td>inf</td></tr><tr><td>0x400</td><td>bad column</td><td>1.00</td><td>0.04 / 0.02</td><td>inf</td></tr></tbody></table></div>
+</details>
+
+<h2>Result 1 &middot; The adaptive masks fire at the rate they were built for</h2>
+<p>200 independent runs of sensors without any defect. A mask &ldquo;fires&rdquo; if it flags anything at all in a run.</p>
+<figure><img src='figures/null_rates.png' alt='Fraction of defect-free runs in which each adaptive mask fired, with 95 percent intervals, all containing alpha equal to 0.01.' loading='lazy'><figcaption>Each interval is a Clopper&ndash;Pearson 95 % interval; the vertical line is &alpha; = 0.01.</figcaption></figure>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Adaptive mask</th><th scope='col'>Fired / runs</th><th scope='col'>Rate</th><th scope='col'>95 % interval</th><th scope='col'>Consistent with &alpha;</th></tr></thead><tbody><tr><td>Hot columns</td><td>1 / 200</td><td>0.005</td><td>[0.000, 0.028]</td><td>yes</td></tr><tr><td>Charge-transfer trails</td><td>0 / 200</td><td>0.000</td><td>[0.000, 0.018]</td><td>yes</td></tr><tr><td>Halo</td><td>2 / 200</td><td>0.010</td><td>[0.001, 0.036]</td><td>yes</td></tr><tr><td>Serial-register hits</td><td>0 / 200</td><td>0.000</td><td>[0.000, 0.018]</td><td>yes</td></tr><tr><td>Low-energy clusters</td><td>1 / 200</td><td>0.005</td><td>[0.000, 0.028]</td><td>yes</td></tr></tbody></table></div>
+
+<h2>Result 2 &middot; Transplanted constants can fail badly; self-calibration does not</h2>
+<div class="wide">
+<figure><img src='figures/compare_masks.png' alt='Small multiples for three sensors: figure of merit of adaptive masks and of fixed masks transplanted from other sensors, relative to the oracle.' loading='lazy'><figcaption>Figure of merit relative to the oracle tuned with truth on the same sensor (vertical line). Markers are medians over 5 seeds, whiskers the range. The deep-underground sensor has few target events, so every version sits near 1 there.</figcaption></figure>
+</div>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Evaluated on</th><th scope='col'>Mask</th><th scope='col'>Adaptive</th><th scope='col'>Fixed, tuned on deep</th><th scope='col'>Fixed, tuned on shallow</th><th scope='col'>Fixed, tuned on surface</th></tr></thead><tbody><tr><td>Deep underground</td><td>Hot columns & pixels</td><td>0.98 <span class='range'>(0.97&ndash;0.99)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(0.99&ndash;1.00)</span></td><td>0.89 <span class='range'>(0.88&ndash;0.90)</span></td></tr><tr><td>Deep underground</td><td>Charge-transfer trails</td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td></tr><tr><td>Deep underground</td><td>Halo</td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td></tr><tr><td>Deep underground</td><td>Serial-register hits</td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td></tr><tr><td>Deep underground</td><td>Low-energy clusters</td><td>1.00 <span class='range'>(0.99&ndash;1.01)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td>0.99 <span class='range'>(0.98&ndash;1.00)</span></td></tr><tr><td>Deep underground</td><td>Muon tracks</td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td></tr><tr><td>Deep underground</td><td>All six combined</td><td>0.98 <span class='range'>(0.97&ndash;0.99)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(0.99&ndash;1.00)</span></td><td>0.88 <span class='range'>(0.87&ndash;0.90)</span></td></tr><tr><td>Shallow underground</td><td>Hot columns & pixels</td><td>0.98 <span class='range'>(0.96&ndash;1.00)</span></td><td>1.00 <span class='range'>(0.98&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>0.78 <span class='range'>(0.74&ndash;0.81)</span></td></tr><tr><td>Shallow underground</td><td>Charge-transfer trails</td><td>0.84 <span class='range'>(0.82&ndash;0.89)</span></td><td>0.44 <span class='range'>(0.41&ndash;0.59)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td></tr><tr><td>Shallow underground</td><td>Halo</td><td>0.97 <span class='range'>(0.92&ndash;0.99)</span></td><td>0.88 <span class='range'>(0.88&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(0.99&ndash;1.00)</span></td></tr><tr><td>Shallow underground</td><td>Serial-register hits</td><td>1.01 <span class='range'>(1.00&ndash;1.01)</span></td><td>1.00 <span class='range'>(0.99&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.01)</span></td></tr><tr><td>Shallow underground</td><td>Low-energy clusters</td><td>0.99 <span class='range'>(0.97&ndash;1.02)</span></td><td>0.94 <span class='range'>(0.91&ndash;0.98)</span></td><td><span class='range'>oracle = 1</span></td><td>0.89 <span class='range'>(0.76&ndash;0.91)</span></td></tr><tr><td>Shallow underground</td><td>Muon tracks</td><td>0.98 <span class='range'>(0.94&ndash;1.00)</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td></tr><tr><td>Shallow underground</td><td>All six combined</td><td>0.83 <span class='range'>(0.79&ndash;0.86)</span></td><td>0.81 <span class='range'>(0.54&ndash;0.84)</span></td><td><span class='range'>oracle = 1</span></td><td>0.71 <span class='range'>(0.63&ndash;0.73)</span></td></tr><tr><td>Surface laboratory</td><td>Hot columns & pixels</td><td>1.02 <span class='range'>(0.95&ndash;1.20)</span></td><td>0.52 <span class='range'>(0.48&ndash;0.60)</span></td><td>0.53 <span class='range'>(0.48&ndash;0.60)</span></td><td><span class='range'>oracle = 1</span></td></tr><tr><td>Surface laboratory</td><td>Charge-transfer trails</td><td>0.81 <span class='range'>(0.79&ndash;0.89)</span></td><td>0.56 <span class='range'>(0.53&ndash;0.65)</span></td><td>1.00 <span class='range'>(1.00&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td></tr><tr><td>Surface laboratory</td><td>Halo</td><td>0.69 <span class='range'>(0.66&ndash;0.72)</span></td><td>0.71 <span class='range'>(0.69&ndash;0.97)</span></td><td>1.00 <span class='range'>(0.97&ndash;1.02)</span></td><td><span class='range'>oracle = 1</span></td></tr><tr><td>Surface laboratory</td><td>Serial-register hits</td><td>1.00 <span class='range'>(0.96&ndash;1.02)</span></td><td>0.81 <span class='range'>(0.57&ndash;0.84)</span></td><td>0.97 <span class='range'>(0.95&ndash;1.00)</span></td><td><span class='range'>oracle = 1</span></td></tr><tr><td>Surface laboratory</td><td>Low-energy clusters</td><td>0.97 <span class='range'>(0.97&ndash;0.99)</span></td><td>0.16 <span class='range'>(0.00&ndash;0.76)</span></td><td>0.27 <span class='range'>(0.24&ndash;0.33)</span></td><td><span class='range'>oracle = 1</span></td></tr><tr><td>Surface laboratory</td><td>Muon tracks</td><td>0.81 <span class='range'>(0.67&ndash;0.89)</span></td><td>0.95 <span class='range'>(0.94&ndash;0.97)</span></td><td>1.00 <span class='range'>(0.95&ndash;1.01)</span></td><td><span class='range'>oracle = 1</span></td></tr><tr><td>Surface laboratory</td><td>All six combined</td><td>0.96 <span class='range'>(0.82&ndash;1.16)</span></td><td>0.44 <span class='range'>(0.00&ndash;0.57)</span></td><td>0.56 <span class='range'>(0.52&ndash;0.89)</span></td><td><span class='range'>oracle = 1</span></td></tr></tbody></table></div>
+<p class="meta">Figure of merit relative to the oracle of the sensor in the first column; median, with the range over seeds in brackets.</p>
+<details><summary>What the adaptive masks measured on each sensor</summary>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Sensor</th><th scope='col'>Seed</th><th scope='col'>Trail length h / v (px)</th><th scope='col'>Halo radius (px)</th><th scope='col'>Halo calibrated</th><th scope='col'>Hot columns found</th><th scope='col'>Hot columns simulated</th></tr></thead><tbody><tr><td>Deep underground</td><td>seed_20260915</td><td>0 / 0</td><td>0</td><td>yes</td><td>0</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260915</td><td>140 / 55</td><td>10</td><td>yes</td><td>3</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260915</td><td>130 / 95</td><td>0</td><td>yes</td><td>25</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260916</td><td>0 / 0</td><td>0</td><td>no</td><td>0</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260916</td><td>125 / 60</td><td>10</td><td>yes</td><td>4</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260916</td><td>130 / 85</td><td>0</td><td>yes</td><td>25</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260917</td><td>0 / 0</td><td>0</td><td>yes</td><td>2</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260917</td><td>140 / 50</td><td>5</td><td>yes</td><td>5</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260917</td><td>115 / 80</td><td>0</td><td>yes</td><td>27</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260918</td><td>0 / 0</td><td>0</td><td>yes</td><td>0</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260918</td><td>140 / 75</td><td>10</td><td>yes</td><td>7</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260918</td><td>145 / 80</td><td>0</td><td>yes</td><td>25</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260919</td><td>0 / 0</td><td>0</td><td>yes</td><td>1</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260919</td><td>120 / 50</td><td>10</td><td>yes</td><td>4</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260919</td><td>125 / 85</td><td>0</td><td>yes</td><td>22</td><td>25</td></tr></tbody></table></div>
+</details>
+
+<h2>What the checks caught</h2>
+<p>Every error below was found by a test or a diagnostic against the simulator's truth, fixed, and recorded.</p>
+<ul>
+<li>The simulator redrew hot columns in every image, which would have invalidated every calibration on a stack.</li>
+<li>The hot-column mask flagged the innocent neighbours of each hot column (17 of them in a test).</li>
+<li>The halo test treated its reference rate as exact; a 4&sigma; fluctuation gave a halo where there was none.</li>
+<li>At the surface no pixel is far from every muon track: the first halo calibration fell back to its largest radius and masked the whole image. It now compares each annulus with everything outside it.</li>
+<li>Crossing muons merged into wide clusters that the track criterion rejected (24 % of muon pixels missed); tracks cut by the image border were missed too.</li>
+<li>Hot columns were calibrated before charge-transfer trails, whose vertical trails from muons made 69 of 81 flagged columns false.</li>
+<li>In one seed the halo radius, chosen by significance alone, reached 125 px on the surface sensor and masked 99.9 % of the image. The radius now maximises a figure of merit estimated from the data within the significant range; all seeds were re-run, plus two seeds never used during development.</li>
+</ul>
+
+<h2>Limitations</h2>
+<ul>
+<li>Defect populations (hot columns, trail lengths, serial hits, clusters) are scenario values, not measurements.</li>
+<li>One figure of merit; the oracle is tuned mask by mask, not jointly, so a combined adaptive mask can exceed it.</li>
+<li>Adaptive trail lengths are limited by the number of bright pixels in the calibration stack: they are short when data are few.</li>
+<li>The muon figure of merit counts pixels, which weighs every missed track pixel heavily.</li>
+<li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The evaluation was fixed before this was seen and was not changed.</li>
+<li>The adaptive masks were not yet run on the real public images beyond the rate reproduction.</li>
+</ul>
+
+<h2>Reproduce</h2>
+<pre><code>conda env create -f environment.yml
+conda activate skmask
+python scripts/fetch_public_data.py
+pytest
+python analysis/reproduce_release_rate.py
+python analysis/check_release_mask_bits.py
+python analysis/null_false_positive_rates.py
+python analysis/compare_masks_across_sensors.py 4 --seed 20260915
+python analysis/figure_compare_masks.py
+python analysis/build_report.py
+python scripts/make_pdf.py</code></pre>
+<p>Every output has a <code>.provenance.json</code> sidecar with the script, git commit, input hashes, parameters and seed;
+<a href="https://github.com/delfinarj/GW-AI-final-project/blob/main/PROVENANCE.md">PROVENANCE.md</a> says how each result was checked.</p>
+</main>
+</body>
+</html>
