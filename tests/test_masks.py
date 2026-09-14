@@ -204,6 +204,19 @@ def test_low_energy_cluster_injection():
 
 # ---------------------------------------------------------------- muons
 
+def test_muon_mask_takes_tracks_cut_by_the_border_but_not_blobs():
+    e = np.zeros((100, 100), dtype=np.int64)
+    # straight segment along row 20 entering from the left edge: 20 px = 300 um, and a minimum-ionising
+    # charge for its projected length only (103 e/um * 15 um per pixel)
+    e[20, 0:20] = 1550
+    # a diffusion blob of 2000 e cut by the right edge
+    e[60:63, 97:100] = 222
+    sigma_back = 16.0
+    mask = M.adaptive_muon_mask(e, 15.0, 675.0, sigma_back)
+    assert mask[20, 0:20].all()
+    assert not mask[60:63, 97:100].any()
+
+
 def test_muon_mask_separates_tracks_from_point_deposits():
     sensor = Sensor(nx=600, ny=600, thickness_um=675.0, muon_flux_per_cm2_day=1440.0,
                     highE_dru=3e6, highE_keV=(0.5, 10.0), noise_e=0.12, exposure_days=20 / 1440,

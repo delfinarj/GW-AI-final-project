@@ -456,8 +456,17 @@ def adaptive_muon_mask(electrons, pixel_um, thickness_um, diffusion_sigma_back_u
     big = table[:, 0] >= trigger_e
     single_track = big & (ratio >= 1 / charge_tolerance) & (ratio <= charge_tolerance) & straight
     pile_up = big & (ratio >= 1 / charge_tolerance) & (table[:, 0] >= 2 * MIP_ELECTRONS_PER_UM * thickness_um)
+    # A track leaving the image keeps only part of its depth, so Q_mip overestimates its charge.
+    # For a cluster touching the border the only safe bound is the projected length itself, and it
+    # must be longer than a diffusion blob (a blob of width sigma has L = sqrt(12) sigma), so that a
+    # point-like deposit cut by the border is not taken for a track.
+    ny, nx = electrons.shape
+    at_border = (table[:, 2] == 0) | (table[:, 4] == 0) | (table[:, 3] == ny - 1) | (table[:, 5] == nx - 1)
+    clipped = (big & at_border & straight
+               & (length_um >= 2.0 * np.sqrt(12.0) * diffusion_sigma_back_um)
+               & (table[:, 0] >= MIP_ELECTRONS_PER_UM * length_um / charge_tolerance))
     is_muon = np.zeros(len(table) + 1, dtype=bool)
-    is_muon[1:] = single_track | pile_up
+    is_muon[1:] = single_track | pile_up | clipped
     selected = is_muon[labels]
     return dilate_disc(selected, 3.0 * diffusion_sigma_back_um / pixel_um)
 

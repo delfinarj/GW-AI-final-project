@@ -120,6 +120,21 @@ Design errors found by the first cross-sensor run (R4 at one image per stack, 20
   downstream with upstream of the same trigger in the same row or column, which a hot column,
   uniform along its column, cannot bias.
 
+Second cross-sensor run at one image per stack, after these fixes (statistics too small for
+conclusions; used to find design faults):
+
+- Surface, six masks combined: adaptive FoM 1.2 with 43 % of clean pixels kept; fixed masks tuned
+  with truth on the same sensor 1.0 (21 %); transplanted from the other sensors 0.6 (6-12 %). The
+  combined "oracle" is tuned mask by mask, not jointly, so an adaptive combination can beat it.
+- Shallow, CTI: adaptive FoM 6.1 against 10.5 for the oracle; the adaptive trail lengths are
+  limited by the number of triggers (seen before in the unit test), to be re-measured with more
+  images.
+- Surface, muons: adaptive removes 98.9 % of muon pixels, but the survivors (tracks cut by the
+  image border, per the earlier diagnostic) weigh heavily in a pixel-counted FoM (4.8 against
+  10.5). Fix: a clause for border-clipped tracks (straight, longer than two diffusion-blob lengths,
+  charge at least a minimum-ionising charge for the projected length / tolerance), with a unit test
+  that a clipped segment is masked and a clipped 2000 e blob is not.
+
 **Check:** `tests/test_masks.py` — hand-computed geometry for each mask; a **null test** for every
 adaptive mask (defect absent, mask does not fire) and an **injection test** (defect present,
 most of its events removed, scored against the simulator's truth). An earlier halo null test
