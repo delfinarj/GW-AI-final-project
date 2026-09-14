@@ -228,3 +228,34 @@ marker shape, and every figure has a legend or a single labelled series.
   the one that failed this kind of check (a single realisation gave radius 45 with no halo).
   Limitation: 200 runs cannot distinguish 0.01 from 0.03; the muon mask is not included because it
   has no false-positive parameter (it is tested against point-like deposits in `tests/test_masks.py`).
+
+### R4. The masks across sensors: oracle, transplant, adaptive
+
+- **Outputs:** `results/compare_masks/compare_masks.json` (seed 20260915) and
+  `results/compare_masks/seed_<seed>/compare_masks.json` (further seeds), each with a sidecar;
+  `results/compare_masks/relative_fom_summary.json` (median and range over seeds) and the figure
+  `compare_masks.png`, both from `analysis/figure_compare_masks.py`.
+- **Produced by:** `analysis/compare_masks_across_sensors.py 4 --seed <seed>`: for each preset, an
+  independent calibration stack and test stack of 4 images; each mask evaluated on the test stack as
+  oracle (fixed form tuned with truth on the same sensor's calibration stack), transplant (oracle
+  constants of another sensor) and adaptive (calibrated on the calibration stack without truth).
+- **Written from scratch:** the evaluation (target events removed, clean pixels kept, signal
+  efficiency, figure of merit), the parameter grids and the oracle search.
+- **Choices with an alternative:**
+  1. Figure of merit S / sqrt(S + B), S = surviving injected signal events, B = surviving target
+     events (target pixels for muons). Alternatives: background rejection at fixed exposure; the
+     bias of the measured single-electron rate.
+  2. Oracle tuned mask by mask on grids (listed in the sidecar), not jointly, so the combined
+     oracle is not the best combined mask.
+  3. 4 images per stack, chosen for run time (~19 min per seed); adaptive CTI lengths depend on it.
+  4. Relative figure of merit = FoM / FoM(oracle); for "all six combined" the oracle is the union of
+     the six oracle masks.
+- **Checks:** (a) the oracle is by construction the best fixed form on the calibration stack; on the
+  independent test stack the adaptive form can exceed it (e.g. serial-register hits at the surface in
+  seed 20260915), which is possible because the oracle is chosen on a different stack and on a grid,
+  and is reported, not hidden, in the per-mask table of the page; (b) every adaptive mask passed its null and injection tests and R3 before
+  this run; (c) the variation over seeds is reported as a range, and the statements on the page
+  ("below half of the oracle in n of N cases") are computed from the per-seed minimum, the least
+  favourable reading; (d) the figure was inspected by eye for hidden markers (an earlier version
+  hid transplant markers under the oracle line; series are now offset within each row).
+- **Every number on the page** is read from these files by `analysis/build_report.py`; none is typed.
