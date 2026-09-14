@@ -1,3 +1,12 @@
 # Sensitive material (theses, SENSEI masks and data): stays on this machine, never on GitHub
 Contexto/
 context/
+
+# Downloaded data: fetched and checksum-verified by scripts/fetch_public_data.py, not versioned
+data/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
