@@ -11,9 +11,14 @@ with True = discarded. Geometry follows `simulate.py`: charge-transfer trails po
 `exclude` arguments take either one boolean array for every image or, for functions that work on
 a stack, a list with one array per image.
 
-Order of application of the adaptive masks, each excluding what the previous ones removed:
-hot columns/pixels -> CTI -> halo -> serial register -> low-energy clusters; muon tracks are
+Order of calibration of the adaptive masks, each excluding what the previous ones removed:
+CTI -> halo -> hot columns/pixels -> serial register -> low-energy clusters; muon tracks are
 independent of the others.
+
+CTI goes first because its calibration compares downstream with upstream of the same trigger in
+the same row or column, which a hot column (uniform along the column) or a halo (symmetric) cannot
+bias; hot columns cannot go first because vertical CTI trails of tracks are themselves a
+column-wise excess (on the surface preset they produced 69 false hot columns out of 81 flagged).
 """
 import numpy as np
 from scipy import ndimage
@@ -227,11 +232,23 @@ def halo_mask(electrons, radius, trigger_e=TRIGGER_E, sampling=(1.0, 1.0)):
 
 def adaptive_halo_radius(electron_stack, alpha=0.01, annulus=5, max_radius=200,
                          trigger_e=TRIGGER_E, exclude=None, sampling=(1.0, 1.0)):
-    """Radius beyond which the 1e density around triggers is consistent with the far field.
+    """Radius beyond which the 1e density around triggers stops decreasing.
 
-    Density in annuli of width `annulus` up to `max_radius` is compared with the density of
-    valid pixels farther than `max_radius` from any trigger; the radius is the outer edge of the
-    last annulus whose count exceeds the far field at p < alpha / (number of annuli).
+    Counts of 1e events and valid pixels are accumulated in annuli of width `annulus` around the
+    nearest trigger, up to `max_radius`, plus everything farther ("far field"). Annulus k is
+    compared with everything outside it pooled (annuli k+1.. and the far field) by a conditional
+    binomial test; the radius is the outer edge of the last annulus with p < alpha / (annuli
+    tested). An annulus is tested only if its outside pool has at least MIN_FAR_FIELD_PIXELS
+    valid pixels.
+
+    CHOICE: the outside pool, not a far field, is the reference. A far field does not exist where
+    triggers are dense (at the surface, muon tracks are ~90 px apart and no pixel is 200 px from all
+    of them): an earlier version fell back to the largest radius there and masked the whole image.
+    Halo in the pool makes the test conservative (shorter radius).
+
+    Returns (radius, info); info["calibrated"] is False when no annulus could be tested (then the
+    radius is 0 and the caller must decide), info["at_limit"] is True when the last significant
+    annulus is the last testable one, i.e. the halo may extend beyond what could be measured.
     """
     n_annuli = max_radius // annulus
     counts = np.zeros(n_annuli)
@@ -253,22 +270,25 @@ def adaptive_halo_radius(electron_stack, alpha=0.01, annulus=5, max_radius=200,
         far = valid & (distance > n_annuli * annulus)
         far_counts += events[far].sum()
         far_pixels += far.sum()
-    info = {"counts": counts, "pixels": pixels, "far_pixels": far_pixels}
-    # Without a far field there is no reference density and the radius cannot be calibrated;
-    # the conservative answer is the largest radius tested, reported as such.
-    if far_pixels < MIN_FAR_FIELD_PIXELS:
-        info.update(far_rate=np.nan, p=np.full(n_annuli, np.nan), calibrated=False)
-        return int(n_annuli * annulus), info
-    rate = far_counts / far_pixels
-    # Conditional test of two Poisson rates: the far-field rate is itself estimated from a finite
-    # count, so compare n_k with n_far directly. Under equal densities
-    # n_k | n_k + n_far ~ Binomial(n_k + n_far, P_k / (P_k + P_far)).
-    # (Treating the far rate as exact overstated significance: caught by the null test.)
-    share = pixels / (pixels + far_pixels)
-    p = np.where(pixels > 0, binom.sf(counts - 1, counts + far_counts, share), 1.0)
-    significant = np.nonzero((pixels > 0) & (p < alpha / n_annuli))[0]
+    # outside pool of annulus k: annuli k+1 .. n_annuli-1 plus the far field
+    outside_counts = np.concatenate([np.cumsum(counts[::-1])[::-1][1:], [0.0]]) + far_counts
+    outside_pixels = np.concatenate([np.cumsum(pixels[::-1])[::-1][1:], [0.0]]) + far_pixels
+    testable = (pixels > 0) & (outside_pixels >= MIN_FAR_FIELD_PIXELS)
+    # Conditional test of two Poisson rates, carrying the reference's own uncertainty:
+    # n_k | n_k + n_out ~ Binomial(n_k + n_out, P_k / (P_k + P_out)) under equal densities.
+    # (Treating a reference rate as exact overstated significance: caught by the null test.)
+    share = np.divide(pixels, pixels + outside_pixels, out=np.zeros_like(pixels), where=testable)
+    p = np.where(testable, binom.sf(counts - 1, counts + outside_counts, share), np.nan)
+    n_tested = int(testable.sum())
+    info = {"counts": counts, "pixels": pixels, "far_pixels": far_pixels, "p": p,
+            "outside_pixels": outside_pixels, "n_tested": n_tested}
+    if n_tested == 0:
+        info.update(calibrated=False, at_limit=False)
+        return 0, info
+    significant = np.nonzero(testable & (p < alpha / n_tested))[0]
     radius = int((significant.max() + 1) * annulus) if len(significant) else 0
-    info.update(far_rate=rate, p=p, calibrated=True)
+    last_testable = int(np.nonzero(testable)[0].max())
+    info.update(calibrated=True, at_limit=bool(len(significant) and significant.max() == last_testable))
     return radius, info
 
 
@@ -409,10 +429,17 @@ def adaptive_muon_mask(electrons, pixel_um, thickness_um, diffusion_sigma_back_u
     """Clusters whose charge matches a minimum-ionising particle crossing this sensor.
 
     A straight track crossing thickness t with projected length L deposits on average
-    Q_mip = (dE/dx)_min / E_pair * sqrt(L^2 + t^2). A cluster is a muon when its charge is within a
-    factor `charge_tolerance` of Q_mip for its measured length and its width is compatible with
-    diffusion (at most three times the back-surface sigma plus one pixel). The mask covers the
-    cluster dilated by three back-surface sigmas. Only physical properties of the sensor enter.
+    Q_mip = (dE/dx)_min / E_pair * sqrt(L^2 + t^2). A cluster is masked as a track when
+    - it is a single track: charge within a factor `charge_tolerance` of Q_mip for its measured
+      length, and width compatible with diffusion (at most three back-surface sigmas plus a pixel); or
+    - it is a pile-up of tracks: charge at least Q_mip / tolerance for its length and at least the
+      charge of two vertical tracks, 2 (dE/dx)_min t / E_pair, whatever its shape.
+    The mask covers the cluster dilated by three back-surface sigmas. Only physical properties of
+    the sensor enter.
+
+    The pile-up clause was added after the surface preset showed crossing muons (about 200 tracks
+    per image) merging into wide clusters with 1.2-2.9 times a single track's charge, which the
+    single-track clause rejected: 24 % of muon pixels were missed.
     """
     labels, table = labels_table if labels_table is not None else clusters(electrons)
     mask = np.zeros(electrons.shape, dtype=bool)
@@ -426,8 +453,11 @@ def adaptive_muon_mask(electrons, pixel_um, thickness_um, diffusion_sigma_back_u
     q_mip = MIP_ELECTRONS_PER_UM * np.hypot(length_um, thickness_um)
     ratio = table[:, 0] / q_mip
     straight = width_um <= 3.0 * diffusion_sigma_back_um + pixel_um
+    big = table[:, 0] >= trigger_e
+    single_track = big & (ratio >= 1 / charge_tolerance) & (ratio <= charge_tolerance) & straight
+    pile_up = big & (ratio >= 1 / charge_tolerance) & (table[:, 0] >= 2 * MIP_ELECTRONS_PER_UM * thickness_um)
     is_muon = np.zeros(len(table) + 1, dtype=bool)
-    is_muon[1:] = (table[:, 0] >= trigger_e) & (ratio >= 1 / charge_tolerance) & (ratio <= charge_tolerance) & straight
+    is_muon[1:] = single_track | pile_up
     selected = is_muon[labels]
     return dilate_disc(selected, 3.0 * diffusion_sigma_back_um / pixel_um)
 

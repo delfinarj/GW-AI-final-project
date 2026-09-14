@@ -120,15 +120,17 @@ def fixed_masks(name, params, frames):
 
 def adaptive_calibration(sensor, frames):
     """Everything an adaptive mask learns from a calibration stack, without truth."""
+    # order: CTI -> halo -> hot columns/pixels (see the module docstring of skmask.masks)
     stack = [f.electrons for f in frames]
-    columns = M.adaptive_hot_columns(stack, alpha=ALPHA)
-    pixels = M.adaptive_hot_pixels(stack, alpha=ALPHA)
-    hot = [M.column_mask(f.shape, columns) | pixels for f in frames]
-    length_h, length_v, _ = M.adaptive_cti_lengths(stack, alpha=ALPHA, exclude=hot)
+    length_h, length_v, _ = M.adaptive_cti_lengths(stack, alpha=ALPHA)
     cti = [M.cti_mask(f.electrons, length_h, length_v) for f in frames]
-    radius, info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=[h | c for h, c in zip(hot, cti)])
+    radius, info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=cti)
+    halo = [c | M.halo_mask(f.electrons, radius) for c, f in zip(cti, frames)]
+    columns = M.adaptive_hot_columns(stack, alpha=ALPHA, exclude=halo)
+    pixels = M.adaptive_hot_pixels(stack, alpha=ALPHA, exclude=halo)
     return {"hot_columns": columns.tolist(), "hot_pixels": pixels, "length_h": length_h, "length_v": length_v,
             "halo_radius": radius, "halo_calibrated": bool(info["calibrated"]),
+            "halo_at_limit": bool(info["at_limit"]),
             "sigma_back_um": float(diffusion_sigma_um(sensor, sensor.thickness_um))}
 
 

@@ -99,6 +99,27 @@ Errors found by the tests and fixed (kept here because they are part of how the 
   the power calculation written next to it.
 - **A halo null test that passed for the wrong reason** (see above, no far field).
 
+Design errors found by the first cross-sensor run (R4 at one image per stack, 2026-09-14):
+
+- **The halo calibration relied on a far field that does not exist at the surface.** With ~200
+  muon tracks per image no pixel is 200 px from all of them; the calibration reported
+  `calibrated = False` and fell back to the largest radius, which masked 100 % of the surface image.
+  Redesign: each annulus is compared with everything outside it pooled; an uncalibrated result
+  now returns radius 0 with the flag set, so the caller must decide, instead of silently masking
+  everything. A unit test with triggers 60 px apart (no far field at all) checks the new behaviour.
+- **The muon mask missed crossing tracks.** A diagnostic on a surface image found 24 % of muon
+  pixels unmasked, 98 % of them in clusters that fail the straightness cut with 1.2-2.9 times a
+  single track's charge: merged crossing muons. Fix: a pile-up clause (enough charge for the
+  length and at least two vertical tracks' worth), still using only physical sensor properties.
+- **Hot columns were calibrated before CTI.** On the surface preset the adaptive hot-column mask
+  flagged 81 columns, 69 of them false, and found only 12 of 25 true ones. A diagnostic using the
+  simulator's truth showed the low-charge occupancy of the false columns to be 64 per column from
+  CTI against 8 from dark current: vertical CTI trails of ~200 muon tracks are a column-wise excess.
+  With CTI and halo excluded first, 15 columns are flagged, 13 true and 2 false. Fix: calibration
+  order CTI -> halo -> hot columns. There is no circularity: the CTI calibration compares
+  downstream with upstream of the same trigger in the same row or column, which a hot column,
+  uniform along its column, cannot bias.
+
 **Check:** `tests/test_masks.py` — hand-computed geometry for each mask; a **null test** for every
 adaptive mask (defect absent, mask does not fire) and an **injection test** (defect present,
 most of its events removed, scored against the simulator's truth). An earlier halo null test

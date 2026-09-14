@@ -133,11 +133,38 @@ def test_halo_injection():
     assert np.mean(removed) > 0.7
 
 
-def test_halo_without_far_field_is_not_calibrated():
+def test_halo_without_any_reference_is_not_calibrated():
+    # 2 500 pixels in total: no annulus has an outside pool of 10 000 pixels to compare with
     e = np.zeros((50, 50), dtype=np.int64)
     e[::10, ::10] = 50
     radius, info = M.adaptive_halo_radius([e], max_radius=60)
-    assert not info["calibrated"] and radius == 60
+    assert not info["calibrated"] and radius == 0
+
+
+def test_halo_calibrates_without_a_far_field():
+    # triggers every 60 px: no pixel is farther than max_radius = 60 from all of them, yet the
+    # outside pools of the inner annuli are large, so the calibration runs and finds the halo
+    sensor = Sensor(nx=900, ny=900, **BASE)
+    rng = np.random.default_rng(15)
+    stack_e = []
+    for _ in range(2):
+        image = simulate(sensor, rng)
+        e = to_electrons(image.measured, sensor.noise_e, image.total.mean())
+        trigger = np.zeros(e.shape, dtype=bool)
+        trigger[30::60, 30::60] = True
+        e[trigger] = 100
+        # inject 1e halo events within 15 px of each trigger, never on a trigger itself (overwriting
+        # one would remove it and open a hole farther than 60 px from every trigger)
+        ty, tx = np.nonzero(trigger)
+        for y, x in zip(ty, tx):
+            dy, dx = rng.integers(-15, 16, size=(2, 6))
+            hy, hx = np.clip(y + dy, 0, 899), np.clip(x + dx, 0, 899)
+            keep = ~trigger[hy, hx]
+            e[hy[keep], hx[keep]] = 1
+        stack_e.append(e)
+    radius, info = M.adaptive_halo_radius(stack_e, max_radius=60)
+    assert info["far_pixels"] == 0
+    assert info["calibrated"] and 10 <= radius <= 30
 
 
 # ---------------------------------------------------------------- serial register
