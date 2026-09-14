@@ -133,6 +133,29 @@ def test_halo_injection():
     assert np.mean(removed) > 0.7
 
 
+def test_halo_radius_weighs_exposure_when_triggers_are_dense():
+    # Triggers every 60 px; within 25 px of each, the single-electron density is 30 % above the clean
+    # density (1.3e-3 against 1e-3). With 3 images of 1200 x 1200 the excess is highly significant
+    # out to ~25 px, but masking removes 0.3 rho of excess per pixel while losing rho of exposure, so
+    # rho P / sqrt(rho P + B) decreases as soon as anything is masked: the exposure-aware radius must
+    # be below the significance radius and must not mask most of the image.
+    rng = np.random.default_rng(16)
+    size, spacing, reach = 1200, 60, 25
+    trigger = np.zeros((size, size), dtype=bool)
+    trigger[spacing // 2::spacing, spacing // 2::spacing] = True
+    near = M.halo_mask(trigger.astype(np.int64) * 100, reach) & ~trigger
+    stack_e = []
+    for _ in range(3):
+        u = rng.random((size, size))
+        e = ((u < 1e-3) | (near & (u < 1.3e-3))).astype(np.int64)
+        e[trigger] = 100
+        stack_e.append(e)
+    radius, info = M.adaptive_halo_radius(stack_e, max_radius=60)
+    assert info["calibrated"] and info["radius_significance"] >= 20
+    assert radius < info["radius_significance"]
+    assert M.halo_mask(stack_e[0], radius).mean() < 0.5
+
+
 def test_halo_without_any_reference_is_not_calibrated():
     # 2 500 pixels in total: no annulus has an outside pool of 10 000 pixels to compare with
     e = np.zeros((50, 50), dtype=np.int64)

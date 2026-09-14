@@ -283,12 +283,33 @@ def adaptive_halo_radius(electron_stack, alpha=0.01, annulus=5, max_radius=200,
     info = {"counts": counts, "pixels": pixels, "far_pixels": far_pixels, "p": p,
             "outside_pixels": outside_pixels, "n_tested": n_tested}
     if n_tested == 0:
-        info.update(calibrated=False, at_limit=False)
+        info.update(calibrated=False, at_limit=False, radius_significance=0, fom_estimate=None)
         return 0, info
     significant = np.nonzero(testable & (p < alpha / n_tested))[0]
-    radius = int((significant.max() + 1) * annulus) if len(significant) else 0
     last_testable = int(np.nonzero(testable)[0].max())
-    info.update(calibrated=True, at_limit=bool(len(significant) and significant.max() == last_testable))
+    if len(significant) == 0:
+        info.update(calibrated=True, at_limit=False, radius_significance=0, fom_estimate=None)
+        return 0, info
+    k_sig = int(significant.max())
+
+    # Exposure-aware choice within the significant range, estimated from the data alone.
+    # The reference density is that of everything outside the last significant annulus; the halo
+    # excess of annulus k is its count above that density. Masking annuli 0..j keeps the pixels
+    # outside them and leaves the excess of annuli j+1..k_sig; the estimated figure of merit is
+    # rho P / sqrt(rho P + B), the same form the oracle maximises with truth.
+    # (Added after a surface-sensor run in which the significance radius alone, 125 px with tracks
+    # ~90 px apart, masked 99.9 % of the image.)
+    rho = outside_counts[k_sig] / outside_pixels[k_sig]
+    excess = np.clip(counts[:k_sig + 1] - rho * pixels[:k_sig + 1], 0.0, None)
+    total_pixels = pixels.sum() + far_pixels
+    masked_pixels = np.concatenate([[0.0], np.cumsum(pixels[:k_sig + 1])])
+    left_excess = np.concatenate([[excess.sum()], excess.sum() - np.cumsum(excess)])
+    kept_signal = rho * (total_pixels - masked_pixels)
+    fom = kept_signal / np.sqrt(kept_signal + left_excess)
+    best = int(np.argmax(fom))                     # 0 = no mask, j+1 = annuli 0..j masked
+    radius = best * annulus
+    info.update(calibrated=True, at_limit=bool(k_sig == last_testable),
+                radius_significance=int((k_sig + 1) * annulus), fom_estimate=fom)
     return radius, info
 
 
