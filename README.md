@@ -37,9 +37,19 @@ pytest                                           # simulator, events and masks, 
 python analysis/reproduce_release_rate.py        # R1
 python analysis/check_release_mask_bits.py       # R2
 python analysis/null_false_positive_rates.py     # R3 (about an hour)
-python analysis/compare_masks_across_sensors.py  # R4
-python analysis/figure_release_rate.py           # figure for R1
+# R4: three seeds seen during development and two held out (about 15 min each)
+for seed in 20260915 20260916 20260917 20260918 20260919; do
+  python analysis/compare_masks_across_sensors.py 4 --seed $seed --out results/compare_masks/seed_$seed
+done
+python analysis/figure_release_rate.py           # figures
+python analysis/figure_null_rates.py
+python analysis/figure_compare_masks.py
+python analysis/build_report.py                  # report/index.html, every number read from results/
+python scripts/make_pdf.py                       # report/report.pdf (needs Chrome, Chromium or Edge)
 ```
+
+The presented page is [`report/index.html`](report/index.html) and the PDF
+[`report/report.pdf`](report/report.pdf).
 
 Every script writes its output under `results/` with a `.provenance.json` sidecar (script, git
 commit, inputs with hashes, parameters, seed). [`PROVENANCE.md`](PROVENANCE.md) lists every result

@@ -112,6 +112,20 @@ per-pixel mask bits. Two checks:
   widths, CTI trail lengths), null behaviour of every adaptive mask, and injected-defect
   recovery.
 
+## Changes to this plan while doing the work
+
+Recorded here so the plan and the code do not disagree; the reasons are in `PROVENANCE.md`.
+
+- **Halo:** the reference is everything outside each annulus, not a far field (no far field exists
+  at the surface), and within the significant range the radius maximises a figure of merit
+  estimated from the data (the significance radius alone masked a whole surface image in one seed).
+- **Calibration order:** charge-transfer trails, then halo, then hot columns and pixels (vertical
+  trails of muon tracks are a column-wise excess).
+- **Muons:** clauses for crossing tracks (pile-up) and for tracks cut by the image border.
+- **Low-energy clusters:** a neighbour count against a Poisson expectation for the local valid area,
+  at several radii, instead of the nearest-neighbour statistic with regional combination.
+- **R4 statistics:** five seeds, three seen during development and two held out.
+
 ## Schedule
 
 | Dates | Work |
