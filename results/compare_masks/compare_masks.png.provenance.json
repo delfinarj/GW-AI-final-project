@@ -1,0 +1,30 @@
+{
+  "output": "results/compare_masks/compare_masks.png",
+  "output_sha256": "7c0e2fd7aef36869bbe6a04be7779f4577caf4d139050625015184d206745e60",
+  "script": "analysis/figure_compare_masks.py",
+  "git": {
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "dirty": true
+  },
+  "git_at_write": {
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "dirty": true
+  },
+  "inputs": [
+    {
+      "path": "results/compare_masks/compare_masks.json",
+      "sha256": "e01d98b9a4d5564d060589a761262e6e0d7ca8002ffd77fdde4241891f9a5e6a"
+    }
+  ],
+  "parameters": {},
+  "seed": null,
+  "results": {},
+  "notes": "figure of R4 over 1 seeds",
+  "created": "2026-09-14T17:04:21+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

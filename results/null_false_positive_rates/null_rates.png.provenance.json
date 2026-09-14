@@ -1,0 +1,30 @@
+{
+  "output": "results/null_false_positive_rates/null_rates.png",
+  "output_sha256": "d37c5139dfc692bac9810ed1f297c11dd87a66a5d9d218026b03b8b992c2a532",
+  "script": "analysis/figure_null_rates.py",
+  "git": {
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "dirty": true
+  },
+  "git_at_write": {
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "dirty": true
+  },
+  "inputs": [
+    {
+      "path": "results/null_false_positive_rates/null_rates.json",
+      "sha256": "2a8d757bafa7f90945bb2acd97b3af0ceb28c2913261b622e22fc46ec2f76d26"
+    }
+  ],
+  "parameters": {},
+  "seed": null,
+  "results": {},
+  "notes": "figure of R3",
+  "created": "2026-09-14T17:04:12+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

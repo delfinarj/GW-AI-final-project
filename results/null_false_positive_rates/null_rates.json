@@ -1,0 +1,53 @@
+{
+  "hot_columns": {
+    "fired": 1,
+    "runs": 200,
+    "rate": 0.005,
+    "ci95": [
+      0.00012658102786701836,
+      0.02754189845720562
+    ],
+    "consistent_with_alpha": true
+  },
+  "cti": {
+    "fired": 0,
+    "runs": 200,
+    "rate": 0.0,
+    "ci95": [
+      0.0,
+      0.018275340355136237
+    ],
+    "consistent_with_alpha": true
+  },
+  "halo": {
+    "fired": 2,
+    "runs": 200,
+    "rate": 0.01,
+    "ci95": [
+      0.001213349013736031,
+      0.035654668397239776
+    ],
+    "consistent_with_alpha": true
+  },
+  "serial": {
+    "fired": 0,
+    "runs": 200,
+    "rate": 0.0,
+    "ci95": [
+      0.0,
+      0.018275340355136237
+    ],
+    "consistent_with_alpha": true
+  },
+  "low_energy_clusters": {
+    "fired": 1,
+    "runs": 200,
+    "rate": 0.005,
+    "ci95": [
+      0.00012658102786701836,
+      0.02754189845720562
+    ],
+    "consistent_with_alpha": true
+  },
+  "halo_uncalibrated_runs": 0
+}

@@ -1,0 +1,780 @@
+{
+  "oracle_parameters": {
+    "deep_underground": {
+      "hot": {
+        "factor": 3,
+        "min_images": 2
+      },
+      "cti": {
+        "length_h": 0,
+        "length_v": 0
+      },
+      "halo": {
+        "radius": 20
+      },
+      "serial": {
+        "window": 5,
+        "min_charged": 3
+      },
+      "lec": {
+        "radius": 20,
+        "min_neighbours": 3
+      },
+      "muon": {
+        "min_charge": 100,
+        "min_length": 3,
+        "dilation": 0
+      }
+    },
+    "shallow_underground": {
+      "hot": {
+        "factor": 3,
+        "min_images": 2
+      },
+      "cti": {
+        "length_h": 200,
+        "length_v": 100
+      },
+      "halo": {
+        "radius": 20
+      },
+      "serial": {
+        "window": 50,
+        "min_charged": 8
+      },
+      "lec": {
+        "radius": 20,
+        "min_neighbours": 10
+      },
+      "muon": {
+        "min_charge": 100,
+        "min_length": 3,
+        "dilation": 0
+      }
+    },
+    "surface_lab": {
+      "hot": {
+        "factor": 1.5,
+        "min_images": 3
+      },
+      "cti": {
+        "length_h": 200,
+        "length_v": 100
+      },
+      "halo": {
+        "radius": 30
+      },
+      "serial": {
+        "window": 10,
+        "min_charged": 6
+      },
+      "lec": {
+        "radius": 5,
+        "min_neighbours": 10
+      },
+      "muon": {
+        "min_charge": 100,
+        "min_length": 3,
+        "dilation": 2
+      }
+    }
+  },
+  "adaptive_calibration": {
+    "deep_underground": {
+      "hot_columns": [],
+      "length_h": 0,
+      "length_v": 0,
+      "halo_radius": 0,
+      "halo_calibrated": true,
+      "halo_at_limit": false,
+      "sigma_back_um": 15.678123213752754,
+      "n_hot_pixels": 14
+    },
+    "shallow_underground": {
+      "hot_columns": [
+        230,
+        2498,
+        2605
+      ],
+      "length_h": 140,
+      "length_v": 55,
+      "halo_radius": 10,
+      "halo_calibrated": true,
+      "halo_at_limit": false,
+      "sigma_back_um": 15.897879733902327,
+      "n_hot_pixels": 66
+    },
+    "surface_lab": {
+      "hot_columns": [
+        3,
+        20,
+        51,
+        94,
+        221,
+        339,
+        353,
+        387,
+        503,
+        637,
+        641,
+        690,
+        712,
+        768,
+        799,
+        802,
+        820,
+        925,
+        1040,
+        1066,
+        1154,
+        1190,
+        1230
+      ],
+      "length_h": 130,
+      "length_v": 95,
+      "halo_radius": 15,
+      "halo_calibrated": true,
+      "halo_at_limit": false,
+      "sigma_back_um": 17.064069093220045,
+      "n_hot_pixels": 0
+    }
+  },
+  "per_sensor": {
+    "deep_underground": {
+      "hot": {
+        "adaptive": {
+          "target": 55,
+          "target_removed": 0.32727272727272727,
+          "clean_kept": 0.999995549438506,
+          "signal_efficiency": 1.0,
+          "fom": 24.434531667655065
+        },
+        "oracle": {
+          "target": 55,
+          "target_removed": 0.8545454545454545,
+          "clean_kept": 0.9980454087610257,
+          "signal_efficiency": 0.9920886075949367,
+          "fom": 24.88173602065529
+        },
+        "transplant_from_shallow_underground": {
+          "target": 55,
+          "target_removed": 0.8545454545454545,
+          "clean_kept": 0.9980454087610257,
+          "signal_efficiency": 0.9920886075949367,
+          "fom": 24.88173602065529
+        },
+        "transplant_from_surface_lab": {
+          "target": 55,
+          "target_removed": 0.9454545454545454,
+          "clean_kept": 0.9658339931025833,
+          "signal_efficiency": 0.8022151898734177,
+          "fom": 22.450337348441415
+        }
+      },
+      "cti": {
+        "adaptive": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "oracle": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "transplant_from_shallow_underground": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 0.999936579498711,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "transplant_from_surface_lab": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 0.999936579498711,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        }
+      },
+      "halo": {
+        "adaptive": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "oracle": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 0.9997941615309042,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "transplant_from_shallow_underground": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 0.9997941615309042,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "transplant_from_surface_lab": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 0.9995423869092456,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        }
+      },
+      "serial": {
+        "adaptive": {
+          "target": 3,
+          "target_removed": 1.0,
+          "clean_kept": 0.9990256449300714,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "oracle": {
+          "target": 3,
+          "target_removed": 0.0,
+          "clean_kept": 0.9995131403622852,
+          "signal_efficiency": 1.0,
+          "fom": 25.080154968188424
+        },
+        "transplant_from_shallow_underground": {
+          "target": 3,
+          "target_removed": 0.0,
+          "clean_kept": 0.9995131403622852,
+          "signal_efficiency": 1.0,
+          "fom": 25.080154968188424
+        },
+        "transplant_from_surface_lab": {
+          "target": 3,
+          "target_removed": 0.0,
+          "clean_kept": 0.9995131403622852,
+          "signal_efficiency": 1.0,
+          "fom": 25.080154968188424
+        }
+      },
+      "lec": {
+        "adaptive": {
+          "target": 18,
+          "target_removed": 1.0,
+          "clean_kept": 0.9925476937269813,
+          "signal_efficiency": 0.990506329113924,
+          "fom": 25.019992006393608
+        },
+        "oracle": {
+          "target": 18,
+          "target_removed": 1.0,
+          "clean_kept": 0.9988899028045054,
+          "signal_efficiency": 0.9968354430379747,
+          "fom": 25.09980079602227
+        },
+        "transplant_from_shallow_underground": {
+          "target": 18,
+          "target_removed": 0.7222222222222222,
+          "clean_kept": 0.9995977010306706,
+          "signal_efficiency": 1.0,
+          "fom": 25.040751715310343
+        },
+        "transplant_from_surface_lab": {
+          "target": 18,
+          "target_removed": 0.0,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 24.789079481466462
+        }
+      },
+      "muon": {
+        "adaptive": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "oracle": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "transplant_from_shallow_underground": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        },
+        "transplant_from_surface_lab": {
+          "target": 0,
+          "target_removed": null,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 25.139610179953067
+        }
+      },
+      "all": {
+        "adaptive": {
+          "target": 76,
+          "target_removed": 0.5131578947368421,
+          "clean_kept": 0.9915688880955587,
+          "signal_efficiency": 0.990506329113924,
+          "fom": 24.311825450013323
+        },
+        "fixed_tuned_on_deep_underground": {
+          "target": 76,
+          "target_removed": 0.8947368421052632,
+          "clean_kept": 0.996254057759705,
+          "signal_efficiency": 0.9889240506329114,
+          "fom": 24.841519797411383
+        },
+        "fixed_tuned_on_shallow_underground": {
+          "target": 76,
+          "target_removed": 0.8026315789473685,
+          "clean_kept": 0.9969024092002007,
+          "signal_efficiency": 0.9920886075949367,
+          "fom": 24.745716140166962
+        },
+        "fixed_tuned_on_surface_lab": {
+          "target": 76,
+          "target_removed": 0.8552631578947368,
+          "clean_kept": 0.964873466563011,
+          "signal_efficiency": 0.8022151898734177,
+          "fom": 22.276301100801962
+        }
+      }
+    },
+    "shallow_underground": {
+      "hot": {
+        "adaptive": {
+          "target": 160,
+          "target_removed": 0.575,
+          "clean_kept": 0.9990219054836693,
+          "signal_efficiency": 1.0,
+          "fom": 21.421422511567247
+        },
+        "transplant_from_deep_underground": {
+          "target": 160,
+          "target_removed": 0.9875,
+          "clean_kept": 0.965060075313462,
+          "signal_efficiency": 0.953757225433526,
+          "fom": 22.203784548804702
+        },
+        "oracle": {
+          "target": 160,
+          "target_removed": 0.9875,
+          "clean_kept": 0.965060075313462,
+          "signal_efficiency": 0.953757225433526,
+          "fom": 22.203784548804702
+        },
+        "transplant_from_surface_lab": {
+          "target": 160,
+          "target_removed": 0.9875,
+          "clean_kept": 0.7640702222838203,
+          "signal_efficiency": 0.6184971098265896,
+          "fom": 17.860917778796498
+        }
+      },
+      "cti": {
+        "adaptive": {
+          "target": 2832,
+          "target_removed": 0.8912429378531074,
+          "clean_kept": 0.94861179507897,
+          "signal_efficiency": 0.9556840077071291,
+          "fom": 17.492571273293237
+        },
+        "transplant_from_deep_underground": {
+          "target": 2832,
+          "target_removed": 0.0,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 8.965616205709187
+        },
+        "oracle": {
+          "target": 2832,
+          "target_removed": 0.9671610169491526,
+          "clean_kept": 0.9239823172601705,
+          "signal_efficiency": 0.9421965317919075,
+          "fom": 20.269702137482636
+        },
+        "transplant_from_surface_lab": {
+          "target": 2832,
+          "target_removed": 0.9671610169491526,
+          "clean_kept": 0.9239823172601705,
+          "signal_efficiency": 0.9421965317919075,
+          "fom": 20.269702137482636
+        }
+      },
+      "halo": {
+        "adaptive": {
+          "target": 185,
+          "target_removed": 0.7027027027027027,
+          "clean_kept": 0.9858295170384175,
+          "signal_efficiency": 0.9922928709055877,
+          "fom": 21.570976277022318
+        },
+        "transplant_from_deep_underground": {
+          "target": 185,
+          "target_removed": 0.9297297297297298,
+          "clean_kept": 0.9591776855117423,
+          "signal_efficiency": 0.9672447013487476,
+          "fom": 22.120762991809436
+        },
+        "oracle": {
+          "target": 185,
+          "target_removed": 0.9297297297297298,
+          "clean_kept": 0.9591776855117423,
+          "signal_efficiency": 0.9672447013487476,
+          "fom": 22.120762991809436
+        },
+        "transplant_from_surface_lab": {
+          "target": 185,
+          "target_removed": 0.9891891891891892,
+          "clean_kept": 0.9227751344672619,
+          "signal_efficiency": 0.9210019267822736,
+          "fom": 21.817615207289116
+        }
+      },
+      "serial": {
+        "adaptive": {
+          "target": 13,
+          "target_removed": 1.0,
+          "clean_kept": 0.9983110499062268,
+          "signal_efficiency": 1.0,
+          "fom": 22.781571499789035
+        },
+        "transplant_from_deep_underground": {
+          "target": 13,
+          "target_removed": 0.6923076923076923,
+          "clean_kept": 0.9910471269418134,
+          "signal_efficiency": 0.9922928709055877,
+          "fom": 22.605990987266576
+        },
+        "oracle": {
+          "target": 13,
+          "target_removed": 0.6923076923076923,
+          "clean_kept": 0.9944233684049116,
+          "signal_efficiency": 0.9961464354527938,
+          "fom": 22.650181239291328
+        },
+        "transplant_from_surface_lab": {
+          "target": 13,
+          "target_removed": 0.23076923076923078,
+          "clean_kept": 0.9994382453201854,
+          "signal_efficiency": 1.0,
+          "fom": 22.565217391304348
+        }
+      },
+      "lec": {
+        "adaptive": {
+          "target": 176,
+          "target_removed": 0.8920454545454546,
+          "clean_kept": 0.9669158193656447,
+          "signal_efficiency": 0.9595375722543352,
+          "fom": 21.902014957250415
+        },
+        "transplant_from_deep_underground": {
+          "target": 176,
+          "target_removed": 1.0,
+          "clean_kept": 0.8611866957029453,
+          "signal_efficiency": 0.7822736030828517,
+          "fom": 20.149441679609883
+        },
+        "oracle": {
+          "target": 176,
+          "target_removed": 0.9772727272727273,
+          "clean_kept": 0.9485955764399203,
+          "signal_efficiency": 0.9441233140655106,
+          "fom": 22.046142262626528
+        },
+        "transplant_from_surface_lab": {
+          "target": 176,
+          "target_removed": 0.0,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 19.686792124992376
+        }
+      },
+      "muon": {
+        "adaptive": {
+          "target": 12248,
+          "target_removed": 0.9944480731548008,
+          "clean_kept": 0.9968252014060086,
+          "signal_efficiency": 0.9980732177263969,
+          "fom": 21.398382765595514
+        },
+        "transplant_from_deep_underground": {
+          "target": 12248,
+          "target_removed": 0.9998367080339647,
+          "clean_kept": 0.9999987098809847,
+          "signal_efficiency": 1.0,
+          "fom": 22.73780283015899
+        },
+        "oracle": {
+          "target": 12248,
+          "target_removed": 0.9998367080339647,
+          "clean_kept": 0.9999987098809847,
+          "signal_efficiency": 1.0,
+          "fom": 22.73780283015899
+        },
+        "transplant_from_surface_lab": {
+          "target": 12248,
+          "target_removed": 1.0,
+          "clean_kept": 0.9978891809882164,
+          "signal_efficiency": 1.0,
+          "fom": 22.781571499789035
+        }
+      },
+      "all": {
+        "adaptive": {
+          "target": 3366,
+          "target_removed": 0.8820558526440879,
+          "clean_kept": 0.9064427806414325,
+          "signal_efficiency": 0.9132947976878613,
+          "fom": 16.060877297449224
+        },
+        "fixed_tuned_on_deep_underground": {
+          "target": 3366,
+          "target_removed": 0.9438502673796791,
+          "clean_kept": 0.8139139704407932,
+          "signal_efficiency": 0.7360308285163777,
+          "fom": 15.986202457173851
+        },
+        "fixed_tuned_on_shallow_underground": {
+          "target": 3366,
+          "target_removed": 0.9705882352941176,
+          "clean_kept": 0.8478734046756862,
+          "signal_efficiency": 0.8574181117533719,
+          "fom": 19.07921759710411
+        },
+        "fixed_tuned_on_surface_lab": {
+          "target": 3366,
+          "target_removed": 0.9598930481283422,
+          "clean_kept": 0.6722931828636809,
+          "signal_efficiency": 0.5529865125240848,
+          "fom": 13.970941406772457
+        }
+      }
+    },
+    "surface_lab": {
+      "hot": {
+        "adaptive": {
+          "target": 1736,
+          "target_removed": 0.8605990783410138,
+          "clean_kept": 0.9823763954099414,
+          "signal_efficiency": 0.9690721649484536,
+          "fom": 15.124938150131639
+        },
+        "transplant_from_deep_underground": {
+          "target": 1736,
+          "target_removed": 0.1693548387096774,
+          "clean_kept": 0.9981576456535874,
+          "signal_efficiency": 0.9278350515463918,
+          "fom": 8.480571253767819
+        },
+        "transplant_from_shallow_underground": {
+          "target": 1736,
+          "target_removed": 0.1693548387096774,
+          "clean_kept": 0.9981576456535874,
+          "signal_efficiency": 0.9278350515463918,
+          "fom": 8.480571253767819
+        },
+        "oracle": {
+          "target": 1736,
+          "target_removed": 0.9550691244239631,
+          "clean_kept": 0.9800685795549346,
+          "signal_efficiency": 0.9742268041237113,
+          "fom": 17.701471838894015
+        }
+      },
+      "cti": {
+        "adaptive": {
+          "target": 62213,
+          "target_removed": 0.8748332342114992,
+          "clean_kept": 0.4993955627562182,
+          "signal_efficiency": 0.4896907216494845,
+          "fom": 2.1273248091618653
+        },
+        "transplant_from_deep_underground": {
+          "target": 62213,
+          "target_removed": 0.0,
+          "clean_kept": 1.0,
+          "signal_efficiency": 1.0,
+          "fom": 1.550747501823527
+        },
+        "transplant_from_shallow_underground": {
+          "target": 62213,
+          "target_removed": 0.9420378377509524,
+          "clean_kept": 0.4003543978705721,
+          "signal_efficiency": 0.37628865979381443,
+          "fom": 2.383534491836438
+        },
+        "oracle": {
+          "target": 62213,
+          "target_removed": 0.9420378377509524,
+          "clean_kept": 0.4003543978705721,
+          "signal_efficiency": 0.37628865979381443,
+          "fom": 2.383534491836438
+        }
+      },
+      "halo": {
+        "adaptive": {
+          "target": 1913,
+          "target_removed": 0.7323575535807632,
+          "clean_kept": 0.7897320516638885,
+          "signal_efficiency": 0.8144329896907216,
+          "fom": 10.981759140339271
+        },
+        "transplant_from_deep_underground": {
+          "target": 1913,
+          "target_removed": 0.8478829064296916,
+          "clean_kept": 0.6977114029493263,
+          "signal_efficiency": 0.7345360824742269,
+          "fom": 11.875
+        },
+        "transplant_from_shallow_underground": {
+          "target": 1913,
+          "target_removed": 0.8478829064296916,
+          "clean_kept": 0.6977114029493263,
+          "signal_efficiency": 0.7345360824742269,
+          "fom": 11.875
+        },
+        "oracle": {
+          "target": 1913,
+          "target_removed": 0.9435441714584423,
+          "clean_kept": 0.510163161021614,
+          "signal_efficiency": 0.5773195876288659,
+          "fom": 12.293597118845318
+        }
+      },
+      "serial": {
+        "adaptive": {
+          "target": 73,
+          "target_removed": 0.821917808219178,
+          "clean_kept": 0.9970144581544647,
+          "signal_efficiency": 0.9948453608247423,
+          "fom": 19.324170328819893
+        },
+        "transplant_from_deep_underground": {
+          "target": 73,
+          "target_removed": 1.0,
+          "clean_kept": 0.628894439255324,
+          "signal_efficiency": 0.6597938144329897,
+          "fom": 16.0
+        },
+        "transplant_from_shallow_underground": {
+          "target": 73,
+          "target_removed": 1.0,
+          "clean_kept": 0.8445114915195564,
+          "signal_efficiency": 0.8350515463917526,
+          "fom": 18.0
+        },
+        "oracle": {
+          "target": 73,
+          "target_removed": 0.684931506849315,
+          "clean_kept": 0.9860755279518602,
+          "signal_efficiency": 0.9896907216494846,
+          "fom": 19.034173328509812
+        }
+      },
+      "lec": {
+        "adaptive": {
+          "target": 40,
+          "target_removed": 0.0,
+          "clean_kept": 0.9623584318703132,
+          "signal_efficiency": 0.9768041237113402,
+          "fom": 18.515361615474596
+        },
+        "transplant_from_deep_underground": {
+          "target": 40,
+          "target_removed": 1.0,
+          "clean_kept": 0.002529826180923407,
+          "signal_efficiency": 0.005154639175257732,
+          "fom": 1.414213562373095
+        },
+        "transplant_from_shallow_underground": {
+          "target": 40,
+          "target_removed": 1.0,
+          "clean_kept": 0.06666547117647151,
+          "signal_efficiency": 0.10051546391752578,
+          "fom": 6.244997998398398
+        },
+        "oracle": {
+          "target": 40,
+          "target_removed": 0.0,
+          "clean_kept": 0.9999732963874886,
+          "signal_efficiency": 1.0,
+          "fom": 18.754687887485872
+        }
+      },
+      "muon": {
+        "adaptive": {
+          "target": 160772,
+          "target_removed": 0.9986378225064065,
+          "clean_kept": 0.9575375526860326,
+          "signal_efficiency": 0.979381443298969,
+          "fom": 15.5263790824633
+        },
+        "transplant_from_deep_underground": {
+          "target": 160772,
+          "target_removed": 0.9996703406065733,
+          "clean_kept": 0.9999292451726886,
+          "signal_efficiency": 1.0,
+          "fom": 18.476190476190474
+        },
+        "transplant_from_shallow_underground": {
+          "target": 160772,
+          "target_removed": 0.9996703406065733,
+          "clean_kept": 0.9999292451726886,
+          "signal_efficiency": 1.0,
+          "fom": 18.476190476190474
+        },
+        "oracle": {
+          "target": 160772,
+          "target_removed": 0.9999564600801134,
+          "clean_kept": 0.9751699285356753,
+          "signal_efficiency": 0.9948453608247423,
+          "fom": 19.471124310985285
+        }
+      },
+      "all": {
+        "adaptive": {
+          "target": 65975,
+          "target_removed": 0.9013414172034862,
+          "clean_kept": 0.4119051721583848,
+          "signal_efficiency": 0.38917525773195877,
+          "fom": 1.850290132269416
+        },
+        "fixed_tuned_on_deep_underground": {
+          "target": 65975,
+          "target_removed": 0.9999242137173172,
+          "clean_kept": 0.0017320313925329683,
+          "signal_efficiency": 0.005154639175257732,
+          "fom": 0.7559289460184544
+        },
+        "fixed_tuned_on_shallow_underground": {
+          "target": 65975,
+          "target_removed": 0.9965593027661993,
+          "clean_kept": 0.05403544212605976,
+          "signal_efficiency": 0.07474226804123711,
+          "fom": 1.8125
+        },
+        "fixed_tuned_on_surface_lab": {
+          "target": 65975,
+          "target_removed": 0.9655930276619932,
+          "clean_kept": 0.24125661352972638,
+          "signal_efficiency": 0.2551546391752577,
+          "fom": 2.0340080351881094
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "output": "results/null_false_positive_rates/null_rates.json",
+  "output_sha256": "2a8d757bafa7f90945bb2acd97b3af0ceb28c2913261b622e22fc46ec2f76d26",
+  "script": "analysis/null_false_positive_rates.py",
+  "git": {
+    "commit": "26acd819c93b8ac89d80e70a75480d77e7755f77",
+    "dirty": false
+  },
+  "git_at_write": {
+    "commit": "674d0807f728d593cd777a1bcae3e4e93f701875",
+    "dirty": true
+  },
+  "inputs": [],
+  "parameters": {
+    "alpha": 0.01,
+    "n_runs": 200,
+    "images_per_run": 3,
+    "plain": {
+      "name": "plain",
+      "nx": 800,
+      "ny": 400,
+      "pixel_um": 15.0,
+      "thickness_um": 675.0,
+      "diffusion_A_um2": 218.715,
+      "diffusion_b_per_um": 0.001015,
+      "noise_e": 0.12,
+      "exposure_days": 1.0,
+      "dark_e_per_pix_day": 0.0005,
+      "spurious_e_per_pix": 0.0,
+      "signal_e_per_pix": 0.0005,
+      "muon_flux_per_cm2_day": 0.0,
+      "highE_dru": 0.0,
+      "highE_keV": [
+        0.5,
+        10.0
+      ],
+      "halo_yield_per_e": 0.0,
+      "halo_length_um": 150.0,
+      "cti_h_prob": 0.0,
+      "cti_h_length_pix": 1.0,
+      "cti_v_prob": 0.0,
+      "cti_v_length_pix": 1.0,
+      "serial_hits_per_image": 0.0,
+      "serial_hit_electrons": [
+        4,
+        40
+      ],
+      "serial_hit_span_pix": [
+        5,
+        60
+      ],
+      "defect_seed": 0,
+      "n_hot_columns": 0,
+      "hot_column_e_per_pix": 0.0,
+      "n_hot_pixels": 0,
+      "hot_pixel_e": 0.0,
+      "lowE_clusters_per_image": 0.0,
+      "lowE_cluster_mean_events": 20.0,
+      "lowE_cluster_sigma_pix": 10.0
+    },
+    "bright": {
+      "name": "bright",
+      "nx": 800,
+      "ny": 400,
+      "pixel_um": 15.0,
+      "thickness_um": 675.0,
+      "diffusion_A_um2": 218.715,
+      "diffusion_b_per_um": 0.001015,
+      "noise_e": 0.12,
+      "exposure_days": 1.0,
+      "dark_e_per_pix_day": 0.0005,
+      "spurious_e_per_pix": 0.0,
+      "signal_e_per_pix": 0.0005,
+      "muon_flux_per_cm2_day": 0.0,
+      "highE_dru": 70000.0,
+      "highE_keV": [
+        2.0,
+        7.0
+      ],
+      "halo_yield_per_e": 0.0,
+      "halo_length_um": 150.0,
+      "cti_h_prob": 0.0,
+      "cti_h_length_pix": 1.0,
+      "cti_v_prob": 0.0,
+      "cti_v_length_pix": 1.0,
+      "serial_hits_per_image": 0.0,
+      "serial_hit_electrons": [
+        4,
+        40
+      ],
+      "serial_hit_span_pix": [
+        5,
+        60
+      ],
+      "defect_seed": 0,
+      "n_hot_columns": 0,
+      "hot_column_e_per_pix": 0.0,
+      "n_hot_pixels": 0,
+      "hot_pixel_e": 0.0,
+      "lowE_clusters_per_image": 0.0,
+      "lowE_cluster_mean_events": 20.0,
+      "lowE_cluster_sigma_pix": 10.0
+    }
+  },
+  "seed": 20260914,
+  "results": {
+    "hot_columns": 0.005,
+    "cti": 0.0,
+    "halo": 0.01,
+    "serial": 0.0,
+    "low_energy_clusters": 0.005
+  },
+  "notes": "",
+  "created": "2026-09-14T16:59:59+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

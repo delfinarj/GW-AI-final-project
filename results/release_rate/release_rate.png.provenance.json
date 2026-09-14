@@ -1,14 +1,14 @@
 {
   "output": "results/release_rate/release_rate.png",
-  "output_sha256": "32017dfc09a176ff1affbfd7501294dffe4bc92afeb0e150666b0f0f1cd48654",
+  "output_sha256": "ca8eeb1341858592960ded8befa9a2e147aff78d18738271f268ad9a7bab45bf",
   "script": "analysis/figure_release_rate.py",
   "git": {
-    "commit": "aaff1d0523eab1390b67c637d15b60644ea921ea",
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
     "dirty": false
   },
   "git_at_write": {
-    "commit": "aaff1d0523eab1390b67c637d15b60644ea921ea",
-    "dirty": false
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "dirty": true
   },
   "inputs": [
     {
@@ -20,7 +20,7 @@
   "seed": null,
   "results": {},
   "notes": "figure of R1",
-  "created": "2026-09-14T16:36:11+00:00",
+  "created": "2026-09-14T17:04:05+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

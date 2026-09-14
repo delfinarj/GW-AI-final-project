@@ -1,0 +1,30 @@
+{
+  "output": "results/compare_masks/relative_fom_summary.json",
+  "output_sha256": "bb73d39d0079ae73c9acaeca1ff8c38ec91ac6ac3b762bc37c3823270f2fb1a2",
+  "script": "analysis/figure_compare_masks.py",
+  "git": {
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "dirty": true
+  },
+  "git_at_write": {
+    "commit": "46570be17fb015062925927f4458787d3e55960d",
+    "dirty": true
+  },
+  "inputs": [
+    {
+      "path": "results/compare_masks/compare_masks.json",
+      "sha256": "e01d98b9a4d5564d060589a761262e6e0d7ca8002ffd77fdde4241891f9a5e6a"
+    }
+  ],
+  "parameters": {},
+  "seed": null,
+  "results": {},
+  "notes": "relative figure of merit, median and range over seeds",
+  "created": "2026-09-14T17:04:21+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}
