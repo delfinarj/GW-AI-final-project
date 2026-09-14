@@ -27,6 +27,11 @@ def git_state():
             "dirty": bool(run("status", "--porcelain", "--untracked-files=no"))}
 
 
+# The code that produces a result is the code present when the run starts. Capturing the state only
+# when the sidecar is written would record whatever was committed or edited during a long run.
+STATE_AT_START = git_state()
+
+
 def _relative(path):
     path = Path(path).resolve()
     try:
@@ -44,7 +49,8 @@ def write_sidecar(output, script, inputs=(), parameters=None, seed=None, results
         "output": _relative(output),
         "output_sha256": sha256(output) if Path(output).exists() else None,
         "script": _relative(script),
-        "git": git_state(),
+        "git": STATE_AT_START,
+        "git_at_write": git_state(),
         "inputs": [{"path": _relative(p), "sha256": sha256(p)} for p in inputs],
         "parameters": parameters or {},
         "seed": seed,

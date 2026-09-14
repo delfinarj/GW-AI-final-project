@@ -1,18 +1,64 @@
-# GW-AI final project
+# Sensor-independent pixel masks for Skipper-CCD images
 
 Final project for the course *Gravitational Waves and AI-Assisted Research*
 ([course repository](https://github.com/matiaszaldarriaga/GW-AI-course),
 [project brief](https://matiaszaldarriaga.github.io/GW-AI-course/final-project.html)).
 
-## Topic
+## The question
 
-Skipper-CCD images are routinely processed with masks that discard pixels: regions with
-poor readout, defects in the silicon, events from physics other than the one under study,
-among others.
+Skipper-CCD analyses discard pixels with masks, each aimed at one problem: deficient readout
+(charge-transfer inefficiency, serial-register hits), material defects (hot columns and pixels),
+and physics other than the one under study (halo around high-energy deposits, low-energy
+clusters, muon tracks).
 
-**Question:** can these masks be made efficient at targeting each of these problems
-without depending on the particular Skipper-CCD used?
+**Can each of these masks be made efficient at its own problem without depending on the
+particular Skipper-CCD it runs on?**
 
-## Status
+The working answer tested here: a mask stops depending on the sensor when it is a *procedure that
+calibrates itself from the images*, with thresholds set by a controlled false-positive rate or by
+measurable physical properties, instead of constants tuned by hand. See [`PLAN.md`](PLAN.md).
 
-Repository created. Context, data, environment and provenance records to follow.
+## How it is tested
+
+- A simulator ([`src/skmask/simulate.py`](src/skmask/simulate.py)) that records the origin of every
+  electron, run for three sensors built from public parameters
+  ([`src/skmask/presets.py`](src/skmask/presets.py)): deep underground, shallow underground, and a
+  surface laboratory.
+- Six masks, each in a fixed and an adaptive form ([`src/skmask/masks.py`](src/skmask/masks.py)).
+- The public SENSEI SNOLAB data release as a check against real images.
+
+## Reproduce everything
+
+```
+conda env create -f environment.yml
+conda activate skmask
+python scripts/fetch_public_data.py              # downloads and SHA-256-verifies the public data
+pytest                                           # simulator, events and masks, known answers
+python analysis/reproduce_release_rate.py        # R1
+python analysis/check_release_mask_bits.py       # R2
+python analysis/null_false_positive_rates.py     # R3 (about an hour)
+python analysis/compare_masks_across_sensors.py  # R4
+python analysis/figure_release_rate.py           # figure for R1
+```
+
+Every script writes its output under `results/` with a `.provenance.json` sidecar (script, git
+commit, inputs with hashes, parameters, seed). [`PROVENANCE.md`](PROVENANCE.md) lists every result
+with where it came from and how it was checked, including the errors the checks caught.
+
+## Layout
+
+| Path | What |
+|---|---|
+| `src/skmask/` | simulator, presets, thresholding and scoring (`events.py`), masks, public-data reader, provenance helper |
+| `tests/` | checks against answers derived independently of the code |
+| `analysis/` | one script per result |
+| `results/` | outputs and their provenance sidecars |
+| `scripts/` | data download |
+| `AGENTS.md` | instructions for agents working in this repository |
+
+## Data
+
+Only public data and simulations are used. `data/` is not versioned; the public release
+([sensei-skipper/DataReleases](https://github.com/sensei-skipper/DataReleases), CC-BY-4.0) is
+downloaded by `scripts/fetch_public_data.py`. Private material used for background reading never
+enters the repository.

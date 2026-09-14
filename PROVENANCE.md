@@ -151,6 +151,11 @@ only downstream with the set mean length, and serial hits confined to single row
   published 0.14 e-. File contents confirmed directly: tree `calPixTree` with branches `x`, `y`,
   `ePix`, `mask`, `ohdu`, `RUNID`, `LTANAME`; 14, 14, 14 and 13 images (0, 2, 6, 20 h), each
   3200 x 20 superpixels, one quadrant (`ohdu` 2).
+- **Second check:** the fitted exposure-independent density, about 7.2e-5 e-/superpix, agrees
+  with the published (6.94 +- 0.85) e-5 e-/superpix/image.
+- **Figure:** `results/release_rate/release_rate.png`, drawn by `analysis/figure_release_rate.py`
+  from the JSON above (no recomputation); inspected by eye: four densities on the fitted line, the
+  printed rate identical to the JSON.
 
 ### R2. Which bit of the public release's mask is which mask
 
