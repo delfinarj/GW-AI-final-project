@@ -34,6 +34,12 @@ def main():
     browser = find_browser()
     subprocess.run([browser, "--headless=new", "--disable-gpu", "--no-pdf-header-footer",
                     f"--print-to-pdf={pdf.resolve()}", html.resolve().as_uri()], check=True)
+
+    sys.path.insert(0, str(ROOT / "src"))
+    from skmask.provenance import write_sidecar
+
+    write_sidecar(pdf, __file__, inputs=[html], parameters={"browser": browser},
+                  notes="the report page printed to PDF; same document, no number retyped")
     print(f"wrote {pdf} with {browser}")
 
 

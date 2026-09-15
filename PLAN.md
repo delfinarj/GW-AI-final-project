@@ -74,7 +74,8 @@ sensors" is a configuration change:
 - backgrounds: muons (rate and angular distribution), high-energy electrons, halo 1e events
   around high-energy deposits, clustered low-energy events;
 - diffusion: sigma_xy(z) = sqrt(-A ln|1 - b z|), A = 218.715 um^2, b = 1.015e-3 /um
-  (SENSEI, arXiv:2004.11378), with z measured from the back of the sensor;
+  (SENSEI, arXiv:2004.11378), with z the depth from the collection surface, so charge created
+  at the back of the sensor diffuses most;
 - a uniform injected signal, to measure signal efficiency.
 
 Every simulated charge carries a **label of its origin**, so each mask's efficiency against each
@@ -125,6 +126,46 @@ Recorded here so the plan and the code do not disagree; the reasons are in `PROV
 - **Low-energy clusters:** a neighbour count against a Poisson expectation for the local valid area,
   at several radii, instead of the nearest-neighbour statistic with regional combination.
 - **R4 statistics:** five seeds, three seen during development and two held out.
+
+## Pre-registered summary (written 2026-09-15, before the masks were re-run)
+
+An earlier version of this project chose its headline statistic ("below half of the oracle") after
+seeing every seed, and an independent review showed the statistic was also misleading: three of the
+five cases it flagged were no worse than applying no mask at all. What the deliverables report is
+therefore fixed here, before the corrected code is run.
+
+Reference points, per sensor and mask:
+
+- **oracle**: the fixed mask whose constants maximise the figure of merit on the calibration stack
+  of the same sensor, using the simulator's truth;
+- **no mask**: the figure of merit of doing nothing, the level any mask must beat to be worth
+  applying;
+- **transplant**: the oracle constants of each other sensor;
+- **adaptive**: the self-calibrating form.
+
+Reported for every mask and sensor: figure of merit relative to the oracle (median and range over
+seeds) for the adaptive form, each transplant, and no mask; and the target events removed and clean
+pixels kept at each of those working points.
+
+Headline statements, computed by `analysis/build_report.py` from those numbers:
+
+1. **Harm**: the number of mask-sensor cases in which a transplanted fixed mask scores *below no
+   mask* (it damages the analysis rather than merely failing to help), and the worst such value;
+   the same count for the adaptive form.
+2. **Benefit**: the number of cases in which the adaptive form scores above no mask, and its worst
+   value relative to the oracle.
+3. **Cost of self-calibration**: the worst and median adaptive value relative to the oracle, and the
+   cases where the best transplant beats the adaptive form.
+4. All of the above repeated for the held-out seeds alone (20260920 and 20260921), which are run
+   once after the code is frozen and are never used to change anything. The seeds used while
+   developing are 20260915, 20260916 and 20260917.
+
+Sensors with fewer than 20 target events for a mask are marked "too few events to compare" and
+excluded from the counts (the deep-underground sensor has almost none for several masks).
+
+For R3 (false positives with the target absent): the per-image firing rate on the three presets with
+that defect switched off, with a two-sided test against alpha, so that a mask which is far more
+conservative than alpha is also visible.
 
 ## Schedule
 

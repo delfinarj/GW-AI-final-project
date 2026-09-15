@@ -1,117 +1,167 @@
 {
   "output": "results/null_false_positive_rates/null_rates.json",
-  "output_sha256": "2a8d757bafa7f90945bb2acd97b3af0ceb28c2913261b622e22fc46ec2f76d26",
+  "output_sha256": "c871d54a224600d00b36d9495ecd5654b1e7467c7d9f137b46162a5d35e2c2b8",
   "script": "analysis/null_false_positive_rates.py",
   "git": {
-    "commit": "26acd819c93b8ac89d80e70a75480d77e7755f77",
-    "dirty": false
+    "commit": "a08f552babd98fc26a91968972e84d882d37aa82",
+    "dirty": true
   },
   "git_at_write": {
-    "commit": "674d0807f728d593cd777a1bcae3e4e93f701875",
+    "commit": "a08f552babd98fc26a91968972e84d882d37aa82",
     "dirty": true
   },
   "inputs": [],
   "parameters": {
     "alpha": 0.01,
-    "n_runs": 200,
-    "images_per_run": 3,
-    "plain": {
-      "name": "plain",
-      "nx": 800,
-      "ny": 400,
-      "pixel_um": 15.0,
-      "thickness_um": 675.0,
-      "diffusion_A_um2": 218.715,
-      "diffusion_b_per_um": 0.001015,
-      "noise_e": 0.12,
-      "exposure_days": 1.0,
-      "dark_e_per_pix_day": 0.0005,
-      "spurious_e_per_pix": 0.0,
-      "signal_e_per_pix": 0.0005,
-      "muon_flux_per_cm2_day": 0.0,
-      "highE_dru": 0.0,
-      "highE_keV": [
-        0.5,
-        10.0
-      ],
-      "halo_yield_per_e": 0.0,
-      "halo_length_um": 150.0,
-      "cti_h_prob": 0.0,
-      "cti_h_length_pix": 1.0,
-      "cti_v_prob": 0.0,
-      "cti_v_length_pix": 1.0,
-      "serial_hits_per_image": 0.0,
-      "serial_hit_electrons": [
-        4,
-        40
-      ],
-      "serial_hit_span_pix": [
-        5,
-        60
-      ],
-      "defect_seed": 0,
+    "n_runs": 2,
+    "images_per_run": 2,
+    "defects_off": {
       "n_hot_columns": 0,
       "hot_column_e_per_pix": 0.0,
       "n_hot_pixels": 0,
       "hot_pixel_e": 0.0,
+      "cti_h_prob": 0.0,
+      "cti_v_prob": 0.0,
+      "serial_hits_per_image": 0.0,
       "lowE_clusters_per_image": 0.0,
-      "lowE_cluster_mean_events": 20.0,
-      "lowE_cluster_sigma_pix": 10.0
+      "halo_yield_per_e": 0.0
     },
-    "bright": {
-      "name": "bright",
-      "nx": 800,
-      "ny": 400,
-      "pixel_um": 15.0,
-      "thickness_um": 675.0,
-      "diffusion_A_um2": 218.715,
-      "diffusion_b_per_um": 0.001015,
-      "noise_e": 0.12,
-      "exposure_days": 1.0,
-      "dark_e_per_pix_day": 0.0005,
-      "spurious_e_per_pix": 0.0,
-      "signal_e_per_pix": 0.0005,
-      "muon_flux_per_cm2_day": 0.0,
-      "highE_dru": 70000.0,
-      "highE_keV": [
-        2.0,
-        7.0
-      ],
-      "halo_yield_per_e": 0.0,
-      "halo_length_um": 150.0,
-      "cti_h_prob": 0.0,
-      "cti_h_length_pix": 1.0,
-      "cti_v_prob": 0.0,
-      "cti_v_length_pix": 1.0,
-      "serial_hits_per_image": 0.0,
-      "serial_hit_electrons": [
-        4,
-        40
-      ],
-      "serial_hit_span_pix": [
-        5,
-        60
-      ],
-      "defect_seed": 0,
-      "n_hot_columns": 0,
-      "hot_column_e_per_pix": 0.0,
-      "n_hot_pixels": 0,
-      "hot_pixel_e": 0.0,
-      "lowE_clusters_per_image": 0.0,
-      "lowE_cluster_mean_events": 20.0,
-      "lowE_cluster_sigma_pix": 10.0
+    "presets": {
+      "deep_underground": {
+        "name": "deep_underground",
+        "nx": 3072,
+        "ny": 512,
+        "pixel_um": 15.0,
+        "thickness_um": 665.0,
+        "diffusion_A_um2": 218.715,
+        "diffusion_b_per_um": 0.001015,
+        "noise_e": 0.14,
+        "exposure_days": 0.8333333333333334,
+        "dark_e_per_pix_day": 1.39e-05,
+        "spurious_e_per_pix": 2.16875e-06,
+        "signal_e_per_pix": 0.0001,
+        "muon_flux_per_cm2_day": 2.85984e-05,
+        "highE_dru": 50.0,
+        "highE_keV": [
+          0.5,
+          10.0
+        ],
+        "halo_yield_per_e": 0.0,
+        "halo_length_um": 100.0,
+        "cti_h_prob": 0.0,
+        "cti_h_length_pix": 30.0,
+        "cti_v_prob": 0.0,
+        "cti_v_length_pix": 10.0,
+        "serial_hits_per_image": 0.0,
+        "serial_hit_electrons": [
+          4,
+          20
+        ],
+        "serial_hit_span_pix": [
+          5,
+          40
+        ],
+        "defect_seed": 0,
+        "n_hot_columns": 0,
+        "hot_column_e_per_pix": 0.0,
+        "n_hot_pixels": 0,
+        "hot_pixel_e": 0.0,
+        "lowE_clusters_per_image": 0.0,
+        "lowE_cluster_mean_events": 15.0,
+        "lowE_cluster_sigma_pix": 8.0
+      },
+      "shallow_underground": {
+        "name": "shallow_underground",
+        "nx": 3072,
+        "ny": 443,
+        "pixel_um": 15.0,
+        "thickness_um": 675.0,
+        "diffusion_A_um2": 218.715,
+        "diffusion_b_per_um": 0.001015,
+        "noise_e": 0.14,
+        "exposure_days": 0.8333333333333334,
+        "dark_e_per_pix_day": 0.0001594,
+        "spurious_e_per_pix": 0.0001664,
+        "signal_e_per_pix": 0.0001,
+        "muon_flux_per_cm2_day": 6.912000000000001,
+        "highE_dru": 3370.0,
+        "highE_keV": [
+          0.5,
+          10.0
+        ],
+        "halo_yield_per_e": 0.0,
+        "halo_length_um": 150.0,
+        "cti_h_prob": 0.0,
+        "cti_h_length_pix": 60.0,
+        "cti_v_prob": 0.0,
+        "cti_v_length_pix": 25.0,
+        "serial_hits_per_image": 0.0,
+        "serial_hit_electrons": [
+          4,
+          40
+        ],
+        "serial_hit_span_pix": [
+          5,
+          60
+        ],
+        "defect_seed": 0,
+        "n_hot_columns": 0,
+        "hot_column_e_per_pix": 0.0,
+        "n_hot_pixels": 0,
+        "hot_pixel_e": 0.0,
+        "lowE_clusters_per_image": 0.0,
+        "lowE_cluster_mean_events": 25.0,
+        "lowE_cluster_sigma_pix": 12.0
+      },
+      "surface_lab": {
+        "name": "surface_lab",
+        "nx": 1278,
+        "ny": 1058,
+        "pixel_um": 15.0,
+        "thickness_um": 725.0,
+        "diffusion_A_um2": 218.715,
+        "diffusion_b_per_um": 0.001015,
+        "noise_e": 0.17,
+        "exposure_days": 0.041666666666666664,
+        "dark_e_per_pix_day": 0.03,
+        "spurious_e_per_pix": 0.00084,
+        "signal_e_per_pix": 0.0001,
+        "muon_flux_per_cm2_day": 1440.0,
+        "highE_dru": 30000.0,
+        "highE_keV": [
+          0.5,
+          10.0
+        ],
+        "halo_yield_per_e": 0.0,
+        "halo_length_um": 250.0,
+        "cti_h_prob": 0.0,
+        "cti_h_length_pix": 100.0,
+        "cti_v_prob": 0.0,
+        "cti_v_length_pix": 40.0,
+        "serial_hits_per_image": 0.0,
+        "serial_hit_electrons": [
+          10,
+          80
+        ],
+        "serial_hit_span_pix": [
+          10,
+          100
+        ],
+        "defect_seed": 0,
+        "n_hot_columns": 0,
+        "hot_column_e_per_pix": 0.0,
+        "n_hot_pixels": 0,
+        "hot_pixel_e": 0.0,
+        "lowE_clusters_per_image": 0.0,
+        "lowE_cluster_mean_events": 30.0,
+        "lowE_cluster_sigma_pix": 20.0
+      }
     }
   },
-  "seed": 20260914,
-  "results": {
-    "hot_columns": 0.005,
-    "cti": 0.0,
-    "halo": 0.01,
-    "serial": 0.0,
-    "low_energy_clusters": 0.005
-  },
-  "notes": "",
-  "created": "2026-09-14T16:59:59+00:00",
+  "seed": 20260915,
+  "results": {},
+  "notes": "false-positive rates of the adaptive masks on the project's presets with every target defect switched off",
+  "created": "2026-09-15T14:38:27+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

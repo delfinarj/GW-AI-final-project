@@ -7,7 +7,19 @@ name = "skmask"
 version = "0.1.0"
 description = "Sensor-independent pixel masks for Skipper-CCD images, tested on a simulator with ground truth"
 requires-python = ">=3.10"
-dependencies = ["numpy", "scipy"]
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "matplotlib>=3.9",
+    "astropy>=6.0",
+    "uproot>=5.3",
+    "awkward>=2.6",
+    "pandas>=2.2",
+    "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

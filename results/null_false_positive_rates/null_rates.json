@@ -1,53 +1,196 @@
 {
-  "hot_columns": {
-    "fired": 1,
-    "runs": 200,
-    "rate": 0.005,
-    "ci95": [
-      0.00012658102786701836,
-      0.02754189845720562
-    ],
-    "consistent_with_alpha": true
-  },
-  "cti": {
-    "fired": 0,
-    "runs": 200,
-    "rate": 0.0,
-    "ci95": [
-      0.0,
-      0.018275340355136237
-    ],
-    "consistent_with_alpha": true
-  },
-  "halo": {
-    "fired": 2,
-    "runs": 200,
-    "rate": 0.01,
-    "ci95": [
-      0.001213349013736031,
-      0.035654668397239776
-    ],
-    "consistent_with_alpha": true
-  },
-  "serial": {
-    "fired": 0,
-    "runs": 200,
-    "rate": 0.0,
-    "ci95": [
-      0.0,
-      0.018275340355136237
-    ],
-    "consistent_with_alpha": true
-  },
-  "low_energy_clusters": {
-    "fired": 1,
-    "runs": 200,
-    "rate": 0.005,
-    "ci95": [
-      0.00012658102786701836,
-      0.02754189845720562
-    ],
-    "consistent_with_alpha": true
-  },
-  "halo_uncalibrated_runs": 0
+  "alpha": 0.01,
+  "n_runs": 2,
+  "images_per_run": 2,
+  "per_sensor": {
+    "deep_underground": {
+      "hot_columns": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "cti": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "halo": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 1,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.975
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "serial": {
+        "unit": "image",
+        "fired": 0,
+        "trials": 4,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.6023646356164746
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "low_energy_clusters": {
+        "unit": "image",
+        "fired": 0,
+        "trials": 4,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.6023646356164746
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "halo_uncalibrated_runs": 1
+    },
+    "shallow_underground": {
+      "hot_columns": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "cti": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "halo": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "serial": {
+        "unit": "image",
+        "fired": 0,
+        "trials": 4,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.6023646356164746
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "low_energy_clusters": {
+        "unit": "image",
+        "fired": 0,
+        "trials": 4,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.6023646356164746
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "halo_uncalibrated_runs": 0
+    },
+    "surface_lab": {
+      "hot_columns": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "cti": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "halo": {
+        "unit": "run",
+        "fired": 0,
+        "trials": 2,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.841886116991581
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "serial": {
+        "unit": "image",
+        "fired": 0,
+        "trials": 4,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.6023646356164746
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "low_energy_clusters": {
+        "unit": "image",
+        "fired": 0,
+        "trials": 4,
+        "rate": 0.0,
+        "ci95": [
+          0.0,
+          0.6023646356164746
+        ],
+        "contains_alpha": true,
+        "below_alpha": false
+      },
+      "halo_uncalibrated_runs": 0
+    }
+  }
 }

@@ -30,23 +30,27 @@ measurable physical properties, instead of constants tuned by hand. See [`PLAN.m
 ## Reproduce everything
 
 ```
-conda env create -f environment.yml
-conda activate skmask
-python scripts/fetch_public_data.py              # downloads and SHA-256-verifies the public data
-pytest                                           # simulator, events and masks, known answers
-python analysis/reproduce_release_rate.py        # R1
-python analysis/check_release_mask_bits.py       # R2
-python analysis/null_false_positive_rates.py     # R3 (about an hour)
-# R4: three seeds seen during development and two held out (about 15 min each)
-for seed in 20260915 20260916 20260917 20260918 20260919; do
-  python analysis/compare_masks_across_sensors.py 4 --seed $seed --out results/compare_masks/seed_$seed
+# environment: uv installs the exact versions in uv.lock, in seconds and without a solver
+uv sync --group dev
+uv run python scripts/fetch_public_data.py       # downloads and SHA-256-verifies the public data
+uv run pytest                                    # simulator, estimation, events and masks
+uv run python analysis/reproduce_release_rate.py        # R1
+uv run python analysis/check_release_mask_bits.py       # R2
+uv run python analysis/null_false_positive_rates.py 50  # R3 (about 40 min)
+# R4: three seeds used while developing and two run once after the code was frozen
+for seed in 20260915 20260916 20260917 20260920 20260921; do
+  uv run python analysis/compare_masks_across_sensors.py 4 --seed $seed       --out results/compare_masks/seed_$seed
 done
-python analysis/figure_release_rate.py           # figures
-python analysis/figure_null_rates.py
-python analysis/figure_compare_masks.py
-python analysis/build_report.py                  # report/index.html, every number read from results/
-python scripts/make_pdf.py                       # report/report.pdf (needs Chrome, Chromium or Edge)
+uv run python analysis/figure_release_rate.py           # figures
+uv run python analysis/figure_null_rates.py
+uv run python analysis/figure_compare_masks.py
+uv run python analysis/build_report.py                  # report/index.html, numbers read from results/
+uv run python scripts/make_pdf.py                       # report/report.pdf (needs Chrome, Chromium or Edge)
+uv run python scripts/compare_results.py <a reference results/> results  # optional: compare with committed numbers
 ```
+
+Without uv, `environment.yml` builds the same environment with conda (slower, and conda resolves
+versions itself, so small numerical differences are possible).
 
 The presented page is [`report/index.html`](report/index.html) and the PDF
 [`report/report.pdf`](report/report.pdf).

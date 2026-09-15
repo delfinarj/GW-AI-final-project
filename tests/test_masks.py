@@ -6,14 +6,15 @@ Injection test: with the defect present, it must remove most of what the defect 
 import numpy as np
 
 from skmask import masks as M
-from skmask.events import score_mask, to_electrons
+from skmask.estimate import electrons_from_image
+from skmask.events import score_mask
 from skmask.simulate import Sensor, diffusion_sigma_um, simulate
 
 BASE = dict(noise_e=0.12, exposure_days=1.0, dark_e_per_pix_day=5e-4, signal_e_per_pix=5e-4)
 
 
 def electrons_of(image):
-    return to_electrons(image.measured, image.sensor.noise_e, image.total.mean())
+    return electrons_from_image(image.measured)[0]
 
 
 def stack(sensor, n, seed):
@@ -172,7 +173,7 @@ def test_halo_calibrates_without_a_far_field():
     stack_e = []
     for _ in range(2):
         image = simulate(sensor, rng)
-        e = to_electrons(image.measured, sensor.noise_e, image.total.mean())
+        e = electrons_from_image(image.measured)[0]
         trigger = np.zeros(e.shape, dtype=bool)
         trigger[30::60, 30::60] = True
         e[trigger] = 100

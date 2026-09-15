@@ -77,9 +77,12 @@ Choices with a defensible alternative:
    Alternatives: false-discovery-rate control; a likelihood-ratio scan.
 4. CTI length uses the downstream-over-upstream excess (binomial test), so symmetric sources
    (halo, dark current, signal) cancel without being modelled.
-5. The halo radius is calibrated against a far field more than `max_radius` from every trigger;
-   with fewer than 10 000 far-field pixels the procedure reports `calibrated = False` and returns
-   the maximum radius instead of a number it cannot justify.
+5. The halo radius compares each annulus with everything outside it pooled (annuli farther out
+   plus any far field), and within the annuli that are significant it maximises a figure of merit
+   estimated from the data, so the exposure a larger radius costs is weighed. With no outside pool
+   of at least 10 000 valid pixels the procedure reports `calibrated = False` and returns 0, leaving
+   the decision to the caller. (Both parts replaced earlier behaviour that failed: see the fixes
+   recorded further down.)
 6. The muon mask uses only physical properties of the sensor (thickness, pixel size, back-surface
    diffusion) and the minimum-ionising charge per length; tolerance factor 2 on the charge.
 
@@ -229,6 +232,31 @@ marker shape, and every figure has a legend or a single labelled series.
   Limitation: 200 runs cannot distinguish 0.01 from 0.03; the muon mask is not included because it
   has no false-positive parameter (it is tested against point-like deposits in `tests/test_masks.py`).
 
+### Redesign of R3 and R4 after the independent review (2026-09-15)
+
+The review (recorded in full below) showed three problems that the old R3 and R4 could not answer,
+so both were rewritten and re-run; the numbers produced before this date are not used anywhere.
+
+- **R3 ran on toy sensors and tested one side.** It now runs on the three presets of the project
+  with every target defect switched off (hot columns and pixels, charge-transfer trails,
+  serial-register hits, low-energy clusters, halo) while keeping dark current, spurious charge, the
+  injected signal, muon tracks and high-energy deposits, so one simulation serves all five masks.
+  It reports the rate per run for the stack-calibrated masks and per image for the others, and the
+  check is two-sided: the 95 % interval must contain alpha, and an interval entirely below alpha is
+  reported as "more conservative than alpha". 50 runs of 2 images, chosen for run time; the
+  intervals are wide and the page says so.
+- **The oracle grids were too narrow**, so "the best a hand-tuned mask can do" was not established:
+  the optimum sat on the edge of the grid in charge-transfer trails, muons and low-energy clusters.
+  All six grids were widened (the sidecar of each run lists them).
+- **The headline measured the wrong thing.** A transplanted mask scoring below the oracle may simply
+  be doing nothing useful. R4 now also evaluates NO MASK for every sensor and mask, and the page
+  distinguishes a transplant that *harms* (scores below no mask) from one that merely does not help.
+  Masks with fewer than 20 target events are excluded from the counts, which removes the
+  deep-underground sensor from most comparisons; its oracle was an arbitrary tie-break.
+- **The summary statistics are now pre-registered** in `PLAN.md`, written before the corrected code
+  was run, and the held-out seeds (20260920, 20260921) are run once afterwards and never used to
+  change anything.
+
 ### R4. The masks across sensors: oracle, transplant, adaptive
 
 - **Outputs:** `results/compare_masks/compare_masks.json` (seed 20260915) and
@@ -274,6 +302,20 @@ marker shape, and every figure has a legend or a single labelled series.
   the R3 halo rate is an upper bound for the current code. A unit test with
   dense triggers and a faint extended excess checks that the chosen radius is below the
   significance radius and masks less than half the image.
+- **Truth leaking into the "adaptive" masks, found by an independent review (2026-09-15).** The
+  pixel threshold was placed with `image.total.mean()`, the simulator's true mean charge, in the two
+  analysis scripts, in `events.score_mask` and in the tests. That is not measurable on real data, and
+  where tracks carry most of the charge it is also wrong: on the surface preset the mean is ~14
+  e/pix, the density saturates at its cap and the threshold collapses to 0.50 e, so read noise alone
+  produced ~1750 spurious single-electron events per image, which then fed the halo, low-energy
+  cluster, serial and hot-column calibrations. Fix: `src/skmask/estimate.py` fits the noise and the
+  single-electron density to the charge histogram of the image itself (two Gaussians at 0 and 1 e,
+  binned Poisson likelihood), the same measurement the public SENSEI macro makes; every call site now
+  uses it. Checks in `tests/test_estimate.py`: known noise and density recovered from synthetic
+  images, unaffected by a track carrying thousands of electrons, and on a surface image the fitted
+  density agrees with the true fraction of single-electron pixels while the threshold lands between
+  0.55 and 0.85 e instead of 0.50.
+  **This invalidates the R3 and R4 numbers produced before it; both are re-run.**
 - **Guarding against fitting the method to the seeds it was debugged on:** seeds 20260915-17 were
   seen during development. After the fix all three are re-run, and two further seeds, 20260918 and
   20260919, are run once, with no change to the code in between, and reported separately.

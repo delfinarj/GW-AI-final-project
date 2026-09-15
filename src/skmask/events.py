@@ -77,9 +77,8 @@ def score_mask(mask, image, electrons=None):
     current and signal, including empty ones); and the signal efficiency.
     """
     if electrons is None:
-        # the true density is used only to place the threshold for scoring; masks never see it
-        density = image.total.mean()
-        electrons = to_electrons(image.measured, image.sensor.noise_e, density)
+        from .estimate import electrons_from_image
+        electrons, _ = electrons_from_image(image.measured)
     events = single_electron_events(electrons)
     origin = pixel_origin(image.charge)
     result = {"per_origin": {}}

@@ -2,9 +2,11 @@
 
 Reads every results/compare_masks/**/compare_masks.json (one per independent seed). Small multiples,
 one panel per sensor, one row per mask (and the six combined). The oracle is the reference line at 1.
-Within a row each series is offset vertically so no marker hides another: blue circles are the
+Within a row the series are offset vertically so no marker hides another: blue circles are the
 adaptive masks, orange markers the fixed masks transplanted from each of the other two sensors
-(marker shape names the source). Markers are the median over seeds, whiskers the min-max range.
+(marker shape names the source), and a grey tick is the figure of merit of applying no mask at all,
+the level any mask must beat to be worth using. Markers are the median over seeds, whiskers the
+min-max range.
 
 Run:  python analysis/figure_compare_masks.py
 """
@@ -33,16 +35,19 @@ SIZES = {"^": 7, "s": 6, "D": 5.5}
 def relative(rows, preset, mask, label):
     oracle_key = "oracle" if mask != "all" else f"fixed_tuned_on_{preset}"
     oracle = rows[mask][oracle_key]["fom"]
-    return rows[mask][label]["fom"] / oracle if oracle > 0 else np.nan
+    if label not in rows[mask] or oracle <= 0:
+        return np.nan
+    return rows[mask][label]["fom"] / oracle
 
 
-def series_labels(preset, mask, presets):
-    """(key in the JSON, colour, marker shape, legend name) for every series of one row."""
-    out = [("adaptive", ps.SERIES[0], "o", "adaptive")]
-    for source in presets:
-        if source != preset:
-            key = f"transplant_from_{source}" if mask != "all" else f"fixed_tuned_on_{source}"
-            out.append((key, ps.SERIES[1], SHAPES[source], source))
+def series_of(preset, mask, presets):
+    """(json key, colour, marker, legend name, offset) for every series of one row."""
+    out = [("adaptive", ps.SERIES[0], "o", "adaptive", -0.24),
+           ("no_mask", ps.MUTED, "|", "no mask", 0.24)]
+    offsets = [-0.08, 0.08]
+    for source, dy in zip([s for s in presets if s != preset], offsets):
+        key = f"transplant_from_{source}" if mask != "all" else f"fixed_tuned_on_{source}"
+        out.append((key, ps.SERIES[1], SHAPES[source], source, dy))
     return out
 
 
@@ -52,19 +57,20 @@ def main():
     runs = [json.loads(p.read_text(encoding="utf-8"))["per_sensor"] for p in inputs]
     presets = [p for p in SENSORS if p in runs[0]]
     masks = list(MASKS)
-    fig, axes = plt.subplots(1, len(presets), figsize=(9.6, 4.2), sharey=True, sharex=True,
+    fig, axes = plt.subplots(1, len(presets), figsize=(9.6, 4.4), sharey=True, sharex=True,
                              constrained_layout=True)
-    offsets = [-0.22, 0.0, 0.22]
     summary = {}
     for ax, preset in zip(axes, presets):
         ax.axvline(1.0, color=ps.INK_SECONDARY, linewidth=1)
         for i, mask in enumerate(masks):
-            for (key, color, shape, name), dy in zip(series_labels(preset, mask, presets), offsets):
+            for key, colour, shape, name, dy in series_of(preset, mask, presets):
                 values = np.array([relative(run[preset], preset, mask, key) for run in runs])
+                if np.all(np.isnan(values)):
+                    continue
                 y = i + dy
                 if len(values) > 1:
-                    ax.plot([np.nanmin(values), np.nanmax(values)], [y, y], color=color, linewidth=2)
-                ax.plot([np.nanmedian(values)], [y], **ps.marker(color, shape, SIZES.get(shape, 7)))
+                    ax.plot([np.nanmin(values), np.nanmax(values)], [y, y], color=colour, linewidth=2)
+                ax.plot([np.nanmedian(values)], [y], **ps.marker(colour, shape, SIZES.get(shape, 7)))
                 summary[f"{preset}/{mask}/{name}"] = {"median": float(np.nanmedian(values)),
                                                       "min": float(np.nanmin(values)),
                                                       "max": float(np.nanmax(values))}
@@ -79,10 +85,12 @@ def main():
     handles = [Line2D([], [], **ps.marker(ps.SERIES[0], "o", 7), label="adaptive (no truth, no retuning)")]
     handles += [Line2D([], [], **ps.marker(ps.SERIES[1], SHAPES[s], SIZES[SHAPES[s]]),
                        label=f"fixed, tuned on {SENSORS[s]}") for s in presets]
-    fig.legend(handles=handles, loc="outside upper center", ncols=4, fontsize=8)
+    handles += [Line2D([], [], **ps.marker(ps.MUTED, "|", 7), label="no mask at all")]
+    fig.legend(handles=handles, loc="outside upper center", ncols=3, fontsize=8)
     fig.savefig(OUTPUT, dpi=200)
     summary_path = RESULTS / "relative_fom_summary.json"
-    summary_path.write_text(json.dumps({"n_seeds": len(runs), "inputs": [str(p.relative_to(ROOT)) for p in inputs],
+    summary_path.write_text(json.dumps({"n_seeds": len(runs),
+                                        "inputs": [p.relative_to(ROOT).as_posix() for p in inputs],
                                         "relative_fom": summary}, indent=2), encoding="utf-8")
     write_sidecar(OUTPUT, __file__, inputs=inputs, notes=f"figure of R4 over {len(runs)} seeds")
     write_sidecar(summary_path, __file__, inputs=inputs, notes="relative figure of merit, median and range over seeds")

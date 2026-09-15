@@ -62,52 +62,91 @@ def main():
     rate = load(RES / "release_rate" / "release_rate.json")
     bits = load(RES / "release_mask_bits" / "mask_bit_signatures.json")
     null = load(RES / "null_false_positive_rates" / "null_rates.json")
-    summary = load(RES / "compare_masks" / "relative_fom_summary.json")
     seed_files = sorted((RES / "compare_masks").glob("**/compare_masks.json"))
     seeds = [load(p) for p in seed_files]
-    rel = summary["relative_fom"]
-    n_seeds = summary["n_seeds"]
-
-    # Seeds run only after the last change to the code, never looked at during development.
-    holdout_seeds = {"seed_20260918", "seed_20260919"}
-    holdout = [(p, run) for p, run in zip(seed_files, seeds) if p.parent.name in holdout_seeds]
-
-    def worst_relative(runs, adaptive_only):
-        worst = (np.inf, None)
-        for _, run in runs:
-            for sensor, rows in run["per_sensor"].items():
-                for mask, forms in rows.items():
-                    if mask == "all":
-                        continue
-                    oracle = forms["oracle"]["fom"]
-                    for label, r in forms.items():
-                        if label == "oracle" or (label == "adaptive") != adaptive_only or oracle <= 0:
-                            continue
-                        value = r["fom"] / oracle
-                        if value < worst[0]:
-                            worst = (value, f"{sensor}/{mask}/{label}")
-        return worst
-
-    holdout_adaptive = worst_relative(holdout, True) if holdout else None
-    holdout_transplant = worst_relative(holdout, False) if holdout else None
+    n_seeds = len(seeds)
+    # Seeds run once after the code was frozen, never used to change anything (see PLAN.md).
+    holdout_names = {"seed_20260920", "seed_20260921"}
+    holdout_idx = [i for i, f in enumerate(seed_files) if f.parent.name in holdout_names]
+    MIN_TARGET = 20      # pre-registered: fewer target events than this is "too few to compare"
 
     for src in (RES / "release_rate" / "release_rate.png", RES / "null_false_positive_rates" / "null_rates.png",
                 RES / "compare_masks" / "compare_masks.png"):
         shutil.copy2(src, FIG / src.name)
 
-    # ---------------- computed statements for R4
-    per_mask = {k: v for k, v in rel.items() if not k.endswith("/all/adaptive") and "/all/" not in k}
-    adaptive = {k: v for k, v in per_mask.items() if k.endswith("/adaptive")}
-    transplant = {k: v for k, v in per_mask.items() if not k.endswith("/adaptive")}
-    worst_adaptive_key = min(adaptive, key=lambda k: adaptive[k]["min"])
-    worst_transplant_key = min(transplant, key=lambda k: transplant[k]["min"])
-    n_transplant_below_half = sum(v["min"] < 0.5 for v in transplant.values())
-    n_adaptive_below_half = sum(v["min"] < 0.5 for v in adaptive.values())
+    def collect(indices):
+        """{(sensor, mask): {"target": [...], "series": {name: [figure of merit / oracle, per seed]}}}"""
+        out = {}
+        for i in indices:
+            for sensor, masks in seeds[i]["per_sensor"].items():
+                for mask, forms in masks.items():
+                    oracle_key = "oracle" if mask != "all" else f"fixed_tuned_on_{sensor}"
+                    oracle = forms[oracle_key]["fom"]
+                    entry = out.setdefault((sensor, mask), {"target": [], "series": {}})
+                    entry["target"].append(forms[oracle_key]["target"])
+                    for label, r in forms.items():
+                        if label == oracle_key:
+                            name = "oracle"
+                        elif label in ("adaptive", "no_mask"):
+                            name = label
+                        else:
+                            name = label.replace("transplant_from_", "").replace("fixed_tuned_on_", "")
+                        value = r["fom"] / oracle if oracle > 0 else float("nan")
+                        entry["series"].setdefault(name, []).append(value)
+        return out
+
+    def summarise(indices):
+        """The statements pre-registered in PLAN.md, from medians over the given seeds."""
+        data = collect(indices)
+        comparable = {k: v for k, v in data.items()
+                      if k[1] != "all" and np.median(v["target"]) >= MIN_TARGET}
+        harm, no_help, adaptive_harm, beats_adaptive, adaptive_values = [], [], [], [], {}
+        for (sensor, mask), v in comparable.items():
+            med = {name: float(np.median(values)) for name, values in v["series"].items()}
+            nm = med["no_mask"]
+            adaptive_values[(sensor, mask)] = med["adaptive"]
+            if med["adaptive"] < nm:
+                adaptive_harm.append(((sensor, mask, "adaptive"), med["adaptive"], nm))
+            sources = {s: m for s, m in med.items() if s not in ("adaptive", "no_mask", "oracle")}
+            for source, value in sources.items():
+                row = ((sensor, mask, source), value, nm)
+                if value < nm:
+                    harm.append(row)
+                elif value <= nm * 1.001:
+                    no_help.append(row)
+            if sources and max(sources.values()) > med["adaptive"]:
+                best = max(sources, key=sources.get)
+                beats_adaptive.append(((sensor, mask, best), sources[best], med["adaptive"]))
+        worst_adaptive = min(adaptive_values.items(), key=lambda kv: kv[1]) if adaptive_values else None
+        return {"data": data, "comparable": comparable, "n_cases": len(comparable),
+                "n_transplant": sum(len([s for s in v["series"] if s not in ("adaptive", "no_mask", "oracle")])
+                                    for v in comparable.values()),
+                "harm": harm, "no_help": no_help, "adaptive_harm": adaptive_harm,
+                "beats_adaptive": beats_adaptive,
+                "worst_harm": min(harm, key=lambda r: r[1]) if harm else None,
+                "worst_adaptive": worst_adaptive,
+                "median_adaptive": float(np.median(list(adaptive_values.values()))) if adaptive_values else float("nan")}
+
+    overall = summarise(list(range(n_seeds)))
+    held = summarise(holdout_idx) if holdout_idx else None
 
     def describe(key):
-        sensor, mask, series = key.split("/")
+        sensor, mask, series = key
         who = "adaptive" if series == "adaptive" else f"tuned on {SENSOR_NAMES[series].lower()}"
         return f"{MASK_NAMES[mask].lower()} on the {SENSOR_NAMES[sensor].lower()} sensor ({who})"
+
+    worst_harm_text = ("" if not overall["harm"] else
+                       f"The worst was {describe(overall['worst_harm'][0])}, at "
+                       f"{overall['worst_harm'][1]:.2f} of the oracle where doing nothing scores "
+                       f"{overall['worst_harm'][2]:.2f}.")
+    worst_adaptive_text = ("" if overall["worst_adaptive"] is None else
+                           f"{overall['worst_adaptive'][1]:.2f} "
+                           f"({describe((*overall['worst_adaptive'][0], 'adaptive'))})")
+    held_text = ("" if held is None else
+                 f"<p>On the {len(holdout_idx)} seeds run once after the code was frozen and never used to change "
+                 f"anything: {len(held['harm'])} of {held['n_transplant']} transplanted cases worse than no mask, "
+                 f"{len(held['adaptive_harm'])} of {held['n_cases']} adaptive ones, and a median adaptive "
+                 f"{held['median_adaptive']:.2f} of the oracle.</p>")
 
     # ---------------- tables
     sensor_rows = []
@@ -118,23 +157,41 @@ def main():
             f"{s.muon_flux_per_cm2_day:.2g}", f"{s.highE_dru:.3g}",
             f"{s.halo_length_um:.0f} / {s.cti_h_length_pix:.0f} / {s.n_hot_columns}"])
 
-    null_rows = [[NULL_NAMES[k], f"{v['fired']} / {v['runs']}", f"{v['rate']:.3f}",
-                  f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]",
-                  "yes" if v["consistent_with_alpha"] else "<strong>no</strong>"]
-                 for k, v in null.items() if isinstance(v, dict)]
+    null_rows = []
+    for sensor, masks in null["per_sensor"].items():
+        for mask, v in masks.items():
+            if not isinstance(v, dict) or not v["trials"]:
+                continue
+            verdict = ("contains &alpha;" if v["contains_alpha"] else
+                       ("below &alpha; (more conservative)" if v["below_alpha"] else "<strong>above &alpha;</strong>"))
+            null_rows.append([SENSOR_NAMES[sensor], NULL_NAMES[mask], f"per {v['unit']}",
+                              f"{v['fired']} / {v['trials']}", f"{v['rate']:.3f}",
+                              f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]", verdict])
 
     fom_rows = []
     for sensor in SENSOR_NAMES:
         for mask in MASK_NAMES:
-            cells = [SENSOR_NAMES[sensor], MASK_NAMES[mask]]
-            for series in ["adaptive", *SENSOR_NAMES]:
-                if series == sensor:
-                    cells.append("<span class='range'>oracle = 1</span>")
-                    continue
-                v = rel.get(f"{sensor}/{mask}/{series}")
-                cells.append("&ndash;" if v is None else
-                             f"{v['median']:.2f}" + (f" <span class='range'>({v['min']:.2f}&ndash;{v['max']:.2f})</span>"
-                                                     if n_seeds > 1 else ""))
+            entry = overall["data"].get((sensor, mask))
+            if entry is None:
+                continue
+            med = {name: float(np.median(v)) for name, v in entry["series"].items()}
+            spread = {name: (float(np.min(v)), float(np.max(v))) for name, v in entry["series"].items()}
+            target = float(np.median(entry["target"]))
+
+            def cell(name):
+                if name not in med:
+                    return "&ndash;"
+                text = f"{med[name]:.2f}"
+                if n_seeds > 1:
+                    text += f" <span class='range'>({spread[name][0]:.2f}&ndash;{spread[name][1]:.2f})</span>"
+                return text
+
+            few = (target < MIN_TARGET) and mask != "all"
+            cells = [SENSOR_NAMES[sensor], MASK_NAMES[mask],
+                     f"{target:.0f}" + (" <span class='range'>too few to compare</span>" if few else ""),
+                     cell("no_mask"), cell("adaptive")]
+            for source in SENSOR_NAMES:
+                cells.append("<span class='range'>oracle = 1</span>" if source == sensor else cell(source))
             fom_rows.append(cells)
 
     calib_rows = []
@@ -234,15 +291,17 @@ a {{ color: var(--accent); }}
 </header>
 
 <div class="answer">
-<p><strong>Short answer, from simulations of three different sensors ({n_seeds} independent seed{'s' if n_seeds > 1 else ''}).</strong>
-Masks tuned by hand on one sensor and moved unchanged to another fell below half of the best achievable figure of merit
-in {n_transplant_below_half} of {len(transplant)} mask&ndash;sensor cases; the worst was {describe(worst_transplant_key)},
-at {transplant[worst_transplant_key]['min']:.2f}.
-The same masks written as procedures that calibrate themselves from the images never did
-({n_adaptive_below_half} of {len(adaptive)} cases below half); their worst case was {describe(worst_adaptive_key)},
-at {adaptive[worst_adaptive_key]['min']:.2f}.</p>
-<p>On sensors without the defect they target, they fired at the false-positive rate they were built for.</p>
-{"" if not holdout else f"<p>On the {len(holdout)} seeds run only after the last code change (never used while developing the masks), the worst adaptive case was {holdout_adaptive[0]:.2f} of the oracle and the worst transplanted case {holdout_transplant[0]:.2f}.</p>"}
+<p><strong>Short answer, from simulations of three different sensors ({n_seeds} independent seeds).</strong>
+Of the {overall["n_transplant"]} cases in which a mask tuned by hand on one sensor was moved unchanged to another,
+{len(overall["harm"])} ended up <em>worse than applying no mask at all</em> and {len(overall["no_help"])} were no better
+than no mask. {worst_harm_text}</p>
+<p>The same masks written as procedures that calibrate themselves were never worse than no mask
+({len(overall["adaptive_harm"])} of {overall["n_cases"]} cases), with a median {overall["median_adaptive"]:.2f} of the
+oracle tuned with truth on that same sensor and a worst case of {worst_adaptive_text}. Self-calibration does cost
+something against a mask tuned for the sensor at hand: the best transplanted mask beat it in
+{len(overall["beats_adaptive"])} cases.</p>
+<p>On sensors without the defect they target, the adaptive masks fired at the rate they were built for.</p>
+{held_text}
 </div>
 
 <h2>The question</h2>
@@ -281,11 +340,15 @@ order was checked against them. The noisy-row bit never appears in the active ar
 {table(["Bit", "Name (hypothesis)", "Fraction in whole columns", "Bright pixel upstream / only downstream", "Median distance to &gt;100 e (px)"], bit_rows)}
 </details>
 
-<h2>Result 1 &middot; The adaptive masks fire at the rate they were built for</h2>
-<p>{null['hot_columns']['runs']} independent runs of sensors without any defect. A mask &ldquo;fires&rdquo; if it flags anything at all in a run.</p>
-{figure("null_rates.png", "Fraction of defect-free runs in which each adaptive mask fired, with 95 percent intervals, all containing alpha equal to 0.01.",
-        "Each interval is a Clopper&ndash;Pearson 95 % interval; the vertical line is &alpha; = 0.01.")}
-{table(["Adaptive mask", "Fired / runs", "Rate", "95 % interval", "Consistent with &alpha;"], null_rows)}
+<h2>Result 1 &middot; How often the adaptive masks fire when there is nothing to find</h2>
+<p>{null['n_runs']} independent runs of each of the three sensors with every defect the masks look for switched
+off, keeping what a real sensor cannot switch off: dark current, spurious charge, the injected signal, muon tracks
+and high-energy deposits. The stack-calibrated masks decide once per run of {null['images_per_run']} images; the
+others decide per image. The test is two-sided, so a mask that is far <em>more</em> conservative than &alpha; is
+visible as well.</p>
+{figure("null_rates.png", "For each sensor and mask, the fraction of trials without the defect in which the mask fired, with 95 percent intervals, against alpha equal to 0.01.",
+        "Clopper&ndash;Pearson 95 % intervals; the vertical line is &alpha; = 0.01. Intervals are wide because 50 runs cannot resolve 0.01 from 0.03.")}
+{table(["Sensor", "Adaptive mask", "Unit", "Fired / trials", "Rate", "95 % interval", "Against &alpha;"], null_rows)}
 
 <h2>Result 2 &middot; Transplanted constants can fail badly; self-calibration does not</h2>
 <div class="wide">
@@ -293,7 +356,7 @@ order was checked against them. The noisy-row bit never appears in the active ar
         f"Figure of merit relative to the oracle tuned with truth on the same sensor (vertical line). Markers are medians over {n_seeds} seed{'s' if n_seeds > 1 else ''}"
         + (", whiskers the range" if n_seeds > 1 else "") + ". The deep-underground sensor has few target events, so every version sits near 1 there.")}
 </div>
-{table(["Evaluated on", "Mask", "Adaptive", "Fixed, tuned on deep", "Fixed, tuned on shallow", "Fixed, tuned on surface"], fom_rows)}
+{table(["Evaluated on", "Mask", "Target events", "No mask", "Adaptive", "Fixed, tuned on deep", "Fixed, tuned on shallow", "Fixed, tuned on surface"], fom_rows)}
 <p class="meta">Figure of merit relative to the oracle of the sensor in the first column{"; median, with the range over seeds in brackets" if n_seeds > 1 else ""}.</p>
 <details><summary>What the adaptive masks measured on each sensor</summary>
 {table(["Sensor", "Seed", "Trail length h / v (px)", "Halo radius (px)", "Halo calibrated", "Hot columns found", "Hot columns simulated"], calib_rows)}
@@ -342,8 +405,7 @@ python scripts/make_pdf.py</code></pre>
     output = OUT / "index.html"
     output.write_text(page, encoding="utf-8")
     inputs = [RES / "release_rate" / "release_rate.json", RES / "release_mask_bits" / "mask_bit_signatures.json",
-              RES / "null_false_positive_rates" / "null_rates.json", RES / "compare_masks" / "relative_fom_summary.json",
-              *seed_files]
+              RES / "null_false_positive_rates" / "null_rates.json", *seed_files]
     write_sidecar(output, __file__, inputs=inputs, notes="presented page; every number read from the inputs")
     print(f"wrote {output} ({n_seeds} R4 seeds)")
 

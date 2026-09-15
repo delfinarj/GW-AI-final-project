@@ -13,6 +13,10 @@ injected signal events and B the surviving single-electron events of the mask's 
 (pixels of muon origin for the muon mask). It rewards removing the target while keeping exposure,
 and it is the significance of a uniform signal over that background.
 
+A fourth form, NO MASK, is evaluated as well: the figure of merit of doing nothing. It is the level
+any mask must beat to be worth applying, and it separates "this transplanted mask does harm" from
+"this transplanted mask simply does not help".
+
 Reported per sensor, per mask, per form: target removed, clean pixels kept, signal efficiency, FoM;
 and the same for the six masks combined.
 
@@ -27,7 +31,8 @@ from pathlib import Path
 import numpy as np
 
 from skmask import masks as M
-from skmask.events import clusters, pixel_origin, single_electron_events, to_electrons
+from skmask.estimate import electrons_from_image
+from skmask.events import clusters, pixel_origin, single_electron_events
 from skmask.presets import PRESETS
 from skmask.provenance import write_sidecar
 from skmask.simulate import diffusion_sigma_um, simulate
@@ -40,13 +45,16 @@ TARGETS = {"hot": ("hot_column", "hot_pixel"), "cti": ("cti",), "halo": ("halo",
            "serial": ("serial",), "lec": ("lowE_cluster",), "muon": ("muon",)}
 
 GRIDS = {
-    "hot": [dict(factor=f, min_images=m) for f, m in itertools.product([1.5, 2, 3, 5, 8, 12], [2, 3, 4, 99])],
-    "cti": [dict(length_h=h, length_v=v) for h, v in itertools.product([0, 10, 25, 50, 100, 200], [0, 5, 10, 25, 50, 100])],
-    "halo": [dict(radius=r) for r in [0, 5, 10, 20, 30, 45, 60, 90, 120, 160, 200]],
-    "serial": [dict(window=w, min_charged=m) for w, m in itertools.product([5, 10, 20, 50], [3, 4, 5, 6, 8]) if m <= w],
-    "lec": [dict(radius=r, min_neighbours=m) for r, m in itertools.product([5, 10, 20, 40, 80], [2, 3, 4, 6, 10])],
+    "hot": [dict(factor=f, min_images=m) for f, m in itertools.product([1.2, 1.5, 2, 3, 5, 8, 12], [1, 2, 3, 4, 99])],
+    "cti": [dict(length_h=h, length_v=v)
+            for h, v in itertools.product([0, 10, 25, 50, 100, 200, 300, 400], [0, 5, 10, 25, 50, 100, 200])],
+    "halo": [dict(radius=r) for r in [0, 5, 10, 20, 30, 45, 60, 90, 120, 160, 200, 260]],
+    "serial": [dict(window=w, min_charged=m)
+               for w, m in itertools.product([5, 10, 20, 50, 100], [2, 3, 4, 5, 6, 8, 12]) if m <= w],
+    "lec": [dict(radius=r, min_neighbours=m)
+            for r, m in itertools.product([2, 5, 10, 20, 40, 80, 120], [1, 2, 3, 4, 6, 10, 15])],
     "muon": [dict(min_charge=q, min_length=l, dilation=d)
-             for q, l, d in itertools.product([100, 500, 2000, 10000], [3, 10, 30], [0, 1, 2, 4])],
+             for q, l, d in itertools.product([50, 100, 500, 2000, 10000, 50000], [2, 3, 10, 30, 100], [0, 2, 4, 8])],
 }
 
 
@@ -55,7 +63,7 @@ class Frame:
 
     def __init__(self, image):
         sensor = image.sensor
-        self.electrons = to_electrons(image.measured, sensor.noise_e, image.total.mean())
+        self.electrons, self.charge_fit = electrons_from_image(image.measured)
         events = single_electron_events(self.electrons)
         origin = pixel_origin(image.charge)
         self.events_of = {name: np.flatnonzero(events & (origin == name)) for name in image.charge}
@@ -179,8 +187,10 @@ def main(n_images, seed=SEED, out_dir=OUT_DIR):
         combined = {"adaptive": [np.zeros(f.shape, dtype=bool) for f in test]}
         for tuned_on in PRESETS:
             combined[f"fixed_tuned_on_{tuned_on}"] = [np.zeros(f.shape, dtype=bool) for f in test]
+        empty = [np.zeros(f.shape, dtype=bool) for f in test]
         for mask_name in TARGETS:
-            rows[mask_name] = {"adaptive": evaluate(adaptive[mask_name], test, mask_name)}
+            rows[mask_name] = {"adaptive": evaluate(adaptive[mask_name], test, mask_name),
+                               "no_mask": evaluate(empty, test, mask_name)}
             combined["adaptive"] = [c | m for c, m in zip(combined["adaptive"], adaptive[mask_name])]
             for tuned_on in PRESETS:
                 masks = fixed_masks(mask_name, oracle[tuned_on][mask_name], test)
@@ -189,6 +199,7 @@ def main(n_images, seed=SEED, out_dir=OUT_DIR):
                 key = f"fixed_tuned_on_{tuned_on}"
                 combined[key] = [c | m for c, m in zip(combined[key], masks)]
         rows["all"] = {label: evaluate(m, test, "all") for label, m in combined.items()}
+        rows["all"]["no_mask"] = evaluate(empty, test, "all")
         results["per_sensor"][preset] = rows
         print(f"\n=== {preset} ===")
         for mask_name, forms in rows.items():
