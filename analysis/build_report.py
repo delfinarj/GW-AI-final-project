@@ -229,7 +229,7 @@ a {{ color: var(--accent); }}
 <header>
 <h1>Masks that calibrate themselves</h1>
 <p class="lede">Can the pixel masks of Skipper-CCD analyses do their job without being tuned to the particular sensor they run on?</p>
-<p class="meta">Delfina Rodr&iacute;guez Juiz &middot; final project, <em>Gravitational Waves and AI-Assisted Research</em> &middot;
+<p class="meta">D. Rodriguez Juiz &middot; final project, <em>Gravitational Waves and AI-Assisted Research</em> &middot;
 <a href="{REPO_URL}">repository</a> &middot; <a href="{REPO_URL}/blob/main/PROVENANCE.md">provenance of every result</a></p>
 </header>
 
