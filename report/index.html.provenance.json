@@ -1,21 +1,21 @@
 {
   "output": "report/index.html",
-  "output_sha256": "3d2745d70a007580f4c793e9dc5197718bc8267b70ab0b6cc3ca6549141e28d5",
+  "output_sha256": "18f4cf08af42f3e18a4680b3f8509cdf9032f6c21f6cbaf50142c6a51af3c7e6",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "e15be7c34de0debad31c933a98b4aa6c21de14db",
+    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
     "dirty": false,
-    "changed_outputs": 2
+    "changed_outputs": 14
   },
   "git_at_write": {
-    "commit": "e15be7c34de0debad31c933a98b4aa6c21de14db",
+    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
     "dirty": false,
-    "changed_outputs": 2
+    "changed_outputs": 17
   },
   "inputs": [
     {
       "path": "results/release_rate/release_rate.json",
-      "sha256": "bf42c2802dd7a5e7a0fd22d2b104cf62653ec3a268241c9b82ec96448c5a3eba"
+      "sha256": "8c1a92c08462616f91de2f9d9bccb60c3c0bbbab68436b5f9f3b5fbbc7a3d29e"
     },
     {
       "path": "results/release_mask_bits/mask_bit_signatures.json",
@@ -27,30 +27,26 @@
     },
     {
       "path": "results/compare_masks/seed_20260915/compare_masks.json",
-      "sha256": "e5bba1c70b8ee67bf18819bb022dfc2299101d031c99d00b1db104b69da92724"
+      "sha256": "34770a139dfa87cfab9ef8fba59f352258dd0608e5e590fdd6c24efb66b25614"
     },
     {
       "path": "results/compare_masks/seed_20260916/compare_masks.json",
-      "sha256": "b625ad6d58cbe57e71c0de7b18814da07bc518c4895c2303acc4686e778d41eb"
-    },
-    {
-      "path": "results/compare_masks/seed_20260917/compare_masks.json",
-      "sha256": "e34fe560968982bef73e0cc529522292e72a06a9d4482ae09231a07638df24b2"
+      "sha256": "31e1622f205422451b82050a0c23d8d377ef6c9a7b3e13eeb9e4798c894842e3"
     },
     {
       "path": "results/compare_masks/seed_20260920/compare_masks.json",
-      "sha256": "1ef12ad226d21f49fa0c8efbd22b8d2cc4571272c7a3fe31cc2149ae71ded065"
+      "sha256": "8f45cc27c4c657441631c25a9c45d07ea9f3d29e3b505aedcdeffe8408cd5bd1"
     },
     {
       "path": "results/compare_masks/seed_20260921/compare_masks.json",
-      "sha256": "ca58cf7693f0f531d5c5b3f64957281bcaf3ccc4d94b8fe09e5c2dbe7b3b2a17"
+      "sha256": "6dcc2da318a1f96ba9a35c68017d9ab658cd5cd76d3a3797664d1637f271ddb9"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "presented page; every number read from the inputs",
-  "created": "2026-09-15T20:34:28+00:00",
+  "created": "2026-09-15T22:44:46+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

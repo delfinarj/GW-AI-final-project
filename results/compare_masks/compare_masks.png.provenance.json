@@ -1,44 +1,40 @@
 {
   "output": "results/compare_masks/compare_masks.png",
-  "output_sha256": "29b4b9c1983e59548cd3fd8b2e3c847b8184e80ef41c897f334ca044c3d71bd4",
+  "output_sha256": "167818ba6d3edf0917d7097754df662757967252db43045a81e8bccc93a696ca",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "1651014d63c16c9f798f9158c6be610f3555240e",
+    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
     "dirty": false,
-    "changed_outputs": 0
+    "changed_outputs": 10
   },
   "git_at_write": {
-    "commit": "1651014d63c16c9f798f9158c6be610f3555240e",
+    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
     "dirty": false,
-    "changed_outputs": 1
+    "changed_outputs": 12
   },
   "inputs": [
     {
       "path": "results/compare_masks/seed_20260915/compare_masks.json",
-      "sha256": "e5bba1c70b8ee67bf18819bb022dfc2299101d031c99d00b1db104b69da92724"
+      "sha256": "34770a139dfa87cfab9ef8fba59f352258dd0608e5e590fdd6c24efb66b25614"
     },
     {
       "path": "results/compare_masks/seed_20260916/compare_masks.json",
-      "sha256": "b625ad6d58cbe57e71c0de7b18814da07bc518c4895c2303acc4686e778d41eb"
-    },
-    {
-      "path": "results/compare_masks/seed_20260917/compare_masks.json",
-      "sha256": "e34fe560968982bef73e0cc529522292e72a06a9d4482ae09231a07638df24b2"
+      "sha256": "31e1622f205422451b82050a0c23d8d377ef6c9a7b3e13eeb9e4798c894842e3"
     },
     {
       "path": "results/compare_masks/seed_20260920/compare_masks.json",
-      "sha256": "1ef12ad226d21f49fa0c8efbd22b8d2cc4571272c7a3fe31cc2149ae71ded065"
+      "sha256": "8f45cc27c4c657441631c25a9c45d07ea9f3d29e3b505aedcdeffe8408cd5bd1"
     },
     {
       "path": "results/compare_masks/seed_20260921/compare_masks.json",
-      "sha256": "ca58cf7693f0f531d5c5b3f64957281bcaf3ccc4d94b8fe09e5c2dbe7b3b2a17"
+      "sha256": "6dcc2da318a1f96ba9a35c68017d9ab658cd5cd76d3a3797664d1637f271ddb9"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
-  "notes": "figure of R4 over 5 seeds",
-  "created": "2026-09-15T17:24:27+00:00",
+  "notes": "figure of R4 over 4 seeds",
+  "created": "2026-09-15T22:44:42+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
