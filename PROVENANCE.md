@@ -194,6 +194,42 @@ marker shape, and every figure has a legend or a single labelled series.
 - **Not yet done:** the complete pass (R3 and the other four R4 seeds, figures, page, PDF), about
   2.5 hours, which must run with the computer attended.
 
+### Re-run of R4 with the wider grids (2026-09-15, evening)
+
+- **Code frozen** at commit `121c688` (wider grids, declared physical bounds, and a run that aborts
+  right after the oracle search if an optimum sits on any other edge). Every one of the five seeds
+  records `"oracle_edge_check": "passed"`.
+- **How the seeds were run:** two workers in parallel plus a third process for seed 20260921, which
+  therefore carries commit `c4b59f2` in its sidecar; between `121c688` and `c4b59f2` only R1's result
+  files and this document changed, not the code that produces R4.
+- **Seed 20260917 crashed once and was re-run on unchanged code.** The first attempt stopped with
+  `IndexError: index 32768 is out of bounds for axis 0 with size 1428` in `low_charge_occupancy`,
+  where a label larger than the number of clusters appeared in the label map. A diagnostic that
+  re-simulated the same seed and replayed the same grids in the same order (hot, then trails, then
+  halo, then the serial register) found: the electron maps are bit-identical before and after every
+  grid (SHA-1 per frame), the offending frame has 1427 clusters with `labels.max() == 1427`, and the
+  serial-register grid runs without error. The failure therefore does not reproduce on the same data
+  and the same code; 32768 is 2^15, a single bit set, which fits a transient memory error on a
+  loaded machine better than a defect in the code. Nothing was changed and the seed was re-run.
+  **The reproduction below does not cover this seed**: 20260917 is one of the two seeds that were not
+  re-run in the clean clone, for lack of time. So if that crash had a silent counterpart, one that
+  changed a number instead of raising, the evidence against it here is the diagnostic just described
+  and not the bit-exact reproduction. Re-running seed 20260917 in a clean clone, about 70 minutes, is
+  the check that would close this.
+- **One commit message is wrong:** `d83ef7c` says "R4 re-run over the five seeds" but carries four;
+  seed 20260917 was still re-running. The following commit adds it and says so.
+- **Reproduction of R4 from a clean clone** of `121c688` with the pinned environment (Python 3.11.16,
+  numpy 2.4.6, scipy 1.17.1), each seed re-run from scratch and compared with
+  `scripts/compare_results.py` at a relative tolerance of 1e-9: seeds 20260915, 20260916 and 20260920 were re-run from scratch in the clone and are identical to the committed files (largest relative difference 0.0e+00 in each). That is two of the three development seeds and one of the two held-out seeds. Seeds 20260917 and 20260921 were not checked by this route: each seed takes about 70 minutes, the machine cannot be left running unattended, and the clone run of 20260921 was started and deliberately stopped for that reason (it appears in the log as exit 127). The reproduction therefore covers three of the five seeds, and R1, R2 and R3 in full.
+- **How to read the commit in a sidecar.** A sidecar records the commit that was checked out *while the
+  file was being written*, which is by construction the parent of the commit that stores the file: the
+  output cannot be committed before it exists. So `report/report.pdf.provenance.json` names `d83ef7c`
+  although the file is stored in `377dbea`, and seed 20260921, run in the third process, names
+  `c4b59f2`. To
+  check what code produced an output, read the commit named in its sidecar, not the commit that
+  contains it; `changed_outputs` counts files under `results/` and `report/` that differed from the
+  index at that moment, which is expected while a set of results is being regenerated.
+
 ## Results
 
 ### R1. Single-electron rate of the public SENSEI SNOLAB release

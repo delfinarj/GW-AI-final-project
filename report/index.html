@@ -180,6 +180,12 @@ uv run python analysis/build_report.py
 uv run python scripts/make_pdf.py</code></pre>
 <p>Every output has a <code>.provenance.json</code> sidecar with the script, git commit, input hashes, parameters and seed;
 <a href="https://github.com/delfinarj/GW-AI-final-project/blob/main/PROVENANCE.md">PROVENANCE.md</a> says how each result was checked.</p>
+<p><strong>What that reproduction actually covered</strong>, as of 2026-09-15: those commands were run in a fresh clone of
+the frozen commit, in the pinned environment, and the results compared with the committed files at a relative tolerance
+of 1e-9. R1, R2, R3 and three of the five R4 seeds (20260915, 20260916 and 20260920 &mdash; two development seeds and one
+of the two held out) came out identical, largest relative difference zero. Seeds 20260917 and 20260921 were not re-run by
+that route: each takes about 70 minutes and the machine could not be left running unattended. This sentence is written by
+hand, unlike every number above it, because it describes a run made outside this repository.</p>
 </main>
 </body>
 </html>
