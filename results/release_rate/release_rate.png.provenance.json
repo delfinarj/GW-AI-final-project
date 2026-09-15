@@ -1,26 +1,28 @@
 {
   "output": "results/release_rate/release_rate.png",
-  "output_sha256": "c3fc89f7b1381b368e5569eeea28b6b6c2a745002d54276c0af4ba1794c49e48",
+  "output_sha256": "31c34c140ea225dbb1ed6f91fa0a89152fffe3c3a9f7154535caa4a36f1e899c",
   "script": "analysis/figure_release_rate.py",
   "git": {
-    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
-    "dirty": true
+    "commit": "121c688a932c16f430a22e67265e447bd197da48",
+    "dirty": false,
+    "changed_outputs": 12
   },
   "git_at_write": {
-    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
-    "dirty": true
+    "commit": "121c688a932c16f430a22e67265e447bd197da48",
+    "dirty": false,
+    "changed_outputs": 13
   },
   "inputs": [
     {
       "path": "results/release_rate/release_rate.json",
-      "sha256": "bf42c2802dd7a5e7a0fd22d2b104cf62653ec3a268241c9b82ec96448c5a3eba"
+      "sha256": "8c1a92c08462616f91de2f9d9bccb60c3c0bbbab68436b5f9f3b5fbbc7a3d29e"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "figure of R1",
-  "created": "2026-09-15T17:19:27+00:00",
+  "created": "2026-09-15T20:49:20+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

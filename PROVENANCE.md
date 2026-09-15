@@ -177,11 +177,20 @@ marker shape, and every figure has a legend or a single labelled series.
 - **Result:** R4 seed 20260920 and R2 are identical to the committed files (largest relative
   difference 0). R1 differs only in the fit: the single-electron rate by 1.7e-5 relative, its
   uncertainty by 7.8e-5, the intercept by 6.6e-5; the largest relative difference, 6.6e-3, is on the
-  pull, a number close to zero (-0.0231 against -0.0232). Attributed to the minimiser in scipy 1.18;
-  no physical statement changes.
+  pull, a number close to zero (-0.0231 against -0.0232). No physical statement changes.
+- **Cause of the R1 difference, first attributed wrongly.** This entry first blamed scipy 1.18. A second
+  clone with Python pinned to 3.11 (numpy 2.4.6, scipy 1.17.1, the same versions as the committed
+  results) gave *exactly the same* R1 as the Python 3.14 clone, so the version was not the cause. The
+  committed R1 had been made in the conda environment, whose numpy and scipy are built against a
+  generic BLAS/LAPACK; uv installs the PyPI wheels built against OpenBLAS (checked with
+  `numpy.show_config()`), and the minimiser of R1 follows a slightly different numerical path. R2 and
+  R4 do not depend on that minimiser, which is why they matched. R1 and its figure were re-run under uv,
+  the declared environment, and now match the pinned clone bit for bit (largest relative difference 0).
 - **What it showed about the repository:** the unpinned Python version reported by the second
-  independent review was real. Python is now pinned to 3.11 (`.python-version`, `requires-python`)
-  and `uv.lock` resolves a single numpy, the version the results were made with, so R1 was not re-run.
+  independent review was real (the first clone ran Python 3.14); Python is now pinned to 3.11
+  (`.python-version`, `requires-python`) and `uv.lock` resolves a single numpy. And a result made in
+  another environment than the declared one does not reproduce to the last digit even at equal package
+  versions, so every committed result must come from the uv environment.
 - **Not yet done:** the complete pass (R3 and the other four R4 seeds, figures, page, PDF), about
   2.5 hours, which must run with the computer attended.
 
