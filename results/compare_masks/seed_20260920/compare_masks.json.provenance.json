@@ -1,6 +1,6 @@
 {
-  "output": "results/compare_masks/seed_20260917/compare_masks.json",
-  "output_sha256": "e34fe560968982bef73e0cc529522292e72a06a9d4482ae09231a07638df24b2",
+  "output": "results/compare_masks/seed_20260920/compare_masks.json",
+  "output_sha256": "1ef12ad226d21f49fa0c8efbd22b8d2cc4571272c7a3fe31cc2149ae71ded065",
   "script": "analysis/compare_masks_across_sensors.py",
   "git": {
     "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
@@ -1480,10 +1480,10 @@
       }
     }
   },
-  "seed": 20260917,
+  "seed": 20260920,
   "results": {},
   "notes": "oracle = fixed mask tuned with truth on the same sensor's calibration stack",
-  "created": "2026-09-15T16:35:12+00:00",
+  "created": "2026-09-15T16:57:40+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

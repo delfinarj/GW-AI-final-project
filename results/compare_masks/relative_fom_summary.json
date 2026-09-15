@@ -1,29 +1,41 @@
 {
-  "n_seeds": 5,
+  "n_seeds": 7,
   "inputs": [
-    "results\\compare_masks\\seed_20260915\\compare_masks.json",
-    "results\\compare_masks\\seed_20260916\\compare_masks.json",
-    "results\\compare_masks\\seed_20260917\\compare_masks.json",
-    "results\\compare_masks\\seed_20260918\\compare_masks.json",
-    "results\\compare_masks\\seed_20260919\\compare_masks.json"
+    "results/compare_masks/seed_20260915/compare_masks.json",
+    "results/compare_masks/seed_20260916/compare_masks.json",
+    "results/compare_masks/seed_20260917/compare_masks.json",
+    "results/compare_masks/seed_20260918/compare_masks.json",
+    "results/compare_masks/seed_20260919/compare_masks.json",
+    "results/compare_masks/seed_20260920/compare_masks.json",
+    "results/compare_masks/seed_20260921/compare_masks.json"
   ],
   "relative_fom": {
     "deep_underground/hot/adaptive": {
-      "median": 0.9845794973979565,
+      "median": 0.9832137267511386,
       "min": 0.9707253433941508,
-      "max": 0.9902801431437277
+      "max": 0.990265586317935
+    },
+    "deep_underground/hot/no mask": {
+      "median": 0.9651944129511955,
+      "min": 0.9591304665908607,
+      "max": 0.9667776843251457
     },
     "deep_underground/hot/shallow_underground": {
-      "median": 0.9975099580849731,
+      "median": 0.9975058187426752,
       "min": 0.9899494936611665,
-      "max": 1.0
+      "max": 1.0022445672782503
     },
     "deep_underground/hot/surface_lab": {
-      "median": 0.8923151892484186,
-      "min": 0.876065336919442,
-      "max": 0.9022817913430367
+      "median": 0.8874745616657437,
+      "min": 0.875855190659174,
+      "max": 0.9036314158978753
     },
     "deep_underground/cti/adaptive": {
+      "median": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "deep_underground/cti/no mask": {
       "median": 1.0,
       "min": 1.0,
       "max": 1.0
@@ -43,47 +55,67 @@
       "min": 1.0,
       "max": 1.0
     },
+    "deep_underground/halo/no mask": {
+      "median": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
     "deep_underground/halo/shallow_underground": {
       "median": 1.0,
-      "min": 0.9991507429465937,
+      "min": 0.9991492980170137,
       "max": 1.0
     },
     "deep_underground/halo/surface_lab": {
       "median": 1.0,
-      "min": 0.9991507429465937,
+      "min": 0.9991492980170137,
       "max": 1.0
     },
     "deep_underground/serial/adaptive": {
       "median": 1.0,
       "min": 1.0,
-      "max": 1.0023706078307753
+      "max": 1.0023743602874366
+    },
+    "deep_underground/serial/no mask": {
+      "median": 0.9991536279097805,
+      "min": 0.9946174157337994,
+      "max": 1.0008074201141512
     },
     "deep_underground/serial/shallow_underground": {
-      "median": 0.9991550581637804,
+      "median": 0.9991789771822392,
       "min": 0.9960850907136316,
-      "max": 1.0
+      "max": 1.0008074201141512
     },
     "deep_underground/serial/surface_lab": {
-      "median": 0.9976753164991619,
-      "min": 0.9961523520268076,
-      "max": 1.0
+      "median": 0.9991536279097805,
+      "min": 0.9961464211187492,
+      "max": 1.0016116045911274
     },
     "deep_underground/lec/adaptive": {
-      "median": 0.9968203417119825,
+      "median": 0.998388395407186,
       "min": 0.9944289260117531,
       "max": 1.0069477040363692
     },
+    "deep_underground/lec/no mask": {
+      "median": 0.9810661261007472,
+      "min": 0.9679072924489601,
+      "max": 1.0
+    },
     "deep_underground/lec/shallow_underground": {
       "median": 1.0,
-      "min": 0.997647428312607,
+      "min": 0.9885710532241611,
       "max": 1.0015325679490292
     },
     "deep_underground/lec/surface_lab": {
-      "median": 0.9876205665104303,
-      "min": 0.9784921095801632,
+      "median": 0.9810661261007472,
+      "min": 0.9679072924489601,
       "max": 1.0
     },
     "deep_underground/muon/adaptive": {
+      "median": 1.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "deep_underground/muon/no mask": {
       "median": 1.0,
       "min": 1.0,
       "max": 1.0
@@ -99,189 +131,254 @@
       "max": 1.0
     },
     "deep_underground/all/adaptive": {
-      "median": 0.9792121607691074,
+      "median": 0.9791775255697678,
       "min": 0.965548062527161,
       "max": 0.9925538800225279
     },
+    "deep_underground/all/no mask": {
+      "median": 0.9479794652682781,
+      "min": 0.9320590653216854,
+      "max": 0.9620068100966295
+    },
     "deep_underground/all/shallow_underground": {
-      "median": 0.9958252468427886,
+      "median": 0.9949129795557607,
       "min": 0.986318465651807,
-      "max": 0.9962278251073255
+      "max": 0.9984177317408931
     },
     "deep_underground/all/surface_lab": {
-      "median": 0.8832720252711621,
-      "min": 0.8699798660305184,
-      "max": 0.8967366442339518
+      "median": 0.8731916613574047,
+      "min": 0.8571923458862383,
+      "max": 0.8970887952847931
     },
     "shallow_underground/hot/adaptive": {
-      "median": 0.9787369221325123,
-      "min": 0.9565404624049669,
+      "median": 0.9848954000915094,
+      "min": 0.96285494580526,
       "max": 0.9993048480526991
     },
+    "shallow_underground/hot/no mask": {
+      "median": 0.8892370811833119,
+      "min": 0.8817652976618225,
+      "max": 0.9014155787365639
+    },
     "shallow_underground/hot/deep_underground": {
-      "median": 1.0,
-      "min": 0.9761871135395517,
-      "max": 1.0015691694543822
+      "median": 1.000385806041341,
+      "min": 0.9998769616019252,
+      "max": 1.0041487675737955
     },
     "shallow_underground/hot/surface_lab": {
-      "median": 0.7783358703817923,
-      "min": 0.7417763050989282,
+      "median": 0.6639354798565926,
+      "min": 0.629483491405807,
       "max": 0.8138935022638955
     },
     "shallow_underground/cti/adaptive": {
-      "median": 0.8436417779652652,
-      "min": 0.8183380579661937,
+      "median": 0.8183380579661937,
+      "min": 0.7771017257152495,
       "max": 0.8910973638776198
     },
+    "shallow_underground/cti/no mask": {
+      "median": 0.39930623082840333,
+      "min": 0.3821290006891706,
+      "max": 0.42055473889133216
+    },
     "shallow_underground/cti/deep_underground": {
-      "median": 0.4423161300002536,
-      "min": 0.4137985894500735,
+      "median": 0.42055473889133216,
+      "min": 0.38968130812725704,
       "max": 0.5948508090923079
     },
     "shallow_underground/cti/surface_lab": {
       "median": 1.0,
-      "min": 1.0,
-      "max": 1.0
+      "min": 0.9884493149822908,
+      "max": 1.0002174924779184
     },
     "shallow_underground/halo/adaptive": {
-      "median": 0.9743860013022965,
-      "min": 0.9168338639470865,
-      "max": 0.988500604435298
+      "median": 0.974480420018179,
+      "min": 0.9656077309474173,
+      "max": 0.9915184444495189
+    },
+    "shallow_underground/halo/no mask": {
+      "median": 0.8787114753883767,
+      "min": 0.8776684696213984,
+      "max": 0.8838573145495553
     },
     "shallow_underground/halo/deep_underground": {
       "median": 0.8835073542183433,
-      "min": 0.8770760507421377,
+      "min": 0.8776684696213984,
       "max": 1.0
     },
     "shallow_underground/halo/surface_lab": {
-      "median": 0.9979769712281299,
-      "min": 0.9851148923357834,
+      "median": 1.0,
+      "min": 0.9853070245608964,
       "max": 1.0
     },
     "shallow_underground/serial/adaptive": {
-      "median": 1.0092338062588533,
-      "min": 1.0039196385713758,
-      "max": 1.0131708402412456
+      "median": 1.0058120864495523,
+      "min": 0.9989631404038696,
+      "max": 1.013163516335289
+    },
+    "shallow_underground/serial/no mask": {
+      "median": 0.9910839107445738,
+      "min": 0.9646881017953477,
+      "max": 0.9934235917952313
     },
     "shallow_underground/serial/deep_underground": {
-      "median": 0.9980490111068915,
-      "min": 0.9911481018949817,
+      "median": 0.9971206286921491,
+      "min": 0.9292233506427895,
       "max": 1.001937564301172
     },
     "shallow_underground/serial/surface_lab": {
-      "median": 1.0,
-      "min": 0.9962488667490398,
+      "median": 0.9965040734345281,
+      "min": 0.9940652294861605,
       "max": 1.0084343333209584
     },
     "shallow_underground/lec/adaptive": {
-      "median": 0.9934624705012249,
-      "min": 0.9704704886724266,
+      "median": 1.00401560039443,
+      "min": 0.9649910069170357,
       "max": 1.022581524799438
     },
+    "shallow_underground/lec/no mask": {
+      "median": 0.890986516605467,
+      "min": 0.7618975432234465,
+      "max": 0.9325687284903861
+    },
     "shallow_underground/lec/deep_underground": {
-      "median": 0.9445054859945345,
-      "min": 0.9139667811074591,
+      "median": 0.9519319917453203,
+      "min": 0.9418093133033496,
       "max": 0.9802741388779457
     },
     "shallow_underground/lec/surface_lab": {
-      "median": 0.892981270395147,
-      "min": 0.7626630708654617,
-      "max": 0.9071647438400834
+      "median": 0.890986516605467,
+      "min": 0.7618975432234465,
+      "max": 0.9325687284903861
     },
     "shallow_underground/muon/adaptive": {
-      "median": 0.9788658647524068,
-      "min": 0.9410928103050091,
+      "median": 0.9737153823351381,
+      "min": 0.9388055880763544,
       "max": 1.0
     },
+    "shallow_underground/muon/no mask": {
+      "median": 0.1869971038258528,
+      "min": 0.16908732604314555,
+      "max": 0.20143617205348688
+    },
     "shallow_underground/muon/deep_underground": {
-      "median": 1.0,
-      "min": 0.9971764649527379,
+      "median": 0.9971940884699181,
+      "min": 0.9942583257487013,
       "max": 1.0000069098710964
     },
     "shallow_underground/muon/surface_lab": {
       "median": 1.0,
       "min": 0.9990667286814274,
-      "max": 1.001924929596627
+      "max": 1.0
     },
     "shallow_underground/all/adaptive": {
-      "median": 0.8319208548062579,
-      "min": 0.790132715750478,
+      "median": 0.8018223599535658,
+      "min": 0.7732578150143888,
       "max": 0.864825137547494
     },
+    "shallow_underground/all/no mask": {
+      "median": 0.39849136873142127,
+      "min": 0.3884748819519352,
+      "max": 0.4211881036635585
+    },
     "shallow_underground/all/deep_underground": {
-      "median": 0.8126192178762711,
+      "median": 0.8033207871057887,
       "min": 0.5376979145297491,
-      "max": 0.8378856405306828
+      "max": 0.8147523381756239
     },
     "shallow_underground/all/surface_lab": {
-      "median": 0.7148396598506652,
-      "min": 0.6263990104528825,
+      "median": 0.60506872668261,
+      "min": 0.557694896745014,
       "max": 0.7339249561422383
     },
     "surface_lab/hot/adaptive": {
-      "median": 1.0206057932750394,
-      "min": 0.9540782739109867,
-      "max": 1.2003448548414866
+      "median": 0.9862388009172256,
+      "min": 0.9400486173528843,
+      "max": 1.0678245144689291
+    },
+    "surface_lab/hot/no mask": {
+      "median": 0.47357666048119124,
+      "min": 0.46582769415504977,
+      "max": 0.5285391338770687
     },
     "surface_lab/hot/deep_underground": {
-      "median": 0.5198793123305633,
-      "min": 0.4790884809439486,
-      "max": 0.6033763736700744
+      "median": 0.5198415951486184,
+      "min": 0.47081281912086353,
+      "max": 0.5476316228063204
     },
     "surface_lab/hot/shallow_underground": {
-      "median": 0.5314166706626262,
-      "min": 0.4790884809439486,
-      "max": 0.6033763736700744
+      "median": 0.5198415951486184,
+      "min": 0.47081281912086353,
+      "max": 0.5718554459088918
     },
     "surface_lab/cti/adaptive": {
-      "median": 0.808815227488244,
-      "min": 0.7895990040810649,
-      "max": 0.8925085063580636
+      "median": 0.47200580691101035,
+      "min": 0.4050304220383563,
+      "max": 0.8506436393709471
+    },
+    "surface_lab/cti/no mask": {
+      "median": 0.32182585108717116,
+      "min": 0.2699893796656026,
+      "max": 0.34693473974375955
     },
     "surface_lab/cti/deep_underground": {
-      "median": 0.5587617705673193,
-      "min": 0.5339257617089643,
-      "max": 0.6506083747203193
+      "median": 0.32426516023579244,
+      "min": 0.2699893796656026,
+      "max": 0.6337519805244562
     },
     "surface_lab/cti/shallow_underground": {
       "median": 1.0,
-      "min": 1.0,
+      "min": 0.7888184285843836,
       "max": 1.0
     },
     "surface_lab/halo/adaptive": {
-      "median": 0.6893956555561491,
-      "min": 0.6579523459872695,
+      "median": 0.6842497021154963,
+      "min": 0.6603042170816,
       "max": 0.7163506330279947
     },
+    "surface_lab/halo/no mask": {
+      "median": 0.6784597742394436,
+      "min": 0.6603042170816,
+      "max": 0.700624329726726
+    },
     "surface_lab/halo/deep_underground": {
-      "median": 0.7050595280280857,
-      "min": 0.6857973028841151,
-      "max": 0.9659499888601657
+      "median": 0.700624329726726,
+      "min": 0.6784597742394436,
+      "max": 0.9681025345284724
     },
     "surface_lab/halo/shallow_underground": {
       "median": 1.0,
-      "min": 0.9659499888601657,
+      "min": 0.9681025345284724,
       "max": 1.024696296669326
     },
     "surface_lab/serial/adaptive": {
-      "median": 0.9954148083429109,
-      "min": 0.9573026101443586,
-      "max": 1.024260091225302
+      "median": 0.9928793278556814,
+      "min": 0.9556970920590938,
+      "max": 1.024709120572433
+    },
+    "surface_lab/serial/no mask": {
+      "median": 0.9365852125475559,
+      "min": 0.9052622568320248,
+      "max": 0.9594689333549599
     },
     "surface_lab/serial/deep_underground": {
-      "median": 0.8067913583845083,
-      "min": 0.5695584103863475,
-      "max": 0.8405933750763339
+      "median": 0.7930376912855023,
+      "min": 0.18249058033022625,
+      "max": 0.8492858710705329
     },
     "surface_lab/serial/shallow_underground": {
-      "median": 0.9722116958962991,
-      "min": 0.9456675469608756,
-      "max": 1.0013537512532786
+      "median": 0.9718996074085571,
+      "min": 0.944180960016918,
+      "max": 1.0000143754582185
     },
     "surface_lab/lec/adaptive": {
-      "median": 0.9711928546980133,
-      "min": 0.9654067782742822,
-      "max": 0.9941527791529386
+      "median": 0.9636061313963589,
+      "min": 0.9210921549694201,
+      "max": 0.9711928546980133
+    },
+    "surface_lab/lec/no mask": {
+      "median": 1.0,
+      "min": 1.0,
+      "max": 1.0055854179699086
     },
     "surface_lab/lec/deep_underground": {
       "median": 0.1598436736314578,
@@ -289,39 +386,49 @@
       "max": 0.7649261011058026
     },
     "surface_lab/lec/shallow_underground": {
-      "median": 0.2749132723510524,
-      "min": 0.24214425326945524,
-      "max": 0.33298330720637553
+      "median": 0.3152320573799562,
+      "min": 0.2551658764175284,
+      "max": 0.3906267640314431
     },
     "surface_lab/muon/adaptive": {
-      "median": 0.807501539454464,
-      "min": 0.671396245223884,
+      "median": 0.8000407314321221,
+      "min": 0.669545891796135,
       "max": 0.8931151989851608
     },
+    "surface_lab/muon/no mask": {
+      "median": 0.048514898795665715,
+      "min": 0.043636824476061264,
+      "max": 0.05007217771669929
+    },
     "surface_lab/muon/deep_underground": {
-      "median": 0.9489020860375543,
-      "min": 0.9384054598294675,
+      "median": 0.8576735914422238,
+      "min": 0.8445835995310889,
       "max": 0.9717041977285068
     },
     "surface_lab/muon/shallow_underground": {
       "median": 1.0,
-      "min": 0.9486388251070276,
+      "min": 1.0,
       "max": 1.0141613537582912
     },
     "surface_lab/all/adaptive": {
-      "median": 0.9612349864602298,
-      "min": 0.8150467272543975,
-      "max": 1.1598960560281413
+      "median": 0.7007416729449468,
+      "min": 0.5517058665105239,
+      "max": 0.892816766112957
+    },
+    "surface_lab/all/no mask": {
+      "median": 0.4470041558506487,
+      "min": 0.42018079861213375,
+      "max": 0.58110597393567
     },
     "surface_lab/all/deep_underground": {
-      "median": 0.4422749533535135,
+      "median": 0.20136483820815154,
       "min": 0.0,
-      "max": 0.5748161307298055
+      "max": 0.47234849988619193
     },
     "surface_lab/all/shallow_underground": {
-      "median": 0.5635682543618693,
-      "min": 0.5233716423630749,
-      "max": 0.8910977580441939
+      "median": 0.5326082142689386,
+      "min": 0.35944774942091157,
+      "max": 0.5991614251667251
     }
   }
 }

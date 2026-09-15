@@ -1,0 +1,32 @@
+{
+  "output": "report/report.pdf",
+  "output_sha256": "d201a1a5c6b416ea7e6e3ba4ec376b59e5865f2a852355191aade41306c8b38a",
+  "script": "scripts/make_pdf.py",
+  "git": {
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
+    "dirty": true
+  },
+  "git_at_write": {
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
+    "dirty": true
+  },
+  "inputs": [
+    {
+      "path": "report/index.html",
+      "sha256": "e9b9a1cf53b6e7f9069c9666b6123b873d1873687f8d325726c2b4a68fc98e54"
+    }
+  ],
+  "parameters": {
+    "browser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  },
+  "seed": null,
+  "results": {},
+  "notes": "the report page printed to PDF; same document, no number retyped",
+  "created": "2026-09-15T17:19:44+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

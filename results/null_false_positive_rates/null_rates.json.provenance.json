@@ -1,19 +1,19 @@
 {
   "output": "results/null_false_positive_rates/null_rates.json",
-  "output_sha256": "c871d54a224600d00b36d9495ecd5654b1e7467c7d9f137b46162a5d35e2c2b8",
+  "output_sha256": "004c009b2c905c42827963383ceba3273e2e345f4b63ae22b356ee3bfae8ce53",
   "script": "analysis/null_false_positive_rates.py",
   "git": {
-    "commit": "a08f552babd98fc26a91968972e84d882d37aa82",
-    "dirty": true
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
+    "dirty": false
   },
   "git_at_write": {
-    "commit": "a08f552babd98fc26a91968972e84d882d37aa82",
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
     "dirty": true
   },
   "inputs": [],
   "parameters": {
     "alpha": 0.01,
-    "n_runs": 2,
+    "n_runs": 50,
     "images_per_run": 2,
     "defects_off": {
       "n_hot_columns": 0,
@@ -161,7 +161,7 @@
   "seed": 20260915,
   "results": {},
   "notes": "false-positive rates of the adaptive masks on the project's presets with every target defect switched off",
-  "created": "2026-09-15T14:38:27+00:00",
+  "created": "2026-09-15T15:35:43+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

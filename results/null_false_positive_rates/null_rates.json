@@ -1,17 +1,17 @@
 {
   "alpha": 0.01,
-  "n_runs": 2,
+  "n_runs": 50,
   "images_per_run": 2,
   "per_sensor": {
     "deep_underground": {
       "hot_columns": {
         "unit": "run",
         "fired": 0,
-        "trials": 2,
+        "trials": 50,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.841886116991581
+          0.07112173646419764
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -19,11 +19,11 @@
       "cti": {
         "unit": "run",
         "fired": 0,
-        "trials": 2,
+        "trials": 50,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.841886116991581
+          0.07112173646419764
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -31,11 +31,11 @@
       "halo": {
         "unit": "run",
         "fired": 0,
-        "trials": 1,
+        "trials": 14,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.975
+          0.23163576165011646
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -43,38 +43,38 @@
       "serial": {
         "unit": "image",
         "fired": 0,
-        "trials": 4,
+        "trials": 100,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.6023646356164746
+          0.03621669264517641
         ],
         "contains_alpha": true,
         "below_alpha": false
       },
       "low_energy_clusters": {
         "unit": "image",
-        "fired": 0,
-        "trials": 4,
-        "rate": 0.0,
+        "fired": 1,
+        "trials": 100,
+        "rate": 0.01,
         "ci95": [
-          0.0,
-          0.6023646356164746
+          0.0002531460329774208,
+          0.054459385392080624
         ],
         "contains_alpha": true,
         "below_alpha": false
       },
-      "halo_uncalibrated_runs": 1
+      "halo_uncalibrated_runs": 36
     },
     "shallow_underground": {
       "hot_columns": {
         "unit": "run",
         "fired": 0,
-        "trials": 2,
+        "trials": 50,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.841886116991581
+          0.07112173646419764
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -82,11 +82,11 @@
       "cti": {
         "unit": "run",
         "fired": 0,
-        "trials": 2,
+        "trials": 50,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.841886116991581
+          0.07112173646419764
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -94,23 +94,23 @@
       "halo": {
         "unit": "run",
         "fired": 0,
-        "trials": 2,
+        "trials": 50,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.841886116991581
+          0.07112173646419764
         ],
         "contains_alpha": true,
         "below_alpha": false
       },
       "serial": {
         "unit": "image",
-        "fired": 0,
-        "trials": 4,
-        "rate": 0.0,
+        "fired": 1,
+        "trials": 100,
+        "rate": 0.01,
         "ci95": [
-          0.0,
-          0.6023646356164746
+          0.0002531460329774208,
+          0.054459385392080624
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -118,11 +118,11 @@
       "low_energy_clusters": {
         "unit": "image",
         "fired": 0,
-        "trials": 4,
+        "trials": 100,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.6023646356164746
+          0.03621669264517641
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -133,23 +133,23 @@
       "hot_columns": {
         "unit": "run",
         "fired": 0,
-        "trials": 2,
+        "trials": 50,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.841886116991581
+          0.07112173646419764
         ],
         "contains_alpha": true,
         "below_alpha": false
       },
       "cti": {
         "unit": "run",
-        "fired": 0,
-        "trials": 2,
-        "rate": 0.0,
+        "fired": 1,
+        "trials": 50,
+        "rate": 0.02,
         "ci95": [
-          0.0,
-          0.841886116991581
+          0.0005062279830408294,
+          0.10646954571149987
         ],
         "contains_alpha": true,
         "below_alpha": false
@@ -157,35 +157,35 @@
       "halo": {
         "unit": "run",
         "fired": 0,
-        "trials": 2,
+        "trials": 50,
         "rate": 0.0,
         "ci95": [
           0.0,
-          0.841886116991581
+          0.07112173646419764
         ],
         "contains_alpha": true,
         "below_alpha": false
       },
       "serial": {
         "unit": "image",
-        "fired": 0,
-        "trials": 4,
-        "rate": 0.0,
+        "fired": 1,
+        "trials": 100,
+        "rate": 0.01,
         "ci95": [
-          0.0,
-          0.6023646356164746
+          0.0002531460329774208,
+          0.054459385392080624
         ],
         "contains_alpha": true,
         "below_alpha": false
       },
       "low_energy_clusters": {
         "unit": "image",
-        "fired": 0,
-        "trials": 4,
-        "rate": 0.0,
+        "fired": 1,
+        "trials": 100,
+        "rate": 0.01,
         "ci95": [
-          0.0,
-          0.6023646356164746
+          0.0002531460329774208,
+          0.054459385392080624
         ],
         "contains_alpha": true,
         "below_alpha": false

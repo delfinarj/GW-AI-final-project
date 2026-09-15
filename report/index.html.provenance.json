@@ -1,13 +1,13 @@
 {
   "output": "report/index.html",
-  "output_sha256": "25a60d99b59a41aaaddcbda67db5571e14edb2a540a441bc625c1ce11f48e891",
+  "output_sha256": "e9b9a1cf53b6e7f9069c9666b6123b873d1873687f8d325726c2b4a68fc98e54",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "546c23e76368b3d67835edb6a6dca452c9a27308",
-    "dirty": false
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
+    "dirty": true
   },
   "git_at_write": {
-    "commit": "546c23e76368b3d67835edb6a6dca452c9a27308",
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
     "dirty": true
   },
   "inputs": [
@@ -21,23 +21,19 @@
     },
     {
       "path": "results/null_false_positive_rates/null_rates.json",
-      "sha256": "2a8d757bafa7f90945bb2acd97b3af0ceb28c2913261b622e22fc46ec2f76d26"
-    },
-    {
-      "path": "results/compare_masks/relative_fom_summary.json",
-      "sha256": "5189ecef620570db98363a61345a5592336b6cead73dedb201be5c29560ed277"
+      "sha256": "004c009b2c905c42827963383ceba3273e2e345f4b63ae22b356ee3bfae8ce53"
     },
     {
       "path": "results/compare_masks/seed_20260915/compare_masks.json",
-      "sha256": "84c860365dba0382ea75ef82b7b9b583a7622bd2fb112ab25fdf42e9549e006a"
+      "sha256": "e5bba1c70b8ee67bf18819bb022dfc2299101d031c99d00b1db104b69da92724"
     },
     {
       "path": "results/compare_masks/seed_20260916/compare_masks.json",
-      "sha256": "6a7da1738d978fdb7da16872de529330b0820df5cbde73ed25236a666e72a2a8"
+      "sha256": "b625ad6d58cbe57e71c0de7b18814da07bc518c4895c2303acc4686e778d41eb"
     },
     {
       "path": "results/compare_masks/seed_20260917/compare_masks.json",
-      "sha256": "9982b5b9ec1279a54c09bf454ac4c4e6947e65dece2f7fd97ea9bb014b753bfa"
+      "sha256": "e34fe560968982bef73e0cc529522292e72a06a9d4482ae09231a07638df24b2"
     },
     {
       "path": "results/compare_masks/seed_20260918/compare_masks.json",
@@ -46,13 +42,21 @@
     {
       "path": "results/compare_masks/seed_20260919/compare_masks.json",
       "sha256": "0fa6b98a659a372bb323b3911c995802682a23e92dcc7c4c22318b6b86044ec8"
+    },
+    {
+      "path": "results/compare_masks/seed_20260920/compare_masks.json",
+      "sha256": "1ef12ad226d21f49fa0c8efbd22b8d2cc4571272c7a3fe31cc2149ae71ded065"
+    },
+    {
+      "path": "results/compare_masks/seed_20260921/compare_masks.json",
+      "sha256": "ca58cf7693f0f531d5c5b3f64957281bcaf3ccc4d94b8fe09e5c2dbe7b3b2a17"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "presented page; every number read from the inputs",
-  "created": "2026-09-15T04:12:02+00:00",
+  "created": "2026-09-15T17:19:36+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

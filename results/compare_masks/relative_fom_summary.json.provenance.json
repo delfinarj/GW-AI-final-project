@@ -1,27 +1,27 @@
 {
   "output": "results/compare_masks/relative_fom_summary.json",
-  "output_sha256": "5189ecef620570db98363a61345a5592336b6cead73dedb201be5c29560ed277",
+  "output_sha256": "5bce59e077fa55a8e92ed4b46bfabd39c44476c3b1cc05db8e2a39956908835c",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "3b1bc3b7dc00f0124f9b73ccf6352f276eeb3bf1",
-    "dirty": false
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
+    "dirty": true
   },
   "git_at_write": {
-    "commit": "3b1bc3b7dc00f0124f9b73ccf6352f276eeb3bf1",
+    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
     "dirty": true
   },
   "inputs": [
     {
       "path": "results/compare_masks/seed_20260915/compare_masks.json",
-      "sha256": "84c860365dba0382ea75ef82b7b9b583a7622bd2fb112ab25fdf42e9549e006a"
+      "sha256": "e5bba1c70b8ee67bf18819bb022dfc2299101d031c99d00b1db104b69da92724"
     },
     {
       "path": "results/compare_masks/seed_20260916/compare_masks.json",
-      "sha256": "6a7da1738d978fdb7da16872de529330b0820df5cbde73ed25236a666e72a2a8"
+      "sha256": "b625ad6d58cbe57e71c0de7b18814da07bc518c4895c2303acc4686e778d41eb"
     },
     {
       "path": "results/compare_masks/seed_20260917/compare_masks.json",
-      "sha256": "9982b5b9ec1279a54c09bf454ac4c4e6947e65dece2f7fd97ea9bb014b753bfa"
+      "sha256": "e34fe560968982bef73e0cc529522292e72a06a9d4482ae09231a07638df24b2"
     },
     {
       "path": "results/compare_masks/seed_20260918/compare_masks.json",
@@ -30,13 +30,21 @@
     {
       "path": "results/compare_masks/seed_20260919/compare_masks.json",
       "sha256": "0fa6b98a659a372bb323b3911c995802682a23e92dcc7c4c22318b6b86044ec8"
+    },
+    {
+      "path": "results/compare_masks/seed_20260920/compare_masks.json",
+      "sha256": "1ef12ad226d21f49fa0c8efbd22b8d2cc4571272c7a3fe31cc2149ae71ded065"
+    },
+    {
+      "path": "results/compare_masks/seed_20260921/compare_masks.json",
+      "sha256": "ca58cf7693f0f531d5c5b3f64957281bcaf3ccc4d94b8fe09e5c2dbe7b3b2a17"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "relative figure of merit, median and range over seeds",
-  "created": "2026-09-14T18:52:31+00:00",
+  "created": "2026-09-15T17:19:34+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
