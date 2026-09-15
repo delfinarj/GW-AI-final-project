@@ -45,17 +45,46 @@ TARGETS = {"hot": ("hot_column", "hot_pixel"), "cti": ("cti",), "halo": ("halo",
            "serial": ("serial",), "lec": ("lowE_cluster",), "muon": ("muon",)}
 
 GRIDS = {
-    "hot": [dict(factor=f, min_images=m) for f, m in itertools.product([1.2, 1.5, 2, 3, 5, 8, 12], [1, 2, 3, 4, 99])],
+    "hot": [dict(factor=f, min_images=m)
+            for f, m in itertools.product([1.0, 1.1, 1.2, 1.5, 2, 3, 5, 8, 12, 20, 30], [1, 2, 3, 4, 99])],
     "cti": [dict(length_h=h, length_v=v)
-            for h, v in itertools.product([0, 10, 25, 50, 100, 200, 300, 400], [0, 5, 10, 25, 50, 100, 200])],
+            for h, v in itertools.product([0, 10, 25, 50, 100, 200, 300, 400, 600, 800, 1200, 1600],
+                                          [0, 5, 10, 25, 50, 100, 200, 300, 400, 600, 800])],
     "halo": [dict(radius=r) for r in [0, 5, 10, 20, 30, 45, 60, 90, 120, 160, 200, 260]],
     "serial": [dict(window=w, min_charged=m)
-               for w, m in itertools.product([5, 10, 20, 50, 100], [2, 3, 4, 5, 6, 8, 12]) if m <= w],
+               for w, m in itertools.product([5, 10, 20, 50, 100, 200], [2, 3, 4, 5, 6, 8, 12, 16, 24, 32, 48, 64]) if m <= w],
     "lec": [dict(radius=r, min_neighbours=m)
-            for r, m in itertools.product([2, 5, 10, 20, 40, 80, 120], [1, 2, 3, 4, 6, 10, 15])],
+            for r, m in itertools.product([1, 2, 5, 10, 20, 40, 80, 120], [1, 2, 3, 4, 6, 10, 15])],
     "muon": [dict(min_charge=q, min_length=l, dilation=d)
-             for q, l, d in itertools.product([50, 100, 500, 2000, 10000, 50000], [2, 3, 10, 30, 100], [0, 2, 4, 8])],
+             for q, l, d in itertools.product([2, 5, 10, 20, 50, 100, 500, 2000, 10000, 50000],
+                                              [1, 2, 3, 10, 30, 100], [0, 2, 4, 8, 16])],
 }
+
+# Edges of the grids that are physical bounds, where an optimum is a genuine answer, not a sign that
+# the grid is too small: a length or radius of 0 is "no mask"; a factor of 1 flags every column above
+# the median; one image, one neighbour, one pixel of length and two electrons are the smallest values
+# that still define the cut; min_images = 99 switches hot pixels off. Any other edge aborts the run.
+PHYSICAL_BOUNDS = {
+    ("hot", "factor", "min"), ("hot", "min_images", "min"), ("hot", "min_images", "max"),
+    ("cti", "length_h", "min"), ("cti", "length_v", "min"),
+    ("halo", "radius", "min"),
+    ("serial", "min_charged", "min"), ("serial", "window", "min"),
+    ("lec", "radius", "min"), ("lec", "min_neighbours", "min"),
+    ("muon", "min_charge", "min"), ("muon", "min_length", "min"), ("muon", "dilation", "min"),
+}
+
+
+def oracle_edges(oracle):
+    """Parameters of the chosen oracle that sit on a non-physical edge of their grid."""
+    edges = []
+    for preset, masks in oracle.items():
+        for mask, params in masks.items():
+            for name, value in params.items():
+                values = sorted({point[name] for point in GRIDS[mask]})
+                for side, bound in (("min", values[0]), ("max", values[-1])):
+                    if value == bound and (mask, name, side) not in PHYSICAL_BOUNDS:
+                        edges.append(f"{preset}/{mask}/{name}={value} ({side} of grid)")
+    return edges
 
 
 class Frame:
@@ -176,7 +205,13 @@ def main(n_images, seed=SEED, out_dir=OUT_DIR):
             oracle[preset][mask_name] = grid[int(np.argmax(scores))]
         print(f"oracle {preset}: {oracle[preset]} ({time.time() - started:.0f} s)")
 
-    results = {"oracle_parameters": oracle, "adaptive_calibration": {}, "per_sensor": {}}
+    edges = oracle_edges(oracle)
+    if edges:
+        raise RuntimeError("oracle optimum on a non-physical grid edge, widen the grid: " + "; ".join(edges))
+    print("oracle edge check: every optimum is inside its grid or on a physical bound")
+
+    results = {"oracle_parameters": oracle, "oracle_edge_check": "passed", "adaptive_calibration": {},
+               "per_sensor": {}}
     for preset, sensor in PRESETS.items():
         test = frames[preset]["test"]
         calibration = adaptive_calibration(sensor, frames[preset]["cal"])

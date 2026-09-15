@@ -328,12 +328,16 @@ so both were rewritten and re-run; the numbers produced before this date are not
   more than 1 % below no mask in every seed with at least 20 target events (the pre-registered median
   rule is reported next to it); (d) the figure was inspected by eye for hidden markers; (e) the second
   independent review recomputed every headline number from the JSON files and found them to match.
-- **Known weakness (second review):** several oracle optima still sit on the edge of their grids on the
-  shallow and surface sensors (trails at the longest lengths, muons and hot columns at the loosest
-  cuts), so ratios to the oracle overstate the adaptive masks; the harm counts do not depend on it,
-  because no mask and the transplants are divided by the same oracle. Extending the grids needs a
-  re-run (~2 h) and is pending.
-- **Every number on the page** is read from these files by `analysis/build_report.py`; none is typed.
+- **Grid edges (second review, fixed):** oracle optima sat on the edge of their grids for trails, muons,
+  hot columns and low-energy clusters, overstating the adaptive masks relative to the oracle. The grids
+  were widened (trails to 1600 x 800 px, muon charge down to 2 e and length to 1 px, hot-column factor
+  from 1.0 to 30, cluster radius to 1 px, serial-register count up to 64 in windows up to 200 px,
+  muon dilation up to 16 px; a first trial stopped on the serial-register count at the old maximum of 12), the edges that are physical bounds were declared in
+  `PHYSICAL_BOUNDS`, and `compare_masks_across_sensors.py` now aborts, right after the oracle search
+  and before any evaluation, if an optimum lies on any other edge. Each result file records
+  `"oracle_edge_check": "passed"`, and the page drops the "upper bound" caveat only when every seed
+  passed. R4 was re-run over the five seeds with this check.
+
 **History of R4 before the re-run (superseded; kept because it is part of how the result was checked):**
 
 - **A failure found by the second seed, and what was done about it.** Seed 20260916 (4 images)

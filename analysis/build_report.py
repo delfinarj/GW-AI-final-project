@@ -74,6 +74,8 @@ def main():
                 RES / "compare_masks" / "compare_masks.png"):
         shutil.copy2(src, FIG / src.name)
 
+    # every seed records whether its oracle optima passed the grid-edge check (runs abort otherwise)
+    edges_checked = bool(seeds) and all(s.get("oracle_edge_check") == "passed" for s in seeds)
     MARGIN = 0.01        # paired rule (added after review): a difference under 1 % is "no difference"
 
     def per_seed(indices):
@@ -202,6 +204,15 @@ def main():
         elif pairs:
             held_below_text = (", and there its figure of merit relative to no mask is "
                                + ", ".join(f"{a / n:.2f}" for a, n in pairs))
+
+    edge_clause = ("" if edges_checked else
+                   "; that ratio is an upper bound, because some tuned optima sit at the edge of the parameter grid")
+
+    edge_limitation = ("<li>The oracle is the best fixed mask on a grid of parameters. Every seed passed a check that no "
+                       "optimum lies on an edge of its grid other than a physical bound (a length of zero, a factor of one), "
+                       "but the grid is still finite.</li>" if edges_checked else
+                       "<li>Several oracle optima lie at the edge of their parameter grids, so ratios to the oracle "
+                       "overstate the adaptive masks.</li>")
 
     held_text = ("" if held is None else
                  f"<p>On the {len(holdout_idx)} seeds run once after the code was frozen: "
@@ -396,8 +407,7 @@ Of the {overall["n_transplant"]} cases in which a mask tuned by hand on one sens
 {len(overall["paired_same"])} made no difference. {worst_harm_text}</p>
 <p>The same masks written as procedures that calibrate themselves were {adaptive_harm_text}. Measured against
 a mask tuned with truth on the same sensor they reach a median {overall["median_adaptive"]:.2f}, with a worst
-case of {worst_adaptive_text}; that ratio is an upper bound, because several tuned optima sit at the edge of
-the parameter grid. In {len(overall["beats_adaptive"])} cases a transplanted mask beat the adaptive one in every
+case of {worst_adaptive_text}{edge_clause}. In {len(overall["beats_adaptive"])} cases a transplanted mask beat the adaptive one in every
 seed: self-calibration avoids the large failures but is not free.</p>
 <p>On the three sensors with their defects switched off, the adaptive masks fired no more often than
 &alpha; allows (and apparently less often; 50 runs cannot tell).{lec_signal_text}</p>
@@ -487,7 +497,7 @@ visible as well.</p>
 <li>The muon figure of merit counts pixels, which weighs every missed track pixel heavily.</li>
 <li>The adaptive muon mask uses the sensor's diffusion model and the minimum-ionising charge per length, and the simulated muons carry exactly that mean charge with no Landau tail, so its charge tolerance is tested against the model it was built from.</li>
 <li>The defect-free test switches every defect off at once, so it cannot see a mask firing on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>
-<li>Several oracle optima lie at the edge of their parameter grids (charge-transfer trails at the longest lengths, muons and hot columns at the loosest cuts), so ratios to the oracle overstate the adaptive masks.</li>
+{edge_limitation}
 <li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The figure of merit was not changed after this was seen (the no-mask reference and wider grids were added later, for other reasons).</li>
 <li>The adaptive masks were not yet run on the real public images beyond the rate reproduction.</li>
 </ul>
