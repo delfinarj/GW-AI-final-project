@@ -62,7 +62,7 @@ def main():
     rate = load(RES / "release_rate" / "release_rate.json")
     bits = load(RES / "release_mask_bits" / "mask_bit_signatures.json")
     null = load(RES / "null_false_positive_rates" / "null_rates.json")
-    seed_files = sorted((RES / "compare_masks").glob("**/compare_masks.json"))
+    seed_files = sorted((RES / "compare_masks").glob("seed_*/compare_masks.json"))
     seeds = [load(p) for p in seed_files]
     n_seeds = len(seeds)
     # Seeds run once after the code was frozen, never used to change anything (see PLAN.md).
@@ -74,16 +74,16 @@ def main():
                 RES / "compare_masks" / "compare_masks.png"):
         shutil.copy2(src, FIG / src.name)
 
-    def collect(indices):
-        """{(sensor, mask): {"target": [...], "series": {name: [figure of merit / oracle, per seed]}}}"""
+    MARGIN = 0.01        # paired rule (added after review): a difference under 1 % is "no difference"
+
+    def per_seed(indices):
+        """{(sensor, mask): [{"target", "forms": {name: {"fom", "removed", "kept", "signal"}}} per seed]}"""
         out = {}
         for i in indices:
             for sensor, masks in seeds[i]["per_sensor"].items():
                 for mask, forms in masks.items():
                     oracle_key = "oracle" if mask != "all" else f"fixed_tuned_on_{sensor}"
-                    oracle = forms[oracle_key]["fom"]
-                    entry = out.setdefault((sensor, mask), {"target": [], "series": {}})
-                    entry["target"].append(forms[oracle_key]["target"])
+                    row = {"target": forms[oracle_key]["target"], "forms": {}}
                     for label, r in forms.items():
                         if label == oracle_key:
                             name = "oracle"
@@ -91,67 +91,148 @@ def main():
                             name = label
                         else:
                             name = label.replace("transplant_from_", "").replace("fixed_tuned_on_", "")
-                        value = r["fom"] / oracle if oracle > 0 else float("nan")
-                        entry["series"].setdefault(name, []).append(value)
+                        row["forms"][name] = {"fom": r["fom"], "removed": r["target_removed"],
+                                              "kept": r["clean_kept"], "signal": r["signal_efficiency"]}
+                    out.setdefault((sensor, mask), []).append(row)
         return out
 
-    def summarise(indices):
-        """The statements pre-registered in PLAN.md, from medians over the given seeds."""
-        data = collect(indices)
-        comparable = {k: v for k, v in data.items()
-                      if k[1] != "all" and np.median(v["target"]) >= MIN_TARGET}
-        harm, no_help, adaptive_harm, beats_adaptive, adaptive_values = [], [], [], [], {}
-        for (sensor, mask), v in comparable.items():
-            med = {name: float(np.median(values)) for name, values in v["series"].items()}
-            nm = med["no_mask"]
-            adaptive_values[(sensor, mask)] = med["adaptive"]
-            if med["adaptive"] < nm:
-                adaptive_harm.append(((sensor, mask, "adaptive"), med["adaptive"], nm))
-            sources = {s: m for s, m in med.items() if s not in ("adaptive", "no_mask", "oracle")}
-            for source, value in sources.items():
-                row = ((sensor, mask, source), value, nm)
-                if value < nm:
-                    harm.append(row)
-                elif value <= nm * 1.001:
-                    no_help.append(row)
-            if sources and max(sources.values()) > med["adaptive"]:
-                best = max(sources, key=sources.get)
-                beats_adaptive.append(((sensor, mask, best), sources[best], med["adaptive"]))
+    def collect(indices):
+        """Relative figure of merit per seed, for the figure-like table (all seeds, no exclusion)."""
+        out = {}
+        for key, rows in per_seed(indices).items():
+            entry = {"target": [r["target"] for r in rows], "series": {}}
+            for r in rows:
+                oracle = r["forms"]["oracle"]["fom"]
+                for name, f in r["forms"].items():
+                    entry["series"].setdefault(name, []).append(f["fom"] / oracle if oracle > 0 else float("nan"))
+            out[key] = entry
+        return out
+
+    def summarise(indices, min_valid_seeds):
+        """Pre-registered statements (median rule) and the stricter paired rule, over the given seeds.
+
+        Exclusion is per seed: a seed enters a mask-sensor case only if it has at least MIN_TARGET target
+        events; a case is compared only if at least `min_valid_seeds` seeds enter it.
+        """
+        data = per_seed(indices)
+        cases = {}
+        for key, rows in data.items():
+            if key[1] == "all":
+                continue
+            valid = [r for r in rows if r["target"] >= MIN_TARGET]
+            if len(valid) >= min_valid_seeds:
+                cases[key] = valid
+        sources_of = lambda rows: [s for s in rows[0]["forms"] if s not in ("adaptive", "no_mask", "oracle")]
+        rel = lambda r, name: r["forms"][name]["fom"] / r["forms"]["oracle"]["fom"]
+
+        median_harm, paired_harm, paired_same, adaptive_paired_harm, adaptive_benefit = [], [], [], [], []
+        adaptive_median_harm, beats_adaptive, adaptive_values, adaptive_worst_seed = [], [], {}, {}
+        for key, rows in cases.items():
+            nm = [r["forms"]["no_mask"]["fom"] for r in rows]
+            ad = [r["forms"]["adaptive"]["fom"] for r in rows]
+            adaptive_values[key] = float(np.median([rel(r, "adaptive") for r in rows]))
+            adaptive_worst_seed[key] = float(min(rel(r, "adaptive") for r in rows))
+            if np.median(ad) < np.median(nm):
+                adaptive_median_harm.append(key)
+            if all(a < n * (1 - MARGIN) for a, n in zip(ad, nm)):
+                adaptive_paired_harm.append(key)
+            if all(a > n * (1 + MARGIN) for a, n in zip(ad, nm)):
+                adaptive_benefit.append(key)
+            best_source, best_value = None, -np.inf
+            for source in sources_of(rows):
+                tr = [r["forms"][source]["fom"] for r in rows]
+                if np.median(tr) < np.median(nm):
+                    median_harm.append((*key, source))
+                if all(x < n * (1 - MARGIN) for x, n in zip(tr, nm)):
+                    paired_harm.append(((*key, source), float(np.median([rel(r, source) for r in rows])),
+                                        float(np.median([rel(r, "no_mask") for r in rows]))))
+                elif all(abs(x - n) <= n * MARGIN for x, n in zip(tr, nm)):
+                    paired_same.append((*key, source))
+                if np.median(tr) > best_value:
+                    best_source, best_value = source, float(np.median(tr))
+            if best_source is not None and all(r["forms"][best_source]["fom"] > r["forms"]["adaptive"]["fom"] for r in rows):
+                beats_adaptive.append((*key, best_source))
         worst_adaptive = min(adaptive_values.items(), key=lambda kv: kv[1]) if adaptive_values else None
-        return {"data": data, "comparable": comparable, "n_cases": len(comparable),
-                "n_transplant": sum(len([s for s in v["series"] if s not in ("adaptive", "no_mask", "oracle")])
-                                    for v in comparable.values()),
-                "harm": harm, "no_help": no_help, "adaptive_harm": adaptive_harm,
-                "beats_adaptive": beats_adaptive,
-                "worst_harm": min(harm, key=lambda r: r[1]) if harm else None,
+        return {"cases": cases, "n_cases": len(cases),
+                "n_transplant": sum(len(sources_of(rows)) for rows in cases.values()),
+                "median_harm": median_harm, "paired_harm": paired_harm, "paired_same": paired_same,
+                "adaptive_median_harm": adaptive_median_harm, "adaptive_paired_harm": adaptive_paired_harm,
+                "adaptive_benefit": adaptive_benefit, "beats_adaptive": beats_adaptive,
+                "worst_harm": min(paired_harm, key=lambda r: r[1]) if paired_harm else None,
                 "worst_adaptive": worst_adaptive,
+                "worst_adaptive_seed": adaptive_worst_seed.get(worst_adaptive[0]) if worst_adaptive else None,
                 "median_adaptive": float(np.median(list(adaptive_values.values()))) if adaptive_values else float("nan")}
 
-    overall = summarise(list(range(n_seeds)))
-    held = summarise(holdout_idx) if holdout_idx else None
+    overall = summarise(list(range(n_seeds)), min_valid_seeds=3)
+    held = summarise(holdout_idx, min_valid_seeds=1) if holdout_idx else None
+    development_idx = [i for i in range(n_seeds) if i not in holdout_idx]
+    dev = summarise(development_idx, min_valid_seeds=2) if development_idx else None
+    overall["data"] = collect(list(range(n_seeds)))
 
     def describe(key):
         sensor, mask, series = key
         who = "adaptive" if series == "adaptive" else f"tuned on {SENSOR_NAMES[series].lower()}"
         return f"{MASK_NAMES[mask].lower()} on the {SENSOR_NAMES[sensor].lower()} sensor ({who})"
 
-    worst_harm_text = ("" if not overall["harm"] else
-                       f"The worst was {describe(overall['worst_harm'][0])}, at "
-                       f"{overall['worst_harm'][1]:.2f} of the oracle where doing nothing scores "
+    worst_harm_text = ("" if not overall["worst_harm"] else
+                       f"The clearest was {describe(overall['worst_harm'][0])}: a median "
+                       f"{overall['worst_harm'][1]:.2f} of the oracle, where doing nothing scores "
                        f"{overall['worst_harm'][2]:.2f}.")
-    worst_adaptive_text = ("" if overall["worst_adaptive"] is None else
-                           f"{overall['worst_adaptive'][1]:.2f} "
-                           f"({describe((*overall['worst_adaptive'][0], 'adaptive'))})")
     adaptive_harm_text = (
-        f"never worse than no mask (0 of {overall['n_cases']} cases)" if not overall["adaptive_harm"] else
-        f"worse than no mask in {len(overall['adaptive_harm'])} of {overall['n_cases']} cases ("
-        + "; ".join(f"{describe(k)}, {v:.2f} against {nm:.2f} for no mask" for k, v, nm in overall["adaptive_harm"])
-        + ")")
+        f"worse than no mask in every seed in {len(overall['adaptive_paired_harm'])} of {overall['n_cases']} cases"
+        + ("" if not overall["adaptive_paired_harm"] else
+           " (" + "; ".join(describe((*k, "adaptive")) for k in overall["adaptive_paired_harm"]) + ")")
+        + f", and better than no mask in every seed in {len(overall['adaptive_benefit'])}")
+    worst_adaptive_text = ("" if overall["worst_adaptive"] is None else
+                           f"{overall['worst_adaptive'][1]:.2f} as a median over seeds "
+                           f"({describe((*overall['worst_adaptive'][0], 'adaptive'))}; "
+                           f"{overall['worst_adaptive_seed']:.2f} in its worst seed)")
+    dev_only_harm = [k for k in (dev["adaptive_paired_harm"] if dev else []) if held and k not in held["cases"]]
+    def adaptive_below_no_mask(indices, key):
+        rows = per_seed(indices).get(key, [])
+        return [(r["forms"]["adaptive"]["fom"], r["forms"]["no_mask"]["fom"]) for r in rows]
+
+    held_below_text = ""
+    if held is not None:
+        pairs = [pair for k in (dev["adaptive_paired_harm"] if dev else []) if k not in held["cases"]
+                 for pair in adaptive_below_no_mask(holdout_idx, k)]
+        if pairs and all(a < n for a, n in pairs):
+            held_below_text = (", although there too its figure of merit is below no mask ("
+                               + ", ".join(f"{a / n:.2f}" for a, n in pairs) + " of no mask)")
+        elif pairs:
+            held_below_text = (", and there its figure of merit relative to no mask is "
+                               + ", ".join(f"{a / n:.2f}" for a, n in pairs))
+
     held_text = ("" if held is None else
-                 f"<p>On the {len(holdout_idx)} seeds run once after the code was frozen and never used to change "
-                 f"anything: {len(held['harm'])} of {held['n_transplant']} transplanted cases worse than no mask, "
-                 f"{len(held['adaptive_harm'])} of {held['n_cases']} adaptive ones, and a median adaptive "
-                 f"{held['median_adaptive']:.2f} of the oracle.</p>")
+                 f"<p>On the {len(holdout_idx)} seeds run once after the code was frozen: "
+                 f"{len(held['paired_harm'])} of {held['n_transplant']} transplanted cases worse than no mask in "
+                 f"every seed, {len(held['adaptive_paired_harm'])} of {held['n_cases']} adaptive ones, and a median "
+                 f"adaptive {held['median_adaptive']:.2f} of the oracle."
+                 + ("" if not dev_only_harm else
+                    " The adaptive case that is worse than no mask in every development seed ("
+                    + "; ".join(describe((*k, "adaptive")) for k in dev_only_harm)
+                    + ") has fewer than " + str(MIN_TARGET) + " target events in the held-out seeds, so it is not "
+                    "counted there" + held_below_text + ".")
+                 + "</p>")
+    rule_text = (f"Counted pairwise: a case is harmful only if the transplanted mask scores more than "
+                 f"{int(MARGIN * 100)} % below no mask in every seed with at least {MIN_TARGET} target events. "
+                 f"The rule pre-registered before the re-run compared medians without a margin and gives "
+                 f"{len(overall['median_harm'])} harmful transplants and {len(overall['adaptive_median_harm'])} "
+                 f"harmful adaptive cases; it was replaced after an independent review showed that medians "
+                 f"differing in the third decimal were being counted as harm.")
+
+    # signal lost by the adaptive masks where their target is absent or rare, from the R4 runs
+    lec_rows = [r for r in per_seed(list(range(n_seeds))).get(("surface_lab", "lec"), [])
+                if r["forms"]["adaptive"]["signal"] is not None]
+    lec_signal = [r["forms"]["adaptive"]["signal"] for r in lec_rows]
+    lec_empty = [r["forms"]["adaptive"]["signal"] for r in lec_rows if r["target"] == 0]
+    lec_signal_text = ("" if not lec_signal or min(lec_signal) > 0.99 else
+                       f" On the surface sensor, though, the adaptive low-energy-cluster mask keeps only "
+                       f"{min(lec_signal):.2f}&ndash;{max(lec_signal):.2f} of the signal"
+                       + ("" if not lec_empty else
+                          f", {min(lec_empty):.2f} even in a seed with no low-energy clusters at all")
+                       + ": it fires on charge-transfer trail electrons, a false positive that the defect-free test "
+                       "cannot see because it switches every defect off at once.")
 
     # ---------------- tables
     sensor_rows = []
@@ -198,6 +279,19 @@ def main():
             for source in SENSOR_NAMES:
                 cells.append("<span class='range'>oracle = 1</span>" if source == sensor else cell(source))
             fom_rows.append(cells)
+
+    working_rows = []
+    for (sensor, mask), rows in sorted(per_seed(list(range(n_seeds))).items(),
+                                       key=lambda kv: (list(SENSOR_NAMES).index(kv[0][0]), list(MASK_NAMES).index(kv[0][1]))):
+        if mask == "all":
+            continue
+        def med(name, field):
+            values = [r["forms"][name][field] for r in rows if r["forms"].get(name, {}).get(field) is not None]
+            return f"{np.median(values):.2f}" if values else "&ndash;"
+        working_rows.append([SENSOR_NAMES[sensor], MASK_NAMES[mask],
+                             f"{np.median([r['target'] for r in rows]):.0f}",
+                             med("adaptive", "removed"), med("adaptive", "kept"),
+                             med("oracle", "removed"), med("oracle", "kept")])
 
     calib_rows = []
     for path, run in zip(seed_files, seeds):
@@ -298,15 +392,17 @@ a {{ color: var(--accent); }}
 <div class="answer">
 <p><strong>Short answer, from simulations of three different sensors ({n_seeds} independent seeds).</strong>
 Of the {overall["n_transplant"]} cases in which a mask tuned by hand on one sensor was moved unchanged to another,
-{len(overall["harm"])} ended up <em>worse than applying no mask at all</em> and {len(overall["no_help"])} were no better
-than no mask. {worst_harm_text}</p>
-<p>The same masks written as procedures that calibrate themselves were {adaptive_harm_text},
-with a median {overall["median_adaptive"]:.2f} of the
-oracle tuned with truth on that same sensor and a worst case of {worst_adaptive_text}. Self-calibration does cost
-something against a mask tuned for the sensor at hand: the best transplanted mask beat it in
-{len(overall["beats_adaptive"])} cases.</p>
-<p>On sensors without the defect they target, the adaptive masks fired at the rate they were built for.</p>
+{len(overall["paired_harm"])} were <em>worse than applying no mask at all</em> in every seed, and
+{len(overall["paired_same"])} made no difference. {worst_harm_text}</p>
+<p>The same masks written as procedures that calibrate themselves were {adaptive_harm_text}. Measured against
+a mask tuned with truth on the same sensor they reach a median {overall["median_adaptive"]:.2f}, with a worst
+case of {worst_adaptive_text}; that ratio is an upper bound, because several tuned optima sit at the edge of
+the parameter grid. In {len(overall["beats_adaptive"])} cases a transplanted mask beat the adaptive one in every
+seed: self-calibration avoids the large failures but is not free.</p>
+<p>On the three sensors with their defects switched off, the adaptive masks fired no more often than
+&alpha; allows (and apparently less often; 50 runs cannot tell).{lec_signal_text}</p>
 {held_text}
+<p class="meta">{rule_text}</p>
 </div>
 
 <h2>The question</h2>
@@ -355,7 +451,7 @@ visible as well.</p>
         "Clopper&ndash;Pearson 95 % intervals; the vertical line is &alpha; = 0.01. Intervals are wide because 50 runs cannot resolve 0.01 from 0.03.")}
 {table(["Sensor", "Adaptive mask", "Unit", "Fired / trials", "Rate", "95 % interval", "Against &alpha;"], null_rows)}
 
-<h2>Result 2 &middot; Transplanted constants can fail badly; self-calibration does not</h2>
+<h2>Result 2 &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
 <div class="wide">
 {figure("compare_masks.png", "Small multiples for three sensors: figure of merit of adaptive masks and of fixed masks transplanted from other sensors, relative to the oracle.",
         f"Figure of merit relative to the oracle tuned with truth on the same sensor (vertical line). Markers are medians over {n_seeds} seed{'s' if n_seeds > 1 else ''}"
@@ -363,6 +459,9 @@ visible as well.</p>
 </div>
 {table(["Evaluated on", "Mask", "Target events", "No mask", "Adaptive", "Fixed, tuned on deep", "Fixed, tuned on shallow", "Fixed, tuned on surface"], fom_rows)}
 <p class="meta">Figure of merit relative to the oracle of the sensor in the first column{"; median, with the range over seeds in brackets" if n_seeds > 1 else ""}.</p>
+<details><summary>Target removed and clean pixels kept at each working point (medians over seeds)</summary>
+{table(["Sensor", "Mask", "Target events", "Adaptive: removed", "Adaptive: clean kept", "Oracle: removed", "Oracle: clean kept"], working_rows)}
+</details>
 <details><summary>What the adaptive masks measured on each sensor</summary>
 {table(["Sensor", "Seed", "Trail length h / v (px)", "Halo radius (px)", "Halo calibrated", "Hot columns found", "Hot columns simulated"], calib_rows)}
 </details>
@@ -370,6 +469,7 @@ visible as well.</p>
 <h2>What the checks caught</h2>
 <p>Every error below was found by a test or a diagnostic against the simulator's truth, fixed, and recorded.</p>
 <ul>
+<li>The pixel threshold of every &ldquo;adaptive&rdquo; mask was set from the simulator's true mean charge: truth leaking into the masks, and at the surface a threshold of 0.50 e that turned read noise into fake events. Found by an independent review; the threshold is now measured from each image's charge histogram and every result was re-run.</li>
 <li>The simulator redrew hot columns in every image, which would have invalidated every calibration on a stack.</li>
 <li>The hot-column mask flagged the innocent neighbours of each hot column (17 of them in a test).</li>
 <li>The halo test treated its reference rate as exact; a 4&sigma; fluctuation gave a halo where there was none.</li>
@@ -385,22 +485,28 @@ visible as well.</p>
 <li>One figure of merit; the oracle is tuned mask by mask, not jointly, so a combined adaptive mask can exceed it.</li>
 <li>Adaptive trail lengths are limited by the number of bright pixels in the calibration stack: they are short when data are few.</li>
 <li>The muon figure of merit counts pixels, which weighs every missed track pixel heavily.</li>
-<li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The evaluation was fixed before this was seen and was not changed.</li>
+<li>The adaptive muon mask uses the sensor's diffusion model and the minimum-ionising charge per length, and the simulated muons carry exactly that mean charge with no Landau tail, so its charge tolerance is tested against the model it was built from.</li>
+<li>The defect-free test switches every defect off at once, so it cannot see a mask firing on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>
+<li>Several oracle optima lie at the edge of their parameter grids (charge-transfer trails at the longest lengths, muons and hot columns at the loosest cuts), so ratios to the oracle overstate the adaptive masks.</li>
+<li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The figure of merit was not changed after this was seen (the no-mask reference and wider grids were added later, for other reasons).</li>
 <li>The adaptive masks were not yet run on the real public images beyond the rate reproduction.</li>
 </ul>
 
 <h2>Reproduce</h2>
-<pre><code>conda env create -f environment.yml
-conda activate skmask
-python scripts/fetch_public_data.py
-pytest
-python analysis/reproduce_release_rate.py
-python analysis/check_release_mask_bits.py
-python analysis/null_false_positive_rates.py
-python analysis/compare_masks_across_sensors.py 4 --seed 20260915
-python analysis/figure_compare_masks.py
-python analysis/build_report.py
-python scripts/make_pdf.py</code></pre>
+<pre><code>uv sync --group dev
+uv run python scripts/fetch_public_data.py
+uv run pytest
+uv run python analysis/reproduce_release_rate.py
+uv run python analysis/check_release_mask_bits.py
+uv run python analysis/null_false_positive_rates.py 50
+for seed in 20260915 20260916 20260917 20260920 20260921; do
+  uv run python analysis/compare_masks_across_sensors.py 4 --seed $seed --out results/compare_masks/seed_$seed
+done
+uv run python analysis/figure_release_rate.py
+uv run python analysis/figure_null_rates.py
+uv run python analysis/figure_compare_masks.py
+uv run python analysis/build_report.py
+uv run python scripts/make_pdf.py</code></pre>
 <p>Every output has a <code>.provenance.json</code> sidecar with the script, git commit, input hashes, parameters and seed;
 <a href="{REPO_URL}/blob/main/PROVENANCE.md">PROVENANCE.md</a> says how each result was checked.</p>
 </main>

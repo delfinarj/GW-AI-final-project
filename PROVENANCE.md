@@ -214,23 +214,25 @@ marker shape, and every figure has a legend or a single labelled series.
 
 - **Output:** `results/null_false_positive_rates/null_rates.json`, sidecar, and figure
   `null_rates.png` (`analysis/figure_null_rates.py`).
-- **Produced by:** `analysis/null_false_positive_rates.py`, 200 independent runs (3 images each)
-  of two defect-free 800 x 400 sensors: one with only dark current and signal, one adding sparse
-  2-7 keV deposits so that the halo and CTI calibrations have triggers. Seed 20260914.
-- **Code state:** started at commit `26acd81` (clean), which contains the halo redesign; the
-  sidecar also records the state when it was written (a later commit with uncommitted edits),
-  which does not affect the run.
-- **Written from scratch:** the run loop and the Clopper-Pearson interval (`scipy.stats.beta`).
-- **Choice with an alternative:** "fires" is per run (any flag at all in the stack), the strictest
-  reading; per-pixel or per-column false-positive fractions would be smaller.
-- **Result (fired / runs, 95 % interval):** hot columns 1/200 [0.000, 0.028]; CTI 0/200
-  [0.000, 0.018]; halo 2/200 [0.001, 0.036]; serial register 0/200 [0.000, 0.018]; low-energy
-  clusters 1/200 [0.000, 0.028].
-- **Check:** every interval contains alpha = 0.01, so each adaptive mask's false-positive rate is
-  consistent with the rate it was built to have. The earlier far-field version of the halo test is
-  the one that failed this kind of check (a single realisation gave radius 45 with no halo).
-  Limitation: 200 runs cannot distinguish 0.01 from 0.03; the muon mask is not included because it
-  has no false-positive parameter (it is tested against point-like deposits in `tests/test_masks.py`).
+- **Produced by:** `analysis/null_false_positive_rates.py 50`: 50 independent runs of 2 images on each
+  of the three presets with every target defect switched off (hot columns and pixels, charge-transfer
+  trails, serial-register hits, low-energy clusters, halo), keeping dark current, spurious charge, the
+  injected signal, muons and high-energy deposits. Seed 20260915. Code frozen at commit `1a0c649`.
+- **Written from scratch:** the run loop, the two trial units and the Clopper-Pearson interval
+  (`scipy.stats.beta`).
+- **Choices with an alternative:** "fires" means any flag at all in the trial (the strictest reading);
+  stack-calibrated masks (hot columns and pixels, trails, halo) are counted per run, per-image masks
+  (serial register, low-energy clusters) per image; the hot-column trial fires on a column *or* a
+  pixel, each tested at alpha, so its nominal per-run rate is about 2 alpha.
+- **Result:** every one of the 15 sensor-mask intervals contains alpha = 0.01, with 0 or 1 firings each
+  (numbers in the JSON and on the page). The deep-underground halo could be calibrated in only 14 of
+  50 runs (too few triggers).
+- **What this does and does not show (from the second independent review):** 0 of 50 gives an upper
+  limit of 0.071 and 0 of 100 of 0.036, so the two-sided check cannot flag a mask as "too
+  conservative" until several hundred trials; pooled, the masks fired less often than alpha. And
+  because every defect is off at once, the test cannot see a mask firing on *another* defect: in R4 the
+  adaptive low-energy-cluster mask on the surface sensor keeps only 0.85-0.92 of the signal even in a
+  seed with no low-energy clusters, because it fires on trail electrons. The page states both.
 
 ### Redesign of R3 and R4 after the independent review (2026-09-15)
 
@@ -277,10 +279,11 @@ so both were rewritten and re-run; the numbers produced before this date are not
 
 ### R4. The masks across sensors: oracle, transplant, adaptive
 
-- **Outputs:** `results/compare_masks/compare_masks.json` (seed 20260915) and
-  `results/compare_masks/seed_<seed>/compare_masks.json` (further seeds), each with a sidecar;
-  `results/compare_masks/relative_fom_summary.json` (median and range over seeds) and the figure
-  `compare_masks.png`, both from `analysis/figure_compare_masks.py`.
+- **Outputs:** `results/compare_masks/seed_<seed>/compare_masks.json` for seeds 20260915, 20260916,
+  20260917 (used while developing) and 20260920, 20260921 (run once after the code was frozen at
+  `1a0c649`), each with a sidecar; `results/compare_masks/relative_fom_summary.json` and the figure
+  `compare_masks.png` from `analysis/figure_compare_masks.py`, which, like the page, reads only
+  `seed_*` folders.
 - **Produced by:** `analysis/compare_masks_across_sensors.py 4 --seed <seed>`: for each preset, an
   independent calibration stack and test stack of 4 images; each mask evaluated on the test stack as
   oracle (fixed form tuned with truth on the same sensor's calibration stack), transplant (oracle
@@ -296,15 +299,21 @@ so both were rewritten and re-run; the numbers produced before this date are not
   3. 4 images per stack, chosen for run time (~19 min per seed); adaptive CTI lengths depend on it.
   4. Relative figure of merit = FoM / FoM(oracle); for "all six combined" the oracle is the union of
      the six oracle masks.
-- **Checks:** (a) the oracle is by construction the best fixed form on the calibration stack; on the
-  independent test stack the adaptive form can exceed it (e.g. serial-register hits at the surface in
-  seed 20260915), which is possible because the oracle is chosen on a different stack and on a grid,
-  and is reported, not hidden, in the per-mask table of the page; (b) every adaptive mask passed its null and injection tests and R3 before
-  this run; (c) the variation over seeds is reported as a range, and the statements on the page
-  ("below half of the oracle in n of N cases") are computed from the per-seed minimum, the least
-  favourable reading; (d) the figure was inspected by eye for hidden markers (an earlier version
-  hid transplant markers under the oracle line; series are now offset within each row).
+- **Checks:** (a) the oracle is the best fixed form *on the calibration stack*; on the independent test
+  stack a transplant or the adaptive form can exceed it, and this is reported, not hidden; (b) every
+  adaptive mask passed its null and injection tests and R3 before the run; (c) variation over seeds is
+  shown as a range, and the headline counts are paired: a transplant counts as harmful only if it is
+  more than 1 % below no mask in every seed with at least 20 target events (the pre-registered median
+  rule is reported next to it); (d) the figure was inspected by eye for hidden markers; (e) the second
+  independent review recomputed every headline number from the JSON files and found them to match.
+- **Known weakness (second review):** several oracle optima still sit on the edge of their grids on the
+  shallow and surface sensors (trails at the longest lengths, muons and hot columns at the loosest
+  cuts), so ratios to the oracle overstate the adaptive masks; the harm counts do not depend on it,
+  because no mask and the transplants are divided by the same oracle. Extending the grids needs a
+  re-run (~2 h) and is pending.
 - **Every number on the page** is read from these files by `analysis/build_report.py`; none is typed.
+**History of R4 before the re-run (superseded; kept because it is part of how the result was checked):**
+
 - **A failure found by the second seed, and what was done about it.** Seed 20260916 (4 images)
   showed the adaptive masks failing catastrophically on the surface sensor: combined, 0.1 % of
   clean pixels kept (figure of merit 0.2 against the oracle's 2.2). Cause, from the adaptive
@@ -314,10 +323,10 @@ so both were rewritten and re-run; the numbers produced before this date are not
   columns. The significance radius ignores the exposure a mask costs, whereas the oracle is chosen
   by figure of merit. Fix: within the significant range the radius maximises a figure of merit
   estimated from the data alone (excess of each annulus over the outside density; kept pixels),
-  so the null behaviour of R3 is unchanged (no significant annulus, radius 0). R3 was run before
-  this change and is not re-run: the new radius is never larger than the significance radius and is
+  so the null behaviour of R3 is unchanged (no significant annulus, radius 0). (At the time R3 was
+  not re-run for this change; the new radius is never larger than the significance radius and is
   0 whenever that is 0, so the halo mask can fire only in runs where the previous version fired, and
-  the R3 halo rate is an upper bound for the current code. A unit test with
+  the R3 halo rate was an upper bound. R3 has since been redesigned and re-run.) A unit test with
   dense triggers and a faint extended excess checks that the chosen radius is below the
   significance radius and masks less than half the image.
 - **Truth leaking into the "adaptive" masks, found by an independent review (2026-09-15).** The
@@ -336,11 +345,13 @@ so both were rewritten and re-run; the numbers produced before this date are not
   **This invalidates the R3 and R4 numbers produced before it; both are re-run.**
 - **Guarding against fitting the method to the seeds it was debugged on:** seeds 20260915-17 were
   seen during development. After the fix all three are re-run, and two further seeds, 20260918 and
-  20260919, are run once, with no change to the code in between, and reported separately.
-- **After the fix (all five seeds, code at commit `8041c76`):** no catastrophic adaptive result on any
-  sensor or seed; on the surface sensor the six adaptive masks combined reach a figure of merit of
-  2.0-2.3 against 1.8-2.7 for the oracle and 0.0-1.8 for transplanted constants. The held-out seeds
-  fall inside the ranges of the development seeds.
+  20260919, were run once (later superseded: after the threshold fix the held-out seeds are
+  20260920 and 20260921).
+- **After the halo fix (seeds 20260915-19, code at commit `8041c76`, still with the leaking threshold):**
+  no catastrophic adaptive result. This entry also claimed that "the held-out seeds fall inside the
+  ranges of the development seeds"; the first independent review found that false (48 held-out values
+  fell outside, 8 by more than 0.03), and all these numbers were in any case invalidated by the
+  threshold fix and replaced by the re-run.
 - **A finding the fix exposed, reported and not tuned away:** on the surface sensor the adaptive halo
   radius is 0 in all five seeds, so the halo mask alone reaches ~0.7 of the oracle. Cause: the
   adaptive radius estimates "signal" as all uniform single electrons, because from data alone signal

@@ -1,6 +1,6 @@
 """Figure for R4: each mask's figure of merit relative to the oracle tuned on the same sensor.
 
-Reads every results/compare_masks/**/compare_masks.json (one per independent seed). Small multiples,
+Reads every results/compare_masks/seed_*/compare_masks.json (one per independent seed). Small multiples,
 one panel per sensor, one row per mask (and the six combined). The oracle is the reference line at 1.
 Within a row the series are offset vertically so no marker hides another: blue circles are the
 adaptive masks, orange markers the fixed masks transplanted from each of the other two sensors
@@ -53,7 +53,7 @@ def series_of(preset, mask, presets):
 
 def main():
     ps.apply()
-    inputs = sorted(RESULTS.glob("**/compare_masks.json"))
+    inputs = sorted(RESULTS.glob("seed_*/compare_masks.json"))  # only seed folders: a run without --out must not count twice
     runs = [json.loads(p.read_text(encoding="utf-8"))["per_sensor"] for p in inputs]
     presets = [p for p in SENSORS if p in runs[0]]
     masks = list(MASKS)
