@@ -13,11 +13,13 @@ Read `PLAN.md` first: it states the question, the six masks, the simulator and t
 ## Environment
 
 ```
-conda env create -f environment.yml
-conda activate skmask
-python scripts/fetch_public_data.py
-pytest
+uv sync --group dev                        # exact versions from uv.lock, Python 3.11
+uv run python scripts/fetch_public_data.py
+uv run pytest
 ```
+
+Run every script with `uv run python ...`. `environment.yml` (conda) is kept only as a fallback and is
+not pinned.
 
 ## Provenance (every result)
 
