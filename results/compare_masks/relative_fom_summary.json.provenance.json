@@ -3,12 +3,14 @@
   "output_sha256": "02683843aa155e2d654224218348b1bbe57d1e4e9e9fb93f4882385cefdf48ac",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "d1cf1878a59e2796bce1be7e9627cc68b2474c21",
-    "dirty": true
+    "commit": "1651014d63c16c9f798f9158c6be610f3555240e",
+    "dirty": false,
+    "changed_outputs": 0
   },
   "git_at_write": {
-    "commit": "d1cf1878a59e2796bce1be7e9627cc68b2474c21",
-    "dirty": true
+    "commit": "1651014d63c16c9f798f9158c6be610f3555240e",
+    "dirty": false,
+    "changed_outputs": 2
   },
   "inputs": [
     {
@@ -36,7 +38,7 @@
   "seed": null,
   "results": {},
   "notes": "relative figure of merit, median and range over seeds",
-  "created": "2026-09-15T17:21:11+00:00",
+  "created": "2026-09-15T17:24:27+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
