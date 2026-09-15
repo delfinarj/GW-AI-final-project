@@ -142,6 +142,11 @@ def main():
     worst_adaptive_text = ("" if overall["worst_adaptive"] is None else
                            f"{overall['worst_adaptive'][1]:.2f} "
                            f"({describe((*overall['worst_adaptive'][0], 'adaptive'))})")
+    adaptive_harm_text = (
+        f"never worse than no mask (0 of {overall['n_cases']} cases)" if not overall["adaptive_harm"] else
+        f"worse than no mask in {len(overall['adaptive_harm'])} of {overall['n_cases']} cases ("
+        + "; ".join(f"{describe(k)}, {v:.2f} against {nm:.2f} for no mask" for k, v, nm in overall["adaptive_harm"])
+        + ")")
     held_text = ("" if held is None else
                  f"<p>On the {len(holdout_idx)} seeds run once after the code was frozen and never used to change "
                  f"anything: {len(held['harm'])} of {held['n_transplant']} transplanted cases worse than no mask, "
@@ -295,8 +300,8 @@ a {{ color: var(--accent); }}
 Of the {overall["n_transplant"]} cases in which a mask tuned by hand on one sensor was moved unchanged to another,
 {len(overall["harm"])} ended up <em>worse than applying no mask at all</em> and {len(overall["no_help"])} were no better
 than no mask. {worst_harm_text}</p>
-<p>The same masks written as procedures that calibrate themselves were never worse than no mask
-({len(overall["adaptive_harm"])} of {overall["n_cases"]} cases), with a median {overall["median_adaptive"]:.2f} of the
+<p>The same masks written as procedures that calibrate themselves were {adaptive_harm_text},
+with a median {overall["median_adaptive"]:.2f} of the
 oracle tuned with truth on that same sensor and a worst case of {worst_adaptive_text}. Self-calibration does cost
 something against a mask tuned for the sensor at hand: the best transplanted mask beat it in
 {len(overall["beats_adaptive"])} cases.</p>

@@ -22,9 +22,15 @@ def git_state():
     def run(*args):
         return subprocess.run(["git", "-C", str(REPO_ROOT), *args],
                               capture_output=True, text=True).stdout.strip()
-    # dirty = uncommitted changes to tracked files; new untracked files cannot affect this output
-    return {"commit": run("rev-parse", "HEAD"),
-            "dirty": bool(run("status", "--porcelain", "--untracked-files=no"))}
+    # dirty = uncommitted changes to tracked files that can change an output: code, tests, docs,
+    # environment. Changes under results/ and report/ are outputs, not inputs: a run that follows another
+    # in the same session always finds the earlier outputs rewritten, which says nothing about the code.
+    # "XY path" per line; the whole output is stripped, so split on whitespace instead of slicing columns
+    changed = [line.split(None, 1)[-1] for line in run("status", "--porcelain", "--untracked-files=no").splitlines()
+               if line.strip()]
+    code_changes = [f for f in changed if not f.startswith(("results/", "report/"))]
+    return {"commit": run("rev-parse", "HEAD"), "dirty": bool(code_changes),
+            "changed_outputs": len(changed) - len(code_changes)}
 
 
 # The code that produces a result is the code present when the run starts. Capturing the state only

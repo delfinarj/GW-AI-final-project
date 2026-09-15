@@ -257,6 +257,24 @@ so both were rewritten and re-run; the numbers produced before this date are not
   was run, and the held-out seeds (20260920, 20260921) are run once afterwards and never used to
   change anything.
 
+### What went wrong in the re-run itself (2026-09-15), and what was done
+
+- **Two stale seeds reached the page.** The re-run script began with `git rm` of the old R3 and R4
+  results, but git refused because a short trial of R3 had rewritten a tracked result file, and the
+  script carried on. The folders of seeds 20260918 and 20260919, made with the old threshold at commit
+  `8041c76`, stayed on disk; the figure and the page read every seed folder they find and reported
+  "7 independent seeds". Caught when checking the page after the run; the two folders were removed and
+  the figure, page and PDF regenerated over the five valid seeds (commit `11cc397`). The R3 file of that
+  2-run trial was also committed in `1a0c649` and replaced by the real run in `d1cf187`.
+- **Every R4 sidecar said `dirty: true`.** No tracked file outside `results/` and `report/` changed
+  between the frozen commit `1a0c649` and the results commit `d1cf187` (checked with `git diff`); R3
+  rewrote its tracked result file first, and each later run saw that rewrite. The flag now ignores
+  changes under `results/` and `report/`, which are outputs, and reports how many there were.
+- **The short answer contradicted itself** ("never worse than no mask (1 of 14 cases)"), because the
+  sentence was fixed text; it now follows the count and names the case. And the no-mask marker in the
+  R4 figure was invisible (a line marker given the surface-coloured ring); line markers now carry
+  their colour on the edge.
+
 ### R4. The masks across sensors: oracle, transplant, adaptive
 
 - **Outputs:** `results/compare_masks/compare_masks.json` (seed 20260915) and

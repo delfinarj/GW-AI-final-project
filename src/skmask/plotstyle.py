@@ -46,6 +46,13 @@ def apply():
 
 
 def marker(color, shape="o", size=7):
-    """Keyword arguments for a data marker with a surface-coloured ring."""
+    """Keyword arguments for a data marker with a surface-coloured ring.
+
+    Line-only markers ("|", "_", "+", "x") have no face, so their edge carries the colour; giving them
+    the surface-coloured ring would make them invisible.
+    """
+    if shape in ("|", "_", "+", "x"):
+        return dict(marker=shape, markersize=size + 3, markerfacecolor=color, markeredgecolor=color,
+                    markeredgewidth=2.5, linestyle="none")
     return dict(marker=shape, markersize=size, markerfacecolor=color, markeredgecolor=SURFACE,
                 markeredgewidth=1.5, linestyle="none")
