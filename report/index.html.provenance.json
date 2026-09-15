@@ -1,16 +1,16 @@
 {
   "output": "report/index.html",
-  "output_sha256": "18f4cf08af42f3e18a4680b3f8509cdf9032f6c21f6cbaf50142c6a51af3c7e6",
+  "output_sha256": "5d5303478cedf26632edbe9e7a0a94fae694f6d376edacedfb71407419f63f8d",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
+    "commit": "d83ef7cd87aaa25a2ad2424ca30da24ad3cdd2ed",
     "dirty": false,
-    "changed_outputs": 14
+    "changed_outputs": 4
   },
   "git_at_write": {
-    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
+    "commit": "d83ef7cd87aaa25a2ad2424ca30da24ad3cdd2ed",
     "dirty": false,
-    "changed_outputs": 17
+    "changed_outputs": 6
   },
   "inputs": [
     {
@@ -34,6 +34,10 @@
       "sha256": "31e1622f205422451b82050a0c23d8d377ef6c9a7b3e13eeb9e4798c894842e3"
     },
     {
+      "path": "results/compare_masks/seed_20260917/compare_masks.json",
+      "sha256": "f8a380a501fccb2322bce813f62164797a0f64fdec396c568c98d200395062b7"
+    },
+    {
       "path": "results/compare_masks/seed_20260920/compare_masks.json",
       "sha256": "8f45cc27c4c657441631c25a9c45d07ea9f3d29e3b505aedcdeffe8408cd5bd1"
     },
@@ -46,7 +50,7 @@
   "seed": null,
   "results": {},
   "notes": "presented page; every number read from the inputs",
-  "created": "2026-09-15T22:44:46+00:00",
+  "created": "2026-09-15T23:36:33+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

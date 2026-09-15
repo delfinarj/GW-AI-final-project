@@ -1,16 +1,16 @@
 {
   "output": "results/compare_masks/relative_fom_summary.json",
-  "output_sha256": "710e1b13bbd482eacec473254929898ff42a8c731501042162c5e8e435e5298b",
+  "output_sha256": "7f3ab593e6e2d1abc8da73d0ab4e96168472ec483b12a689b9afcbc22fec5311",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
+    "commit": "d83ef7cd87aaa25a2ad2424ca30da24ad3cdd2ed",
     "dirty": false,
-    "changed_outputs": 10
+    "changed_outputs": 0
   },
   "git_at_write": {
-    "commit": "c4b59f28ab5b122946992d4aa9baaee8c21d3b7f",
+    "commit": "d83ef7cd87aaa25a2ad2424ca30da24ad3cdd2ed",
     "dirty": false,
-    "changed_outputs": 13
+    "changed_outputs": 3
   },
   "inputs": [
     {
@@ -20,6 +20,10 @@
     {
       "path": "results/compare_masks/seed_20260916/compare_masks.json",
       "sha256": "31e1622f205422451b82050a0c23d8d377ef6c9a7b3e13eeb9e4798c894842e3"
+    },
+    {
+      "path": "results/compare_masks/seed_20260917/compare_masks.json",
+      "sha256": "f8a380a501fccb2322bce813f62164797a0f64fdec396c568c98d200395062b7"
     },
     {
       "path": "results/compare_masks/seed_20260920/compare_masks.json",
@@ -34,7 +38,7 @@
   "seed": null,
   "results": {},
   "notes": "relative figure of merit, median and range over seeds",
-  "created": "2026-09-15T22:44:43+00:00",
+  "created": "2026-09-15T23:36:28+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
