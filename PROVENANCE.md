@@ -163,6 +163,28 @@ against a target of 8, normal-vision separation 33.6 and 31.8 against a floor of
 >= 3:1 on both surfaces. Series identity never relies on colour alone: the R4 figure also uses
 marker shape, and every figure has a legend or a single labelled series.
 
+## Reproduction from a clean clone
+
+### Short pass (2026-09-15)
+
+- **What was done:** `git clone` of commit `ab04ab9` into an empty folder, `uv sync --group dev`,
+  `scripts/fetch_public_data.py` (all checksums verified), `pytest` (51 passed), then R1, R2 and R4
+  seed 20260920 re-run in the clone and compared with the committed files by
+  `scripts/compare_results.py` (relative tolerance 1e-9).
+- **Environment actually used by the clone:** Python 3.14.7, numpy 2.5.3, scipy 1.18.1, because that
+  commit did not yet pin Python and uv chose the newest interpreter installed. The committed results
+  were made with Python 3.11.16, numpy 2.4.6, scipy 1.17.1.
+- **Result:** R4 seed 20260920 and R2 are identical to the committed files (largest relative
+  difference 0). R1 differs only in the fit: the single-electron rate by 1.7e-5 relative, its
+  uncertainty by 7.8e-5, the intercept by 6.6e-5; the largest relative difference, 6.6e-3, is on the
+  pull, a number close to zero (-0.0231 against -0.0232). Attributed to the minimiser in scipy 1.18;
+  no physical statement changes.
+- **What it showed about the repository:** the unpinned Python version reported by the second
+  independent review was real. Python is now pinned to 3.11 (`.python-version`, `requires-python`)
+  and `uv.lock` resolves a single numpy, the version the results were made with, so R1 was not re-run.
+- **Not yet done:** the complete pass (R3 and the other four R4 seeds, figures, page, PDF), about
+  2.5 hours, which must run with the computer attended.
+
 ## Results
 
 ### R1. Single-electron rate of the public SENSEI SNOLAB release
