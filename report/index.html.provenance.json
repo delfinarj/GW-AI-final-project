@@ -1,13 +1,13 @@
 {
   "output": "report/index.html",
-  "output_sha256": "b2ce1940fb55c0eef179a14af9084effcd38914deb5d41b833c3af0e10edffc9",
+  "output_sha256": "25a60d99b59a41aaaddcbda67db5571e14edb2a540a441bc625c1ce11f48e891",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "3b1bc3b7dc00f0124f9b73ccf6352f276eeb3bf1",
-    "dirty": true
+    "commit": "546c23e76368b3d67835edb6a6dca452c9a27308",
+    "dirty": false
   },
   "git_at_write": {
-    "commit": "3b1bc3b7dc00f0124f9b73ccf6352f276eeb3bf1",
+    "commit": "546c23e76368b3d67835edb6a6dca452c9a27308",
     "dirty": true
   },
   "inputs": [
@@ -52,7 +52,7 @@
   "seed": null,
   "results": {},
   "notes": "presented page; every number read from the inputs",
-  "created": "2026-09-14T18:52:35+00:00",
+  "created": "2026-09-15T04:12:02+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
