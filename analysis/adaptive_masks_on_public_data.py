@@ -75,9 +75,25 @@ def run_exposure(exposure_s):
     cti = [M.cti_mask(e, length_h, length_v) for e in stack]
     radius, halo_info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=cti)
     halo = [M.halo_mask(e, radius) for e in stack]
-    columns = M.adaptive_hot_columns(stack, alpha=ALPHA, exclude=[c | h for c, h in zip(cti, halo)])
-    pixels = M.adaptive_hot_pixels(stack, alpha=ALPHA, exclude=[c | h for c, h in zip(cti, halo)])
+    before_hot = [c | h for c, h in zip(cti, halo)]
+    columns = M.adaptive_hot_columns(stack, alpha=ALPHA, exclude=before_hot)
+    pixels = M.adaptive_hot_pixels(stack, alpha=ALPHA, exclude=before_hot)
     hot = [M.column_mask(e.shape, columns) | pixels for e in stack]
+
+    # Is a flagged column anomalous on its own terms? Its rate of charged low-charge pixels against
+    # the rate of the columns that were not flagged, the same counts the calibration works with.
+    charged = np.zeros(stack[0].shape[1])
+    valid_pixels = np.zeros_like(charged)
+    for electrons, excluded in zip(stack, before_hot):
+        charged += (M.low_charge_occupancy(electrons) & ~excluded).sum(axis=0)
+        valid_pixels += (~excluded).sum(axis=0)
+    flagged = np.zeros(charged.size, dtype=bool)
+    flagged[list(columns)] = True
+    common_rate = float(charged[~flagged].sum() / max(valid_pixels[~flagged].sum(), 1.0))
+    flagged_rates = (charged[flagged] / np.maximum(valid_pixels[flagged], 1.0)).tolist()
+    hot_column_evidence = {"common_rate_charged_pixels": common_rate,
+                           "flagged_column_rates": [float(r) for r in flagged_rates],
+                           "ratio_to_common": [float(r / common_rate) for r in flagged_rates] if common_rate else None}
 
     serial, lec = [], []
     for e, h, c in zip(stack, hot, cti):
@@ -118,6 +134,7 @@ def run_exposure(exposure_s):
 
     return {"exposure_s": exposure_s, "images": len(stack), "shape": list(stack[0].shape),
             "trigger_pixels": {"total": int(sum(triggers)), "median_per_image": float(np.median(triggers))},
+            "hot_column_evidence": hot_column_evidence,
             "cti_detail": cti_detail,
             "measured_noise_e": {"median": float(np.median(noise)), "min": min(noise), "max": max(noise)},
             "measured_density_1e": {"median": float(np.median(density)), "min": min(density), "max": max(density)},
@@ -140,6 +157,10 @@ def main():
         print(f"  {r['images']} images, noise {r['measured_noise_e']['median']:.3f} e, "
               f"1e density {r['measured_density_1e']['median']:.2e}", flush=True)
         print(f"  chose {r['constants_chosen']}", flush=True)
+        ratios = r["hot_column_evidence"]["ratio_to_common"] or []
+        if ratios:
+            print(f"  flagged columns carry {min(ratios):.0f}-{max(ratios):.0f} times the charged-pixel rate "
+                  f"of the columns left alone", flush=True)
         print(f"  {r['trigger_pixels']['total']} trigger pixels in all, median "
               f"{r['trigger_pixels']['median_per_image']:.0f} per image; smallest trail p-value "
               f"h {r['cti_detail']['h']['smallest_p']:.2g}, v {r['cti_detail']['v']['smallest_p']:.2g} "

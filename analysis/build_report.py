@@ -252,6 +252,7 @@ def main():
                                    "&mdash;" if theirs is None else f"{theirs:.3f}"])
         hot_agreement = [r["against_release"]["hot_columns_pixels"]["median_fraction_of_ours_also_theirs"]
                          for r in rows if r["against_release"]["hot_columns_pixels"]["median_fraction_of_ours_also_theirs"] is not None]
+        hot_ratios = [x for r in rows for x in (r["hot_column_evidence"]["ratio_to_common"] or [])]
         noises = [r["measured_noise_e"]["median"] for r in rows]
         published_noise = PRESETS["deep_underground"].noise_e
         last = rows[-1]
@@ -271,7 +272,8 @@ that mask follows the hypothesis tested against the release's own geometry earli
 against the {published_noise:.2f} e of the release paper, and a single-electron density that grows with exposure.
 Of everything the hot-column and hot-pixel procedure flags, the release also flags between
 {min(hot_agreement):.2f} and {max(hot_agreement):.2f}: on a real sensor, unaided, it lands inside a mask a person
-tuned.</p>
+tuned. The columns it picks are not marginal either: each carries between {min(hot_ratios):.0f} and
+{max(hot_ratios):.0f} times the charged-pixel rate of the columns it left alone.</p>
 {table(["Exposure", "Images", "Trigger pixels", "Measured noise (e)", "1e density (e/pix)",
         "Trail lengths h / v", "Halo radius", "Hot columns / pixels", "Fraction masked"], chose_rows)}
 <p>{"The trail calibration chose length zero on every exposure, which the expectation registered in PLAN.md did not predict." if trail_zero else "The trail calibration chose a non-zero length."}

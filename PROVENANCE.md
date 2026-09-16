@@ -518,8 +518,10 @@ so both were rewritten and re-run; the numbers produced before this date are not
   its median per exposure is 0.141-0.142 e, which agrees to 0.001 e with the 0.1413-0.1420 e that R1
   fits per exposure on the same files through a separate code path; (ii) the
   hot columns are stable across exposures, with columns 8, 842 and 2229 appearing in three or four of
-  them, which a spurious flag would not do; (iii) the halo radius grows with the number of triggers,
-  as a procedure driven by counting statistics should.
+  them, which a spurious flag would not do; (iii) each flagged column carries 99 to 1830 times the
+  rate of charged low-charge pixels of the columns left alone, the same counts the calibration works
+  with, so these are not marginal flags (recorded per column in the result file); (iv) the halo radius
+  grows with the number of triggers, as a procedure driven by counting statistics should.
 - **What it does not show:** the single-electron densities here are measured on unmasked data and are
   therefore larger than R1's, which are fitted after the release mask; they are not the same quantity
   and the two numbers must not be compared as if they were. And with four masks checkable on one real

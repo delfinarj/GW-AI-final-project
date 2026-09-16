@@ -148,7 +148,8 @@ that mask follows the hypothesis tested against the release's own geometry earli
 against the 0.14 e of the release paper, and a single-electron density that grows with exposure.
 Of everything the hot-column and hot-pixel procedure flags, the release also flags between
 0.99 and 1.00: on a real sensor, unaided, it lands inside a mask a person
-tuned.</p>
+tuned. The columns it picks are not marginal either: each carries between 99 and
+1830 times the charged-pixel rate of the columns it left alone.</p>
 <div class='table-wrap'><table class=''><thead><tr><th scope='col'>Exposure</th><th scope='col'>Images</th><th scope='col'>Trigger pixels</th><th scope='col'>Measured noise (e)</th><th scope='col'>1e density (e/pix)</th><th scope='col'>Trail lengths h / v</th><th scope='col'>Halo radius</th><th scope='col'>Hot columns / pixels</th><th scope='col'>Fraction masked</th></tr></thead><tbody><tr><td>0 h</td><td>14</td><td>0</td><td>0.142</td><td>1.34 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>2 / 8</td><td>0.0007</td></tr><tr><td>2 h</td><td>14</td><td>70</td><td>0.142</td><td>1.72 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>4 / 8</td><td>0.0013</td></tr><tr><td>6 h</td><td>14</td><td>103</td><td>0.141</td><td>2.95 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>10</td><td>6 / 7</td><td>0.0120</td></tr><tr><td>20 h</td><td>13</td><td>844</td><td>0.141</td><td>6.52 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>15</td><td>6 / 8</td><td>0.0534</td></tr></tbody></table></div>
 <p>The trail calibration chose length zero on every exposure, which the expectation registered in PLAN.md did not predict.
 The reason is in the result file: the release blinds its hits, so a whole exposure holds
