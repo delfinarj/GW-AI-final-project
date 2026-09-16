@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sensor-independent masks</title>
+<style>
+:root {
+  --bg: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink-2: #52514e; --muted: #898781;
+  --rule: #e1e0d9; --accent: #2a78d6; --callout: #eef4fc;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+    --muted: #898781; --rule: #2c2c2a; --accent: #3987e5; --callout: #16222f; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #0d0d0d; --surface: #1a1a19; --ink: #ffffff; --ink-2: #c3c2b7;
+  --muted: #898781; --rule: #2c2c2a; --accent: #3987e5; --callout: #16222f; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.6 "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif; }
+main { max-width: 42rem; margin: 0 auto; padding-inline: 1rem; padding-block: 4rem 4rem; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 .5rem; letter-spacing: -0.01em; }
+.lede { font-size: 1.15rem; color: var(--ink-2); margin: 0 0 2rem; }
+.meta { color: var(--muted); font-size: .9rem; }
+ul.doors { list-style: none; padding: 0; margin: 2rem 0; }
+ul.doors li { border-top: 1px solid var(--rule); padding: 1rem 0; }
+ul.doors li:last-child { border-bottom: 1px solid var(--rule); }
+ul.doors a { font-size: 1.05rem; font-weight: 600; text-decoration: none; }
+ul.doors a:hover { text-decoration: underline; }
+ul.doors p { margin: .25rem 0 0; color: var(--ink-2); font-size: .95rem; }
+a { color: var(--accent); }
+code { font-family: Consolas, "SFMono-Regular", Menlo, monospace; font-size: .88em; }
+</style>
+</head>
+<body>
+<main>
+<h1>Masks for Skipper-CCD images that do not depend on the sensor</h1>
+<p class="lede">Can the masks that remove readout defects, material defects and unwanted physics from a
+Skipper-CCD image be written so that they work on a sensor they were never tuned on?</p>
+<p class="meta">D. Rodriguez Juiz &middot; final project &middot; every number on these pages is read from a
+result file, and every result file carries a sidecar with the code, the inputs and the seed that made it.</p>
+
+<ul class="doors">
+<li><a href="report/index.html">The report</a>
+<p>The question, the six masks in their fixed and adaptive forms, what was measured on three simulated
+sensors and on the public SENSEI data release, how each result was checked, and what is still wrong with it.</p></li>
+<li><a href="report/report.pdf">The same report as a PDF</a>
+<p>Printed from the page itself, so no number is retyped.</p></li>
+<li><a href="https://github.com/delfinarj/GW-AI-final-project/blob/main/PROVENANCE.md">PROVENANCE.md</a>
+<p>Where every input came from, what was written from scratch and what was called from a library, every
+choice that had a defensible alternative, how each result was checked, and every error found along the way.</p></li>
+<li><a href="https://github.com/delfinarj/GW-AI-final-project/blob/main/README.md">README.md</a>
+<p>What the repository contains and how to reproduce all of it from a clean clone with <code>uv</code>.</p></li>
+</ul>
+</main>
+</body>
+</html>
