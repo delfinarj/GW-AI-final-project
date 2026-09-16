@@ -1,0 +1,40 @@
+{
+  "n_runs": 100,
+  "images_per_run": 2,
+  "seed": 20260917,
+  "per_sensor": {
+    "deep_underground": {
+      "images": 200,
+      "fired": 0,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.018275340355136237
+      ],
+      "largest_fraction_masked": 0.0,
+      "mean_fraction_masked": 0.0
+    },
+    "shallow_underground": {
+      "images": 200,
+      "fired": 0,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.018275340355136237
+      ],
+      "largest_fraction_masked": 0.0,
+      "mean_fraction_masked": 0.0
+    },
+    "surface_lab": {
+      "images": 200,
+      "fired": 0,
+      "rate": 0.0,
+      "ci95": [
+        0.0,
+        0.018275340355136237
+      ],
+      "largest_fraction_masked": 0.0,
+      "mean_fraction_masked": 0.0
+    }
+  }
+}

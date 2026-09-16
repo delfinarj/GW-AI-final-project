@@ -1,16 +1,16 @@
 {
   "output": "report/index.html",
-  "output_sha256": "fb4d552a82f799448371ae83616228554d5cd8ef93c888b86388e29eb6dd04b7",
+  "output_sha256": "727430eb18c37679d1f515d6bcfd70ef5af4238924e9ed93947238ebc2caaab3",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
+    "commit": "ddcec994bfd2149304b5587b51e28d6b8155e578",
     "dirty": true,
-    "changed_outputs": 4
+    "changed_outputs": 2
   },
   "git_at_write": {
-    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
+    "commit": "ddcec994bfd2149304b5587b51e28d6b8155e578",
     "dirty": true,
-    "changed_outputs": 4
+    "changed_outputs": 2
   },
   "inputs": [
     {
@@ -52,13 +52,17 @@
     {
       "path": "results/adaptive_on_public/adaptive_on_public.json",
       "sha256": "a86c001270aefe672fdb4e15b9c3b69c982c5f501a24436561bb3d124922dac1"
+    },
+    {
+      "path": "results/muon_mask_null_rate/muon_null.json",
+      "sha256": "6cbd28aedd612ef6d1b32514ace8d3d6675867eb8245ab75c5281a83a691e2f8"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "presented page; every number read from the inputs",
-  "created": "2026-09-16T16:43:25+00:00",
+  "created": "2026-09-16T17:01:53+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

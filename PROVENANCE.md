@@ -570,6 +570,33 @@ so both were rewritten and re-run; the numbers produced before this date are not
   sensor, this is a demonstration that the procedure survives contact with real data, not a
   measurement of how well it does in general.
 
+### R7. The muon mask with no tracks at all
+
+- **Output:** `results/muon_mask_null_rate/muon_null.json` and sidecar. No figure: three numbers.
+- **Produced by:** `analysis/muon_mask_null_rate.py 100`, 100 runs of 2 images on each of the three
+  presets with every defect off and, unlike R3 and R5, the muon flux and the high-energy background
+  set to zero as well. Seed 20260917, one generator per sensor seeded by (seed, index) rather than by
+  the sensor's name, since `hash` of a string differs between processes.
+- **Why it exists:** R3 and R5 keep tracks on, because a real sensor cannot switch them off and
+  because the halo is generated from their charge, and on the public release of R6 the muon mask is
+  not run at all. So the sixth mask had never been asked the question the other five were asked. This
+  asks it in the only place tracks can be absent, the simulator.
+- **Choices with a defensible alternative:** the high-energy background is switched off with the
+  muons, because it produces the same kind of compact deposit the mask could mistake for a short
+  track; leaving it on would measure something else. The mask's threshold is physical, so there is no
+  alpha to compare the rate with, and the result is reported as a rate with its interval rather than
+  as a verdict.
+- **Result:** 0 firings in 200 images on each of the three sensors, 0 of 600 in all, an upper limit of
+  0.018 at 95 % per sensor, and no pixel masked in any image. The expectation registered in PLAN.md
+  before the run said zero, for a stated reason: the mask needs a cluster carrying about the charge a
+  minimum-ionising particle leaves crossing the sensor, of order a hundred electrons, and what is left
+  in these images is single electrons from dark current, spurious charge and the injected signal.
+- **What it does not show:** 0 of 200 cannot exclude a rate below about 0.018, and nothing here says
+  what the mask does to a real track it should catch, which is R4's business. It also does not test
+  the mask against the one thing that could plausibly imitate a track and is not in these images: a
+  long, thin defect such as a partially charged column, which the hot-column mask removes first in
+  the chain but which would reach the muon mask if the hot-column calibration missed it.
+
 ## Second independent review (2026-09-16), of R5 and R6
 
 A second agent reviewed the new work with no access to this conversation. Its findings are recorded

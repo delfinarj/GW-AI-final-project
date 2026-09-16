@@ -71,6 +71,8 @@ def main():
     cross_figure = RES / "cross_defect_false_positives" / "cross_defect.png"
     # the section embeds the figure, so it appears only when both exist
     cross = load(cross_path) if cross_path.exists() and cross_figure.exists() else None
+    muon_null_path = RES / "muon_mask_null_rate" / "muon_null.json"
+    muon_null = load(muon_null_path) if muon_null_path.exists() else None
     public_path = RES / "adaptive_on_public" / "adaptive_on_public.json"
     public = load(public_path) if public_path.exists() else None
     seed_files = sorted((RES / "compare_masks").glob("seed_*/compare_masks.json"))
@@ -449,6 +451,24 @@ fewest times that could produce this verdict at all.</p>
             f"{s.muon_flux_per_cm2_day:.2g}", f"{s.highE_dru:.3g}",
             f"{s.halo_length_um:.0f} / {s.cti_h_length_pix:.0f} / {s.n_hot_columns}"])
 
+    if not muon_null:
+        muon_null_text = ""
+    else:
+        per = muon_null["per_sensor"]
+        images = {v["images"] for v in per.values()}
+        fired_total = sum(v["fired"] for v in per.values())
+        worst = max(v["ci95"][1] for v in per.values())
+        muon_null_text = (
+            f"<p>The muon mask is not in that table, and could not be: the five above are switched off by setting a "
+            f"defect rate to zero, while tracks are what a real sensor cannot switch off, and the halo is generated "
+            f"from their charge. Asked separately, on sensors with the tracks and the high-energy background switched "
+            f"off as well, it fired in {fired_total} of {sum(v['images'] for v in per.values())} images "
+            f"({'all three sensors, ' if len(images) == 1 else ''}{max(images)} images each), an upper limit of "
+            f"{worst:.3f} at 95 %. Its threshold is physical rather than a tail probability &mdash; a cluster long "
+            f"enough, straight enough and carrying about the charge a minimum-ionising particle leaves crossing this "
+            f"sensor &mdash; so there is no &alpha; for it to match; what is measured is whether dark current can "
+            f"imitate a track, and at these exposures it cannot.</p>")
+
     null_rows = []
     for sensor, masks in null["per_sensor"].items():
         for mask, v in masks.items():
@@ -655,6 +675,7 @@ visible as well.</p>
 {figure("null_rates.png", "For each sensor and mask, the fraction of trials without the defect in which the mask fired, with 95 percent intervals, against alpha equal to 0.01.",
         "Clopper&ndash;Pearson 95 % intervals; the vertical line is &alpha; = 0.01. Intervals are wide because 50 runs cannot resolve 0.01 from 0.03.")}
 {table(["Sensor", "Adaptive mask", "Unit", "Fired / trials", "Rate", "95 % interval", "Against &alpha;"], null_rows)}
+{muon_null_text}
 
 {cross_section}
 <h2>Result RESULT_N &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
@@ -707,6 +728,7 @@ uv run python analysis/reproduce_release_rate.py
 uv run python analysis/check_release_mask_bits.py
 uv run python analysis/adaptive_masks_on_public_data.py
 uv run python analysis/null_false_positive_rates.py 50
+uv run python analysis/muon_mask_null_rate.py 100
 uv run python analysis/cross_defect_false_positives.py 20
 for seed in 20260915 20260916 20260917 20260920 20260921; do
   uv run python analysis/compare_masks_across_sensors.py 4 --seed $seed --out results/compare_masks/seed_$seed
@@ -739,6 +761,8 @@ number above it, because it describes a run made outside this repository.</p>
         inputs.append(cross_path)
     if public:
         inputs.append(public_path)
+    if muon_null:
+        inputs.append(muon_null_path)
     write_sidecar(output, __file__, inputs=inputs, notes="presented page; every number read from the inputs")
     print(f"wrote {output} ({n_seeds} R4 seeds)")
 

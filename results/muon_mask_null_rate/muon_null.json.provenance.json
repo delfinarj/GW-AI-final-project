@@ -1,0 +1,43 @@
+{
+  "output": "results/muon_mask_null_rate/muon_null.json",
+  "output_sha256": "6cbd28aedd612ef6d1b32514ace8d3d6675867eb8245ab75c5281a83a691e2f8",
+  "script": "analysis/muon_mask_null_rate.py",
+  "git": {
+    "commit": "ddcec994bfd2149304b5587b51e28d6b8155e578",
+    "dirty": false,
+    "changed_outputs": 0
+  },
+  "git_at_write": {
+    "commit": "ddcec994bfd2149304b5587b51e28d6b8155e578",
+    "dirty": true,
+    "changed_outputs": 2
+  },
+  "inputs": [],
+  "parameters": {
+    "n_runs": 100,
+    "images_per_run": 2,
+    "all_off": {
+      "n_hot_columns": 0,
+      "hot_column_e_per_pix": 0.0,
+      "n_hot_pixels": 0,
+      "hot_pixel_e": 0.0,
+      "cti_h_prob": 0.0,
+      "cti_v_prob": 0.0,
+      "serial_hits_per_image": 0.0,
+      "lowE_clusters_per_image": 0.0,
+      "halo_yield_per_e": 0.0,
+      "muon_flux_per_cm2_day": 0.0,
+      "highE_dru": 0.0
+    }
+  },
+  "seed": 20260917,
+  "results": {},
+  "notes": "how often the adaptive muon mask fires on sensors with no tracks at all",
+  "created": "2026-09-16T17:01:40+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}
