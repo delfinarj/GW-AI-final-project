@@ -8,7 +8,9 @@ by scripts/make_pdf.py.
 Run:  python analysis/build_report.py
 """
 import html
+import itertools
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -273,7 +275,7 @@ def main():
         public_limitation = ("<li>On the real release only four of the six masks can be checked at all: it publishes "
                              "no counterpart to the low-energy-cluster mask, and its binned superpixels make the muon "
                              "mask's geometry meaningless, so that mask was not run there.</li>")
-        public_section = f"""<h2>Result 4 &middot; The same procedures on a real sensor</h2>
+        public_section = f"""<h2>Result RESULT_N &middot; The same procedures on a real sensor</h2>
 <p>Everything above is simulated. Here the adaptive masks run unchanged on the {len(rows)} exposures of the public
 SENSEI SNOLAB release: a fourth sensor, real, with a geometry none of the presets has ({last["shape"][1]} &times;
 {last["shape"][0]} active superpixels, each binning {sp_rows} physical rows, so a step along a column is {sp_rows}
@@ -337,12 +339,20 @@ which this p-value still does not meet, so the decision stands. The halo radius 
                        if not cross_fire_rows else
                        table(["Sensor", "Only defect present", "Mask that fired", "Unit", "Fired / trials",
                               "Rate", "95 % interval", "Median fraction masked", "Against &alpha;"], cross_fire_rows))
-        cross_section = f"""<h2>Result 2 &middot; What a mask fires on when the defect present is not its own</h2>
-<p>Result 1 switches every defect off together, so a mask that fires on <em>another</em> mask's defect passes it
+        cross_section = f"""<h2>Result RESULT_N &middot; What a mask fires on when the defect present is not its own</h2>
+<p>The defect-free test above switches every defect off together, so a mask that fires on <em>another</em> mask's defect passes it
 unseen. Here each sensor is simulated with one defect at its preset value and the other four at zero,
 {n_configs} configurations in all, {cross["n_runs_completed"]} runs each, with the same chain of adaptive
 calibrations and the same things a real sensor cannot switch off. A mask that fires when its own defect is absent
 and another one is present is firing on the wrong thing.</p>
+<p class="meta">The same question is asked of {cross["cells_tested"]} mask-and-defect cells, so the bound a cell has
+to clear is taken at {100 * cross["confidence_of_the_corrected_bound"]:.2f} % confidence rather than 95 %, which
+controls a {100 * cross["family_wise_error"]:.0f} % chance of one false call over the whole grid. The hot-column row
+is compared with {2 * cross["alpha"]:.2f} rather than &alpha;, because it fires when either of two &alpha;-level
+procedures does. Two caveats the design cannot remove: the {cross["images_per_run"]} images of a run share the
+calibrations made on that run's stack, so for the two per-image masks they are not independent trials and the
+intervals are narrower than they should be; and a cell marked below as sitting at its detection floor fired the
+fewest times that could produce this verdict at all.</p>
 <p>{cross_text}</p>
 <div class="wide">
 {figure("cross_defect.png",
@@ -419,11 +429,14 @@ and another one is present is firing on the wrong thing.</p>
                     if not isinstance(v, dict) or v["own_defect"] or not v["trials"]:
                         continue
                     on_fire = v["verdict"] == "fires on this other defect"
+                    verdict = ("<strong>fires on it</strong>" if on_fire else "consistent with &alpha;")
+                    if on_fire and v.get("at_detection_floor"):
+                        verdict += " (at the detection floor)"
                     row = [SENSOR_NAMES[sensor], GROUP_NAMES[group], NULL_NAMES[mask],
                            f"per {v['unit']}", f"{v['fired']} / {v['trials']}", f"{v['rate']:.2f}",
                            f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]",
                            "&mdash;" if v["median_masked_fraction"] is None else f"{v['median_masked_fraction']:.3f}",
-                           "<strong>fires on it</strong>" if on_fire else "consistent with &alpha;"]
+                           verdict]
                     cross_rows.append(row)
                     if on_fire:
                         cross_fire_rows.append(row)
@@ -627,7 +640,7 @@ order was checked against them. The noisy-row bit never appears in the active ar
 {table(["Bit", "Name (hypothesis)", "Fraction in whole columns", "Bright pixel upstream / only downstream", "Median distance to &gt;100 e (px)"], bit_rows)}
 </details>
 
-<h2>Result 1 &middot; How often the adaptive masks fire when there is nothing to find</h2>
+<h2>Result RESULT_N &middot; How often the adaptive masks fire when there is nothing to find</h2>
 <p>{null['n_runs']} independent runs of each of the three sensors with every defect the masks look for switched
 off, keeping what a real sensor cannot switch off: dark current, spurious charge, the injected signal, muon tracks
 and high-energy deposits. The stack-calibrated masks decide once per run of {null['images_per_run']} images; the
@@ -638,7 +651,7 @@ visible as well.</p>
 {table(["Sensor", "Adaptive mask", "Unit", "Fired / trials", "Rate", "95 % interval", "Against &alpha;"], null_rows)}
 
 {cross_section}
-<h2>Result 3 &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
+<h2>Result RESULT_N &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
 <div class="wide">
 {figure("compare_masks.png", "Small multiples for three sensors: figure of merit of adaptive masks and of fixed masks transplanted from other sensors, relative to the oracle.",
         f"Figure of merit relative to the oracle tuned with truth on the same sensor (vertical line). Markers are medians over {n_seeds} seed{'s' if n_seeds > 1 else ''}"
@@ -709,6 +722,9 @@ number above it, because it describes a run made outside this repository.</p>
 </body>
 </html>
 """
+    numbers = itertools.count(1)
+    page = re.sub("RESULT_N", lambda _: str(next(numbers)), page)
+
     output = OUT / "index.html"
     output.write_text(page, encoding="utf-8")
     inputs = [RES / "release_rate" / "release_rate.json", RES / "release_mask_bits" / "mask_bit_signatures.json",

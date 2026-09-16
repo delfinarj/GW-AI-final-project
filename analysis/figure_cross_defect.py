@@ -50,9 +50,12 @@ def main():
                 if not row["trials"]:
                     continue
                 fires = row["verdict"] == "fires on this other defect"
-                colour = ps.SERIES[1] if fires else ps.SERIES[0]
                 rate = row["rate"]
-                ax.scatter([x], [y], s=max(MAX_AREA * rate, 12), color=colour,
+                if rate == 0:                  # never fired: a dot the eye cannot mistake for a rate
+                    ax.scatter([x], [y], s=7, color=ps.MUTED, zorder=3)
+                    continue
+                colour = ps.SERIES[1] if fires else ps.SERIES[0]
+                ax.scatter([x], [y], s=max(MAX_AREA * rate, 14), color=colour,
                            edgecolors=ps.SURFACE, linewidths=1.2, zorder=3)
                 if fires:                      # label only what the reader has to act on
                     ax.text(x, y + 0.34, f"{rate:.2f}", va="top", ha="center", fontsize=7,
@@ -66,16 +69,20 @@ def main():
     axes[0].set_yticks(range(len(masks)), [MASKS[m] for m in masks], fontsize=7)
     axes[0].set_ylim(len(masks) - 0.4, -0.6)
     axes[0].set_ylabel("mask", color=ps.INK_SECONDARY)
-    handles = [Line2D([], [], **ps.marker(ps.SERIES[0], "o", 7)),
+    handles = [Line2D([], [], marker="o", markersize=3, markerfacecolor=ps.MUTED,
+                      markeredgecolor=ps.MUTED, linestyle="none"),
+               Line2D([], [], **ps.marker(ps.SERIES[0], "o", 7)),
                Line2D([], [], **ps.marker(ps.SERIES[1], "o", 7)),
                Line2D([], [], marker="o", markersize=8, markerfacecolor="none",
                       markeredgecolor=ps.AXIS, linestyle="none")]
-    labels = [f"consistent with α = {alpha}", "fires on this other defect", "its own defect"]
-    fig.legend(handles, labels, loc="outside upper center", ncol=3, fontsize=8,
+    labels = ["never fired", f"consistent with α = {alpha}", "fires on this other defect",
+              "its own defect"]
+    fig.legend(handles, labels, loc="outside upper center", ncol=4, fontsize=8,
                labelcolor=ps.INK_SECONDARY, handletextpad=0.4)
-    fig.supxlabel(f"the only defect switched on; dot area and number are the fraction of trials in which "
-                  f"the mask fired ({data['n_runs_completed']} runs per configuration)",
-                  fontsize=9, color=ps.INK_SECONDARY)
+    # the run count lives on the page, which reads it from the same file at build time; repeating it
+    # here would let the caption and the text disagree if the analysis is still running
+    fig.supxlabel("the only defect switched on; dot area and number are the fraction of trials in which "
+                  "the mask fired", fontsize=9, color=ps.INK_SECONDARY)
     fig.savefig(OUTPUT, dpi=200, bbox_inches="tight")
     write_sidecar(OUTPUT, __file__, inputs=[INPUT], notes="figure of R5")
     print(f"wrote {OUTPUT}")

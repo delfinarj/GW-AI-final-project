@@ -56,7 +56,11 @@ def test_resumed_run_matches_uninterrupted_run(module):
     module.main(4)          # resumes from the file left behind
     resumed = result(module)
 
-    assert resumed == uninterrupted
+    # the numbers must match; the record of how the file was produced must not pretend they do
+    without_record = lambda d: {k: v for k, v in d.items() if k != "code_commits"}
+    assert without_record(resumed) == without_record(uninterrupted)
+    assert [c["from_run"] for c in uninterrupted["code_commits"]] == [0]
+    assert [c["from_run"] for c in resumed["code_commits"]] == [0, 2]
 
 
 def test_a_finished_run_is_not_repeated(module, capsys):

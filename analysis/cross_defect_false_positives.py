@@ -15,8 +15,13 @@ What cannot be switched off is kept in every configuration, exactly as in R3: da
 charge, the injected signal, muon tracks and high-energy deposits. Muons in particular stay on
 because the halo is generated from deposited charge: with no tracks there is no halo to switch on.
 
-The reference for "should not fire" is the same alpha the masks are built with. A mask is called to
-fire on another defect when the Clopper-Pearson 95 % interval of its rate lies entirely above alpha.
+The reference for "should not fire" is the alpha the mask is built with: alpha for four of them, and
+twice alpha for the hot-column row, which fires when either of two alpha-level procedures does (a
+column or a pixel). A mask is called to fire on another defect when a Clopper-Pearson lower bound
+lies above that rate. The bound is taken at a confidence corrected for the number of cells tested,
+because the same question is asked of every mask in every configuration; without that correction,
+with 60 cells at 5 %, about one and a half cells would be declared to fire by chance alone. Both
+intervals are written out: the plain 95 % one, and the corrected one the verdict uses.
 
 Run:  python analysis/cross_defect_false_positives.py [n_runs]
 
@@ -35,7 +40,7 @@ import numpy as np
 from skmask import masks as M
 from skmask.estimate import electrons_from_image
 from skmask.presets import PRESETS
-from skmask.provenance import write_sidecar
+from skmask.provenance import STATE_AT_START, write_sidecar
 from skmask.simulate import simulate
 from skmask.stats import clopper_pearson
 
@@ -58,6 +63,11 @@ MASK_TARGET = {"hot_columns": "hot_columns_pixels", "cti": "cti", "halo": "halo"
                "serial": "serial", "low_energy_clusters": "low_energy_clusters"}
 PER_RUN = ("hot_columns", "cti", "halo")
 PER_IMAGE = ("serial", "low_energy_clusters")
+FAMILY = 0.05          # family-wise error the corrected interval controls, over the cells tested
+# The rate each row should not exceed when its own defect is absent. The hot-column row fires when
+# either the column procedure or the pixel procedure does, and each carries its own alpha.
+NOMINAL = {"hot_columns": 2 * ALPHA, "cti": ALPHA, "halo": ALPHA, "serial": ALPHA,
+           "low_energy_clusters": ALPHA}
 
 
 def configurations():
@@ -104,29 +114,55 @@ def raw_key(name, group):
     return f"{name}|{group}"
 
 
+def smallest_firing_count(n, level, nominal):
+    """The fewest firings at which this cell could be called to fire: its detection floor."""
+    for k in range(1, n + 1):
+        if clopper_pearson(k, n, level)[0] > nominal:
+            return k
+    return None
+
+
 def summarise(cells, n_runs_done, n_runs_target):
+    tested = sum(1 for (name, group), cell in cells.items() for mask in PER_RUN + PER_IMAGE
+                 if MASK_TARGET[mask] != group and cell["trials"][mask])
+    level = 1.0 - FAMILY / max(tested, 1)
     per_sensor = {}
     for (name, group), cell in cells.items():
         rows = {}
         for mask in PER_RUN + PER_IMAGE:
             k, n = cell["fired"][mask], cell["trials"][mask]
             lo, hi = clopper_pearson(k, n) if n else (float("nan"), float("nan"))
+            lo_family = clopper_pearson(k, n, level)[0] if n else float("nan")
             own = MASK_TARGET[mask] == group
             fractions = cell["fraction"][mask]
+            floor = smallest_firing_count(n, level, NOMINAL[mask]) if n and not own else None
             rows[mask] = {"unit": "run" if mask in PER_RUN else "image",
                           "own_defect": own, "fired": int(k), "trials": int(n),
                           "rate": (k / n) if n else None, "ci95": [lo, hi],
+                          "nominal_rate": NOMINAL[mask], "lower_bound_family_corrected": lo_family,
+                          "smallest_count_that_would_fire": floor,
+                          "at_detection_floor": bool(floor is not None and k == floor),
                           "median_masked_fraction": float(np.median(fractions)) if fractions else None,
                           "verdict": ("its own defect" if own else
-                                      ("fires on this other defect" if n and lo > ALPHA else
+                                      ("fires on this other defect" if n and lo_family > NOMINAL[mask] else
                                        "consistent with alpha" if n else None))}
         rows["halo_uncalibrated_runs"] = cell["uncalibrated"]
         per_sensor.setdefault(name, {})[group] = rows
     raw = {raw_key(n, g): {"fired": c["fired"], "trials": c["trials"], "fraction": c["fraction"],
                            "uncalibrated": c["uncalibrated"]} for (n, g), c in cells.items()}
-    return {"alpha": ALPHA, "n_runs_completed": n_runs_done, "n_runs_target": n_runs_target,
-            "images_per_run": IMAGES_PER_RUN, "seed": SEED, "per_sensor": per_sensor,
-            "counts_this_was_built_from": raw}
+    return {"alpha": ALPHA, "family_wise_error": FAMILY, "cells_tested": tested,
+            "confidence_of_the_corrected_bound": level, "nominal_rate_per_mask": NOMINAL,
+            "n_runs_completed": n_runs_done, "n_runs_target": n_runs_target,
+            "images_per_run": IMAGES_PER_RUN, "seed": SEED,
+            "images_of_a_run_are_not_independent_trials": True,
+            "per_sensor": per_sensor, "counts_this_was_built_from": raw}
+
+
+def sidecar_parameters(n_runs):
+    return {"alpha": ALPHA, "family_wise_error": FAMILY, "n_runs": n_runs,
+            "images_per_run": IMAGES_PER_RUN, "defects_off": DEFECTS_OFF,
+            "groups": {k: list(v) for k, v in GROUPS.items()}, "mask_target": MASK_TARGET,
+            "nominal_rate_per_mask": NOMINAL}
 
 
 def main(n_runs):
@@ -139,6 +175,7 @@ def main(n_runs):
                       "uncalibrated": 0} for n, g, _ in configs}
     output = OUT_DIR / "cross_defect.json"
     first_run = 0
+    segments = []
 
     if output.exists():                       # continue an interrupted run, run by run
         previous = json.loads(output.read_text(encoding="utf-8"))
@@ -146,16 +183,29 @@ def main(n_runs):
         same = (previous.get("seed") == SEED and previous.get("alpha") == ALPHA
                 and previous.get("images_per_run") == IMAGES_PER_RUN
                 and set(counts) == {raw_key(n, g) for n, g, _ in configs})
+        segments = previous.get("code_commits", [])
+        if same and previous.get("n_runs_completed", 0) >= n_runs:
+            print(f"{previous['n_runs_completed']} runs already done; rewriting the summary from the "
+                  f"counts they left", flush=True)
+            for (name, group), cell in cells.items():
+                cell.update(counts[raw_key(name, group)])
+            results = summarise(cells, previous["n_runs_completed"], previous["n_runs_completed"])
+            results["code_commits"] = segments
+            output.write_text(json.dumps(results, indent=2), encoding="utf-8")
+            write_sidecar(output, __file__, seed=SEED, parameters=sidecar_parameters(n_runs),
+                          notes="firing rates of the adaptive masks with one defect switched on at a time")
+            return
         if same and previous["n_runs_completed"] < n_runs:
             for (name, group), cell in cells.items():
                 cell.update(counts[raw_key(name, group)])
             first_run = previous["n_runs_completed"]
             print(f"resuming after {first_run} completed runs", flush=True)
-        elif same:
-            print(f"{previous['n_runs_completed']} runs already done; nothing to do", flush=True)
-            return
         else:
             print("the file present was made with other settings; starting over", flush=True)
+
+    # every stretch of running records the code it ran under, so a resumed file cannot claim one commit
+    commits = segments + [{"from_run": first_run, "commit": STATE_AT_START["commit"],
+                           "dirty": STATE_AT_START["dirty"]}]
 
     for run in range(first_run, n_runs):
         rng = np.random.default_rng([SEED, run])   # this run does not depend on the runs before it
@@ -174,10 +224,16 @@ def main(n_runs):
                     cell["fired"][mask] += bool(fired)
                     cell["trials"][mask] += 1
                     cell["fraction"][mask].append(fraction)
-        output.write_text(json.dumps(summarise(cells, run + 1, n_runs), indent=2), encoding="utf-8")
+        partial = summarise(cells, run + 1, n_runs)
+        partial["code_commits"] = commits
+        output.write_text(json.dumps(partial, indent=2), encoding="utf-8")
+        write_sidecar(output, __file__, seed=SEED, parameters=sidecar_parameters(n_runs),
+                      notes="firing rates of the adaptive masks with one defect switched on at a time "
+                            f"({run + 1} of {n_runs} runs)")
         print(f"{run + 1}/{n_runs} runs done", flush=True)
 
     results = summarise(cells, n_runs, n_runs)
+    results["code_commits"] = commits
     output.write_text(json.dumps(results, indent=2), encoding="utf-8")
     for name, groups in results["per_sensor"].items():
         for group, rows in groups.items():
@@ -186,10 +242,7 @@ def main(n_runs):
                 if not r["own_defect"] and r["trials"]:
                     print(f"{name:<20} only {group:<20} {mask:<20} {r['fired']:>3}/{r['trials']:<4} "
                           f"rate {r['rate']:.3f}  {r['verdict']}", flush=True)
-    write_sidecar(output, __file__, seed=SEED,
-                  parameters={"alpha": ALPHA, "n_runs": n_runs, "images_per_run": IMAGES_PER_RUN,
-                              "defects_off": DEFECTS_OFF, "groups": {k: list(v) for k, v in GROUPS.items()},
-                              "mask_target": MASK_TARGET},
+    write_sidecar(output, __file__, seed=SEED, parameters=sidecar_parameters(n_runs),
                   notes="firing rates of the adaptive masks with one defect switched on at a time")
 
 

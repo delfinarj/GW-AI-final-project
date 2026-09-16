@@ -11,9 +11,12 @@ with True = discarded. Geometry follows `simulate.py`: charge-transfer trails po
 `exclude` arguments take either one boolean array for every image or, for functions that work on
 a stack, a list with one array per image.
 
-Order of calibration of the adaptive masks, each excluding what the previous ones removed:
-CTI -> halo -> hot columns/pixels -> serial register -> low-energy clusters; muon tracks are
-independent of the others.
+Order of calibration of the adaptive masks: CTI -> halo -> hot columns/pixels -> serial register ->
+low-energy clusters; muon tracks are independent of the others. Each stage excludes what the earlier
+stages removed, with one deliberate exception that the analyses share: the serial-register and
+low-energy-cluster masks are given the hot and CTI masks to exclude, not the halo. Masking the halo
+away from them would hide exactly the cross-talk Result 2 measures, and the halo is where a
+low-energy cluster is hardest to tell from a shower of trail electrons.
 
 CTI goes first because its calibration compares downstream with upstream of the same trigger in
 the same row or column, which a hot column (uniform along the column) or a halo (symmetric) cannot
