@@ -1,21 +1,21 @@
 {
   "output": "report/report.pdf",
-  "output_sha256": "9ff96cfa5de3cb1e297f13043ab8370d82559e8d34e4f6ce6c6e8332e851ad19",
+  "output_sha256": "4bd47b0ac93ce81094c673db9a9e33fb291c1de704f944114dae4203227d9b2e",
   "script": "scripts/make_pdf.py",
   "git": {
-    "commit": "e2c4684e5235b11c26812ded2221d975d6ddb343",
+    "commit": "d3f1a79031fb48debe83c1acd662ca9a12fda546",
     "dirty": true,
     "changed_outputs": 3
   },
   "git_at_write": {
-    "commit": "e2c4684e5235b11c26812ded2221d975d6ddb343",
+    "commit": "d3f1a79031fb48debe83c1acd662ca9a12fda546",
     "dirty": true,
     "changed_outputs": 3
   },
   "inputs": [
     {
       "path": "report/index.html",
-      "sha256": "db736501607ce9983f499c69bc74662f270110ee070ee6ce5c5f034883473320"
+      "sha256": "0f742d2e4fb608c739b0d1f78d109c212a60faa4d22790ee3d16842bbfe6962d"
     }
   ],
   "parameters": {
@@ -24,7 +24,7 @@
   "seed": null,
   "results": {},
   "notes": "the report page printed to PDF; same document, no number retyped",
-  "created": "2026-09-16T15:32:01+00:00",
+  "created": "2026-09-16T15:49:52+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

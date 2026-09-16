@@ -290,6 +290,11 @@ exposure.</p>
 </details>
 """
 
+    public_answer = "" if not public else (
+        f" On a real sensor that nothing here was tuned for, the four exposures of the public SENSEI release, the "
+        f"release's own mask also flags {min(hot_agreement):.2f}&ndash;{max(hot_agreement):.2f} of every pixel the "
+        f"hot-column procedure flags.")
+
     cross_limitation = ("<li>The defect-free test switches every defect off at once, so it cannot see a mask firing "
                         "on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>"
                         if not cross else
@@ -376,7 +381,7 @@ and another one is present is firing on the wrong thing.</p>
                               f"{v['fired']} / {v['trials']}", f"{v['rate']:.3f}",
                               f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]", verdict])
 
-    cross_rows, cross_fire_rows, cross_text = [], [], ""
+    cross_rows, cross_fire_rows, cross_text, cross_answer = [], [], "", ""
     if cross:
         fires = []
         for sensor, groups in cross["per_sensor"].items():
@@ -401,6 +406,8 @@ and another one is present is firing on the wrong thing.</p>
                  f"{SENSOR_NAMES[fires[0][2]].lower()} sensor when the only defect present is "
                  f"{GROUP_NAMES[fires[0][3]].lower()}: it fires in {fires[0][0]:.2f} of trials and masks a median "
                  f"{fires[0][1]:.3f} of the image.")
+        cross_answer = (f" With the defects switched on one at a time instead, {len(fires)} of the {n_cells} "
+                        f"combinations in which the defect present is not the mask's own show the mask firing on it.")
         cross_text = (f"Of the {n_cells} combinations in which the defect present is not the one the mask looks "
                       f"for, {len(fires)} fire more often than &alpha; allows and {n_cells - len(fires)} are "
                       f"consistent with it.{worst}")
@@ -550,7 +557,7 @@ a mask tuned with truth on the same sensor they reach a median {overall["median_
 case of {worst_adaptive_text}{edge_clause}. In {len(overall["beats_adaptive"])} cases a transplanted mask beat the adaptive one in every
 seed: self-calibration avoids the large failures but is not free.</p>
 <p>On the three sensors with their defects switched off, the adaptive masks fired no more often than
-&alpha; allows (and apparently less often; 50 runs cannot tell).{lec_signal_text}</p>
+&alpha; allows (and apparently less often; 50 runs cannot tell).{lec_signal_text}{cross_answer}{public_answer}</p>
 {held_text}
 <p class="meta">{rule_text}</p>
 </div>
