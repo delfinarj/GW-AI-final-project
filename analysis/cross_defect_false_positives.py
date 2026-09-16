@@ -180,9 +180,10 @@ def main(n_runs):
     if output.exists():                       # continue an interrupted run, run by run
         previous = json.loads(output.read_text(encoding="utf-8"))
         counts = previous.get("counts_this_was_built_from", {})
+        # the order matters: within a run the configurations draw from one generator in sequence
         same = (previous.get("seed") == SEED and previous.get("alpha") == ALPHA
                 and previous.get("images_per_run") == IMAGES_PER_RUN
-                and set(counts) == {raw_key(n, g) for n, g, _ in configs})
+                and list(counts) == [raw_key(n, g) for n, g, _ in configs])
         segments = previous.get("code_commits", [])
         if same and previous.get("n_runs_completed", 0) >= n_runs:
             print(f"{previous['n_runs_completed']} runs already done; rewriting the summary from the "

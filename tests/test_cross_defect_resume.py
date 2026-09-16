@@ -92,3 +92,13 @@ def test_a_file_from_other_settings_does_not_poison_a_run(module):
     module.main(2)
     assert result(module)["n_runs_completed"] == 2
     assert np.isfinite(result(module)["alpha"])
+
+
+def test_a_different_configuration_order_starts_over(module, capsys):
+    """Within a run the configurations draw from one generator in sequence, so order is part of the run."""
+    module.main(2)
+    capsys.readouterr()
+    module.configurations = lambda: [("sensor_b", "halo", None), ("sensor_a", "cti", None)]
+    module.main(4)
+    assert "starting over" in capsys.readouterr().out
+    assert result(module)["n_runs_completed"] == 4

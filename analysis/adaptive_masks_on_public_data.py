@@ -35,6 +35,9 @@ ALPHA = 0.01
 # halo are measured in units of the column pitch; without this the halo is a disc in superpixels,
 # which on a 16-row image reaches the top and bottom of the frame and swallows whole columns.
 SAMPLING = (float(sp.ROWS_PER_SUPERPIXEL), 1.0)
+# passed to the trail calibration rather than left to its defaults, so the threshold recorded beside
+# the result is the one the test actually used even if those defaults change
+TRAIL_BLOCK, TRAIL_MAX_DISTANCE = 5, 400
 # Our mask -> the release bit it should correspond to, under the R2 hypothesis. Written, not derived.
 COUNTERPART = {"hot_columns_pixels": 0x400 | 0x200, "cti": 0x4, "halo": 0x8, "serial_rows": 0x20}
 BIT_NAMES = {0x400 | 0x200: "bad column | bad pixel", 0x4: "bleeding", 0x8: "halo", 0x20: "noisy row"}
@@ -75,7 +78,8 @@ def run_exposure(exposure_s):
         noise.append(float(info["noise_e"]))
         density.append(float(info["density"]))
 
-    length_h, length_v, cti_profiles = M.adaptive_cti_lengths(stack, alpha=ALPHA)
+    length_h, length_v, cti_profiles = M.adaptive_cti_lengths(stack, alpha=ALPHA, block=TRAIL_BLOCK,
+                                                              max_distance=TRAIL_MAX_DISTANCE)
     cti = [M.cti_mask(e, length_h, length_v) for e in stack]
     radius, halo_info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=cti, sampling=SAMPLING)
     halo = [M.halo_mask(e, radius, sampling=SAMPLING) for e in stack]
@@ -138,7 +142,7 @@ def run_exposure(exposure_s):
             "median_pixels_theirs": float(np.median([o["theirs"] for o in per_image]))}
 
     # what the trail calibration had to work with: the release blinds hits, so triggers are few
-    block, max_distance = 5, 400
+    block, max_distance = TRAIL_BLOCK, TRAIL_MAX_DISTANCE
     threshold = ALPHA / (2 * (max_distance // block))
     triggers = [int(np.count_nonzero(e >= M.TRIGGER_E)) for e in stack]
     cti_detail = {}
