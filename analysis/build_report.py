@@ -366,6 +366,8 @@ which this p-value still does not meet, so the decision stands. The halo radius 
                       f"for, {len(fires)} fire more often than &alpha; allows and {n_cells - len(fires)} are "
                       f"consistent with it.{worst}")
 
+    public_paragraph = f"<p>{public_answer.strip()}</p>" if public_answer else ""
+
     cross_limitation = ("<li>The defect-free test switches every defect off at once, so it cannot see a mask firing "
                         "on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>"
                         if not cross else
@@ -631,7 +633,8 @@ a mask tuned with truth on the same sensor they reach a median {overall["median_
 case of {worst_adaptive_text}{edge_clause}. In {len(overall["beats_adaptive"])} cases a transplanted mask beat the adaptive one in every
 seed: self-calibration avoids the large failures but is not free.</p>
 <p>On the three sensors with their defects switched off, the adaptive masks fired no more often than
-&alpha; allows (and apparently less often; 50 runs cannot tell).{muon_answer}{lec_signal_text}{cross_answer}{public_answer}</p>
+&alpha; allows (and apparently less often; 50 runs cannot tell).{muon_answer}{lec_signal_text}{cross_answer}</p>
+{public_paragraph}
 {held_text}
 <p class="meta">{rule_text}</p>
 </div>
@@ -710,6 +713,9 @@ visible as well.</p>
 <li>At the surface no pixel is far from every muon track: the first halo calibration fell back to its largest radius and masked the whole image. It now compares each annulus with everything outside it.</li>
 <li>Crossing muons merged into wide clusters that the track criterion rejected (24 % of muon pixels missed); tracks cut by the image border were missed too.</li>
 <li>Hot columns were calibrated before charge-transfer trails, whose vertical trails from muons made 69 of 81 flagged columns false.</li>
+<li>On the real release the halo mask measured distance in superpixels, and a superpixel there bins 32 physical rows, so a radius of 15 covered the whole height of a 16-row frame. It hid the loudest column in the image from the hot-column calibration, which then did not flag it &mdash; the same cross-talk Result&nbsp;2 measures, on real data. Found by a second independent review; distances now carry the pixel geometry.</li>
+<li>The fraction of the image masked was reported as the sum of five overlapping masks rather than their union, and only the flattering direction of the agreement with the release's own mask was in the prose. Same review.</li>
+<li>The one-defect-at-a-time verdict was applied to sixty cells at 5 % each, with no correction for their number; about one and a half would have been called by chance. The bound is now taken at a confidence corrected for the cells tested.</li>
 <li>In one seed the halo radius, chosen by significance alone, reached 125 px on the surface sensor and masked 99.9 % of the image. The radius now maximises a figure of merit estimated from the data within the significant range; all seeds were re-run, plus two seeds never used during development.</li>
 </ul>
 
