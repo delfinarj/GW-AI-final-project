@@ -167,6 +167,13 @@ For R3 (false positives with the target absent): the per-image firing rate on th
 that defect switched off, with a two-sided test against alpha, so that a mask which is far more
 conservative than alpha is also visible.
 
+For R5 (one defect switched on at a time, added 2026-09-16 after R3 was seen to be blind to it): the
+fraction of trials in which each mask fires when the only defect present is not the one it looks for,
+one-sided against alpha, on the three presets and the five switchable defects. Written before the
+run: the adaptive low-energy-cluster mask on the surface sensor is expected to fire when
+charge-transfer trails are the only defect present, because that is the explanation R4 gave for its
+loss of signal there; every other cell that fires is a finding this analysis did not expect.
+
 ## Schedule
 
 | Dates | Work |

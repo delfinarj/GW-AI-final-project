@@ -124,7 +124,8 @@ visible as well.</p>
 <figure><img src='figures/null_rates.png' alt='For each sensor and mask, the fraction of trials without the defect in which the mask fired, with 95 percent intervals, against alpha equal to 0.01.' loading='lazy'><figcaption>Clopper&ndash;Pearson 95 % intervals; the vertical line is &alpha; = 0.01. Intervals are wide because 50 runs cannot resolve 0.01 from 0.03.</figcaption></figure>
 <div class='table-wrap'><table class=''><thead><tr><th scope='col'>Sensor</th><th scope='col'>Adaptive mask</th><th scope='col'>Unit</th><th scope='col'>Fired / trials</th><th scope='col'>Rate</th><th scope='col'>95 % interval</th><th scope='col'>Against &alpha;</th></tr></thead><tbody><tr><td>Deep underground</td><td>Hot columns</td><td>per run</td><td>0 / 50</td><td>0.000</td><td>[0.000, 0.071]</td><td>contains &alpha;</td></tr><tr><td>Deep underground</td><td>Charge-transfer trails</td><td>per run</td><td>0 / 50</td><td>0.000</td><td>[0.000, 0.071]</td><td>contains &alpha;</td></tr><tr><td>Deep underground</td><td>Halo</td><td>per run</td><td>0 / 14</td><td>0.000</td><td>[0.000, 0.232]</td><td>contains &alpha;</td></tr><tr><td>Deep underground</td><td>Serial-register hits</td><td>per image</td><td>0 / 100</td><td>0.000</td><td>[0.000, 0.036]</td><td>contains &alpha;</td></tr><tr><td>Deep underground</td><td>Low-energy clusters</td><td>per image</td><td>1 / 100</td><td>0.010</td><td>[0.000, 0.054]</td><td>contains &alpha;</td></tr><tr><td>Shallow underground</td><td>Hot columns</td><td>per run</td><td>0 / 50</td><td>0.000</td><td>[0.000, 0.071]</td><td>contains &alpha;</td></tr><tr><td>Shallow underground</td><td>Charge-transfer trails</td><td>per run</td><td>0 / 50</td><td>0.000</td><td>[0.000, 0.071]</td><td>contains &alpha;</td></tr><tr><td>Shallow underground</td><td>Halo</td><td>per run</td><td>0 / 50</td><td>0.000</td><td>[0.000, 0.071]</td><td>contains &alpha;</td></tr><tr><td>Shallow underground</td><td>Serial-register hits</td><td>per image</td><td>1 / 100</td><td>0.010</td><td>[0.000, 0.054]</td><td>contains &alpha;</td></tr><tr><td>Shallow underground</td><td>Low-energy clusters</td><td>per image</td><td>0 / 100</td><td>0.000</td><td>[0.000, 0.036]</td><td>contains &alpha;</td></tr><tr><td>Surface laboratory</td><td>Hot columns</td><td>per run</td><td>0 / 50</td><td>0.000</td><td>[0.000, 0.071]</td><td>contains &alpha;</td></tr><tr><td>Surface laboratory</td><td>Charge-transfer trails</td><td>per run</td><td>1 / 50</td><td>0.020</td><td>[0.001, 0.106]</td><td>contains &alpha;</td></tr><tr><td>Surface laboratory</td><td>Halo</td><td>per run</td><td>0 / 50</td><td>0.000</td><td>[0.000, 0.071]</td><td>contains &alpha;</td></tr><tr><td>Surface laboratory</td><td>Serial-register hits</td><td>per image</td><td>1 / 100</td><td>0.010</td><td>[0.000, 0.054]</td><td>contains &alpha;</td></tr><tr><td>Surface laboratory</td><td>Low-energy clusters</td><td>per image</td><td>1 / 100</td><td>0.010</td><td>[0.000, 0.054]</td><td>contains &alpha;</td></tr></tbody></table></div>
 
-<h2>Result 2 &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
+
+<h2>Result 3 &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
 <div class="wide">
 <figure><img src='figures/compare_masks.png' alt='Small multiples for three sensors: figure of merit of adaptive masks and of fixed masks transplanted from other sensors, relative to the oracle.' loading='lazy'><figcaption>Figure of merit relative to the oracle tuned with truth on the same sensor (vertical line). Markers are medians over 5 seeds, whiskers the range. The deep-underground sensor has few target events, so every version sits near 1 there.</figcaption></figure>
 </div>
@@ -170,11 +171,13 @@ uv run pytest
 uv run python analysis/reproduce_release_rate.py
 uv run python analysis/check_release_mask_bits.py
 uv run python analysis/null_false_positive_rates.py 50
+uv run python analysis/cross_defect_false_positives.py 20
 for seed in 20260915 20260916 20260917 20260920 20260921; do
   uv run python analysis/compare_masks_across_sensors.py 4 --seed $seed --out results/compare_masks/seed_$seed
 done
 uv run python analysis/figure_release_rate.py
 uv run python analysis/figure_null_rates.py
+uv run python analysis/figure_cross_defect.py
 uv run python analysis/figure_compare_masks.py
 uv run python analysis/build_report.py
 uv run python scripts/make_pdf.py</code></pre>

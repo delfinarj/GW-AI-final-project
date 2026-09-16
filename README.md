@@ -37,12 +37,14 @@ uv run pytest                                    # simulator, estimation, events
 uv run python analysis/reproduce_release_rate.py        # R1
 uv run python analysis/check_release_mask_bits.py       # R2
 uv run python analysis/null_false_positive_rates.py 50  # R3 (about 40 min)
+uv run python analysis/cross_defect_false_positives.py 20   # R5 (about 2 h; resumes if interrupted)
 # R4: three seeds used while developing and two run once after the code was frozen
 for seed in 20260915 20260916 20260917 20260920 20260921; do
   uv run python analysis/compare_masks_across_sensors.py 4 --seed $seed       --out results/compare_masks/seed_$seed
 done
 uv run python analysis/figure_release_rate.py           # figures
 uv run python analysis/figure_null_rates.py
+uv run python analysis/figure_cross_defect.py
 uv run python analysis/figure_compare_masks.py
 uv run python analysis/build_report.py                  # report/index.html, numbers read from results/
 uv run python scripts/make_pdf.py                       # report/report.pdf (needs Chrome, Chromium or Edge)
