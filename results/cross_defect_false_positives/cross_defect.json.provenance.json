@@ -1,0 +1,78 @@
+{
+  "output": "results/cross_defect_false_positives/cross_defect.json",
+  "output_sha256": "2fdf4444406920265e34d871d6ed88b398019afee381757681b3cea5bf773b5f",
+  "script": "analysis/cross_defect_false_positives.py",
+  "git": {
+    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
+    "dirty": false,
+    "changed_outputs": 2
+  },
+  "git_at_write": {
+    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
+    "dirty": false,
+    "changed_outputs": 2
+  },
+  "inputs": [],
+  "parameters": {
+    "alpha": 0.01,
+    "family_wise_error": 0.05,
+    "n_runs": 20,
+    "images_per_run": 2,
+    "defects_off": {
+      "n_hot_columns": 0,
+      "hot_column_e_per_pix": 0.0,
+      "n_hot_pixels": 0,
+      "hot_pixel_e": 0.0,
+      "cti_h_prob": 0.0,
+      "cti_v_prob": 0.0,
+      "serial_hits_per_image": 0.0,
+      "lowE_clusters_per_image": 0.0,
+      "halo_yield_per_e": 0.0
+    },
+    "groups": {
+      "hot_columns_pixels": [
+        "n_hot_columns",
+        "hot_column_e_per_pix",
+        "n_hot_pixels",
+        "hot_pixel_e"
+      ],
+      "cti": [
+        "cti_h_prob",
+        "cti_v_prob"
+      ],
+      "serial": [
+        "serial_hits_per_image"
+      ],
+      "low_energy_clusters": [
+        "lowE_clusters_per_image"
+      ],
+      "halo": [
+        "halo_yield_per_e"
+      ]
+    },
+    "mask_target": {
+      "hot_columns": "hot_columns_pixels",
+      "cti": "cti",
+      "halo": "halo",
+      "serial": "serial",
+      "low_energy_clusters": "low_energy_clusters"
+    },
+    "nominal_rate_per_mask": {
+      "hot_columns": 0.02,
+      "cti": 0.01,
+      "halo": 0.01,
+      "serial": 0.01,
+      "low_energy_clusters": 0.01
+    }
+  },
+  "seed": 20260916,
+  "results": {},
+  "notes": "firing rates of the adaptive masks with one defect switched on at a time",
+  "created": "2026-09-16T16:40:59+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

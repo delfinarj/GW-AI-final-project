@@ -1,0 +1,32 @@
+{
+  "output": "results/cross_defect_false_positives/cross_defect.png",
+  "output_sha256": "9ef191dcd40f0953fcc5294d0539a4c7fde30e1c5501525616345625e2788c22",
+  "script": "analysis/figure_cross_defect.py",
+  "git": {
+    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
+    "dirty": false,
+    "changed_outputs": 2
+  },
+  "git_at_write": {
+    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
+    "dirty": false,
+    "changed_outputs": 2
+  },
+  "inputs": [
+    {
+      "path": "results/cross_defect_false_positives/cross_defect.json",
+      "sha256": "2fdf4444406920265e34d871d6ed88b398019afee381757681b3cea5bf773b5f"
+    }
+  ],
+  "parameters": {},
+  "seed": null,
+  "results": {},
+  "notes": "figure of R5",
+  "created": "2026-09-16T16:41:03+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

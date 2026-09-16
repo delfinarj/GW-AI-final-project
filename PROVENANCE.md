@@ -472,6 +472,28 @@ so both were rewritten and re-run; the numbers produced before this date are not
   and the first R5 numbers anyone read came from the second attempt at 12:21. So this is an account,
   not a proof, and it is weaker on this point than R6, where expectation and script share one commit
   made before any result existed.
+- **Result:** 20 runs of each of the 15 configurations. Of the 60 cells in which the defect present is
+  not the one the mask looks for, 7 fire above the rate that mask should not exceed and 53 are
+  consistent with it. The registered expectation is confirmed and is the largest effect by far: on the
+  surface sensor, with charge-transfer trails as the only defect present, the adaptive
+  low-energy-cluster mask fires in 40 of 40 images and masks a median 0.121 of the image. The other
+  six are, in order: the serial-register mask on the same trails, 34 of 40, masking 0.0009; the
+  low-energy-cluster mask on trails at shallow depth, 19 of 40; the hot-column mask on trails at the
+  surface, 9 of 20; the low-energy-cluster mask on the halo at shallow depth, 10 of 40; the
+  serial-register mask on low-energy clusters at shallow depth, 6 of 40; and the serial-register mask
+  on trails at shallow depth, 5 of 40, which sits at its detection floor. Charge-transfer trails are
+  what most often make another mask fire, which is what R4 had suspected from one symptom.
+- **What the result does not show:** six of the seven mask a median of 0.001 of the image or less, so
+  they are detectable but not consequential; only the surface low-energy-cluster case removes enough
+  to matter. With 20 runs a cell that fires in 0 of 20 still has an upper limit of 0.17, so this
+  finds gross cross-talk and says nothing about rates near alpha. And the two images of a run share
+  that run's stack calibrations, so for the two per-image masks the intervals are narrower than
+  independent trials would give; the page states this beside the result.
+- **How it was checked:** the summary is recomputed from the counts stored in the result file, and
+  `tests/test_cross_defect_resume.py` requires a run interrupted and resumed to produce the same
+  numbers as an uninterrupted one, to record the two stretches honestly, to start over when the
+  configurations change order, and to discard a file written with other settings.
+
 - **Incident: a segmentation fault (2026-09-16).** The first attempt, launched while two clean-clone
   reproductions were running and about 2.2 GB of memory was free, died after one completed run with
   exit 139 and no Python traceback. Nothing was diagnosed beyond that: with no traceback the evidence

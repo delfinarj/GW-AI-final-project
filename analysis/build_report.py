@@ -326,6 +326,44 @@ which this p-value still does not meet, so the decision stands. The halo radius 
         f"{min(union_fracs):.4f}&ndash;{max(union_fracs):.4f} of the image where that published mask takes "
         f"{min(release_fracs):.3f}&ndash;{max(release_fracs):.3f}.")
 
+    cross_rows, cross_fire_rows, cross_text, cross_answer = [], [], "", ""
+    if cross:
+        fires = []
+        for sensor, groups in cross["per_sensor"].items():
+            for group, masks_ in groups.items():
+                for mask, v in masks_.items():
+                    if not isinstance(v, dict) or v["own_defect"] or not v["trials"]:
+                        continue
+                    on_fire = v["verdict"] == "fires on this other defect"
+                    verdict = ("<strong>fires on it</strong>" if on_fire else "consistent with &alpha;")
+                    if on_fire and v.get("at_detection_floor"):
+                        verdict += " (at the detection floor)"
+                    row = [SENSOR_NAMES[sensor], GROUP_NAMES[group], NULL_NAMES[mask],
+                           f"per {v['unit']}", f"{v['fired']} / {v['trials']}", f"{v['rate']:.2f}",
+                           f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]",
+                           "&mdash;" if v["median_masked_fraction"] is None else f"{v['median_masked_fraction']:.3f}",
+                           verdict]
+                    cross_rows.append(row)
+                    if on_fire:
+                        cross_fire_rows.append(row)
+                        fires.append((v["rate"], v["median_masked_fraction"] or 0.0, sensor, group, mask))
+        n_cells = len(cross_rows)
+        fires.sort(reverse=True)
+        worst = ("" if not fires else
+                 f" The largest is the {NULL_NAMES[fires[0][4]].lower()} mask on the "
+                 f"{SENSOR_NAMES[fires[0][2]].lower()} sensor when the only defect present is "
+                 f"{GROUP_NAMES[fires[0][3]].lower()}: it fires in {fires[0][0]:.2f} of trials and masks a median "
+                 f"{fires[0][1]:.3f} of the image.")
+        cross_answer = (f" Switching the defects on one at a time instead of all off at once shows it directly: of "
+                        f"the {n_cells} combinations in which the defect present is not the mask's own, {len(fires)} "
+                        f"fire on it, the worst in {fires[0][0]:.2f} of trials while masking "
+                        f"{fires[0][1]:.3f} of the image." if fires else
+                        f" Switching the defects on one at a time, none of the {n_cells} combinations shows a mask "
+                        f"firing on a defect that is not its own.")
+        cross_text = (f"Of the {n_cells} combinations in which the defect present is not the one the mask looks "
+                      f"for, {len(fires)} fire more often than &alpha; allows and {n_cells - len(fires)} are "
+                      f"consistent with it.{worst}")
+
     cross_limitation = ("<li>The defect-free test switches every defect off at once, so it cannot see a mask firing "
                         "on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>"
                         if not cross else
@@ -357,8 +395,10 @@ fewest times that could produce this verdict at all.</p>
 <div class="wide">
 {figure("cross_defect.png",
         "For each sensor, a grid of masks against the single defect switched on, with the fraction of trials in which each mask fired.",
-        "Dot area and number are the fraction of trials in which the mask fired; orange marks a fraction whose 95 % "
-        "interval lies entirely above &alpha;. Hollow squares are the diagonal, where the mask meets its own defect.")}
+        f"Dot area and number are the fraction of trials in which the mask fired; orange marks the cells whose lower "
+        f"bound, at the {100 * cross['confidence_of_the_corrected_bound']:.2f} % confidence corrected for the "
+        f"{cross['cells_tested']} cells tested, lies above the rate that mask should not exceed. Grey dots never "
+        f"fired; hollow circles are the diagonal, where the mask meets its own defect.")}
 </div>
 {fired_table}
 <details><summary>Every combination, including those consistent with &alpha;</summary>
@@ -419,40 +459,6 @@ fewest times that could produce this verdict at all.</p>
             null_rows.append([SENSOR_NAMES[sensor], NULL_NAMES[mask], f"per {v['unit']}",
                               f"{v['fired']} / {v['trials']}", f"{v['rate']:.3f}",
                               f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]", verdict])
-
-    cross_rows, cross_fire_rows, cross_text, cross_answer = [], [], "", ""
-    if cross:
-        fires = []
-        for sensor, groups in cross["per_sensor"].items():
-            for group, masks_ in groups.items():
-                for mask, v in masks_.items():
-                    if not isinstance(v, dict) or v["own_defect"] or not v["trials"]:
-                        continue
-                    on_fire = v["verdict"] == "fires on this other defect"
-                    verdict = ("<strong>fires on it</strong>" if on_fire else "consistent with &alpha;")
-                    if on_fire and v.get("at_detection_floor"):
-                        verdict += " (at the detection floor)"
-                    row = [SENSOR_NAMES[sensor], GROUP_NAMES[group], NULL_NAMES[mask],
-                           f"per {v['unit']}", f"{v['fired']} / {v['trials']}", f"{v['rate']:.2f}",
-                           f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]",
-                           "&mdash;" if v["median_masked_fraction"] is None else f"{v['median_masked_fraction']:.3f}",
-                           verdict]
-                    cross_rows.append(row)
-                    if on_fire:
-                        cross_fire_rows.append(row)
-                        fires.append((v["rate"], v["median_masked_fraction"] or 0.0, sensor, group, mask))
-        n_cells = len(cross_rows)
-        fires.sort(reverse=True)
-        worst = ("" if not fires else
-                 f" The largest is the {NULL_NAMES[fires[0][4]].lower()} mask on the "
-                 f"{SENSOR_NAMES[fires[0][2]].lower()} sensor when the only defect present is "
-                 f"{GROUP_NAMES[fires[0][3]].lower()}: it fires in {fires[0][0]:.2f} of trials and masks a median "
-                 f"{fires[0][1]:.3f} of the image.")
-        cross_answer = (f" With the defects switched on one at a time instead, {len(fires)} of the {n_cells} "
-                        f"combinations in which the defect present is not the mask's own show the mask firing on it.")
-        cross_text = (f"Of the {n_cells} combinations in which the defect present is not the one the mask looks "
-                      f"for, {len(fires)} fire more often than &alpha; allows and {n_cells - len(fires)} are "
-                      f"consistent with it.{worst}")
 
     fom_rows = []
     for sensor in SENSOR_NAMES:
