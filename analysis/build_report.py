@@ -469,6 +469,12 @@ fewest times that could produce this verdict at all.</p>
             f"sensor &mdash; so there is no &alpha; for it to match; what is measured is whether dark current can "
             f"imitate a track, and at these exposures it cannot.</p>")
 
+    muon_answer = "" if not muon_null else (
+        f" The sixth mask, for muon tracks, cannot be in that test because tracks are what a real sensor cannot "
+        f"switch off; asked where they can be absent, in the simulator with the flux set to zero, it fired in "
+        f"{sum(v['fired'] for v in muon_null['per_sensor'].values())} of "
+        f"{sum(v['images'] for v in muon_null['per_sensor'].values())} images.")
+
     null_rows = []
     for sensor, masks in null["per_sensor"].items():
         for mask, v in masks.items():
@@ -625,7 +631,7 @@ a mask tuned with truth on the same sensor they reach a median {overall["median_
 case of {worst_adaptive_text}{edge_clause}. In {len(overall["beats_adaptive"])} cases a transplanted mask beat the adaptive one in every
 seed: self-calibration avoids the large failures but is not free.</p>
 <p>On the three sensors with their defects switched off, the adaptive masks fired no more often than
-&alpha; allows (and apparently less often; 50 runs cannot tell).{lec_signal_text}{cross_answer}{public_answer}</p>
+&alpha; allows (and apparently less often; 50 runs cannot tell).{muon_answer}{lec_signal_text}{cross_answer}{public_answer}</p>
 {held_text}
 <p class="meta">{rule_text}</p>
 </div>
