@@ -20,8 +20,11 @@ fire on another defect when the Clopper-Pearson 95 % interval of its rate lies e
 
 Run:  python analysis/cross_defect_false_positives.py [n_runs]
 
-Results are rewritten after every completed run, so the file is usable if the run is stopped early;
-`n_runs_completed` says how many runs each rate is based on.
+Each run draws from its own generator, seeded by (SEED, run index), so a run does not depend on the
+runs before it. The result file is rewritten after every completed run and carries the counts it was
+built from, so an interrupted run resumes from it and lands on the same numbers as an uninterrupted
+one; `n_runs_completed` says how many runs each rate is based on. This matters on the machine these
+were produced on, which killed one attempt with a segmentation fault (see PROVENANCE.md).
 """
 import json
 import sys
@@ -97,7 +100,11 @@ def one_run(sensor, rng):
     return out
 
 
-def summarise(cells, n_runs_done):
+def raw_key(name, group):
+    return f"{name}|{group}"
+
+
+def summarise(cells, n_runs_done, n_runs_target):
     per_sensor = {}
     for (name, group), cell in cells.items():
         rows = {}
@@ -115,22 +122,43 @@ def summarise(cells, n_runs_done):
                                        "consistent with alpha" if n else None))}
         rows["halo_uncalibrated_runs"] = cell["uncalibrated"]
         per_sensor.setdefault(name, {})[group] = rows
-    return {"alpha": ALPHA, "n_runs_completed": n_runs_done, "images_per_run": IMAGES_PER_RUN,
-            "seed": SEED, "per_sensor": per_sensor}
+    raw = {raw_key(n, g): {"fired": c["fired"], "trials": c["trials"], "fraction": c["fraction"],
+                           "uncalibrated": c["uncalibrated"]} for (n, g), c in cells.items()}
+    return {"alpha": ALPHA, "n_runs_completed": n_runs_done, "n_runs_target": n_runs_target,
+            "images_per_run": IMAGES_PER_RUN, "seed": SEED, "per_sensor": per_sensor,
+            "counts_this_was_built_from": raw}
 
 
 def main(n_runs):
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     configs = list(configurations())
     print(f"{len(configs)} configurations: " + ", ".join(f"{n}/{g}" for n, g, _ in configs), flush=True)
-    rng = np.random.default_rng(SEED)
     cells = {(n, g): {"fired": {m: 0 for m in PER_RUN + PER_IMAGE},
                       "trials": {m: 0 for m in PER_RUN + PER_IMAGE},
                       "fraction": {m: [] for m in PER_RUN + PER_IMAGE},
                       "uncalibrated": 0} for n, g, _ in configs}
     output = OUT_DIR / "cross_defect.json"
+    first_run = 0
 
-    for run in range(n_runs):
+    if output.exists():                       # continue an interrupted run, run by run
+        previous = json.loads(output.read_text(encoding="utf-8"))
+        counts = previous.get("counts_this_was_built_from", {})
+        same = (previous.get("seed") == SEED and previous.get("alpha") == ALPHA
+                and previous.get("images_per_run") == IMAGES_PER_RUN
+                and set(counts) == {raw_key(n, g) for n, g, _ in configs})
+        if same and previous["n_runs_completed"] < n_runs:
+            for (name, group), cell in cells.items():
+                cell.update(counts[raw_key(name, group)])
+            first_run = previous["n_runs_completed"]
+            print(f"resuming after {first_run} completed runs", flush=True)
+        elif same:
+            print(f"{previous['n_runs_completed']} runs already done; nothing to do", flush=True)
+            return
+        else:
+            print("the file present was made with other settings; starting over", flush=True)
+
+    for run in range(first_run, n_runs):
+        rng = np.random.default_rng([SEED, run])   # this run does not depend on the runs before it
         for name, group, sensor in configs:
             cell, res = cells[(name, group)], one_run(sensor, rng)
             for mask in PER_RUN:
@@ -146,10 +174,10 @@ def main(n_runs):
                     cell["fired"][mask] += bool(fired)
                     cell["trials"][mask] += 1
                     cell["fraction"][mask].append(fraction)
-        output.write_text(json.dumps(summarise(cells, run + 1), indent=2), encoding="utf-8")
+        output.write_text(json.dumps(summarise(cells, run + 1, n_runs), indent=2), encoding="utf-8")
         print(f"{run + 1}/{n_runs} runs done", flush=True)
 
-    results = summarise(cells, n_runs)
+    results = summarise(cells, n_runs, n_runs)
     output.write_text(json.dumps(results, indent=2), encoding="utf-8")
     for name, groups in results["per_sensor"].items():
         for group, rows in groups.items():

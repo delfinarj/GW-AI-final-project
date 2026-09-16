@@ -30,6 +30,9 @@ MASK_NAMES = {"hot": "Hot columns & pixels", "cti": "Charge-transfer trails", "h
               "all": "All six combined"}
 NULL_NAMES = {"hot_columns": "Hot columns", "cti": "Charge-transfer trails", "halo": "Halo",
               "serial": "Serial-register hits", "low_energy_clusters": "Low-energy clusters"}
+GROUP_NAMES = {"hot_columns_pixels": "Hot columns & pixels", "cti": "Charge-transfer trails",
+               "serial": "Serial-register hits", "low_energy_clusters": "Low-energy clusters",
+               "halo": "Halo"}
 
 
 def load(path):
@@ -62,6 +65,8 @@ def main():
     rate = load(RES / "release_rate" / "release_rate.json")
     bits = load(RES / "release_mask_bits" / "mask_bit_signatures.json")
     null = load(RES / "null_false_positive_rates" / "null_rates.json")
+    cross_path = RES / "cross_defect_false_positives" / "cross_defect.json"
+    cross = load(cross_path) if cross_path.exists() else None
     seed_files = sorted((RES / "compare_masks").glob("seed_*/compare_masks.json"))
     seeds = [load(p) for p in seed_files]
     n_seeds = len(seeds)
@@ -70,8 +75,11 @@ def main():
     holdout_idx = [i for i, f in enumerate(seed_files) if f.parent.name in holdout_names]
     MIN_TARGET = 20      # pre-registered: fewer target events than this is "too few to compare"
 
-    for src in (RES / "release_rate" / "release_rate.png", RES / "null_false_positive_rates" / "null_rates.png",
-                RES / "compare_masks" / "compare_masks.png"):
+    figures = [RES / "release_rate" / "release_rate.png", RES / "null_false_positive_rates" / "null_rates.png",
+               RES / "compare_masks" / "compare_masks.png"]
+    if cross:
+        figures.append(RES / "cross_defect_false_positives" / "cross_defect.png")
+    for src in figures:
         shutil.copy2(src, FIG / src.name)
 
     # every seed records whether its oracle optima passed the grid-edge check (runs abort otherwise)
@@ -214,6 +222,40 @@ def main():
                        "<li>Several oracle optima lie at the edge of their parameter grids, so ratios to the oracle "
                        "overstate the adaptive masks.</li>")
 
+    cross_limitation = ("<li>The defect-free test switches every defect off at once, so it cannot see a mask firing "
+                        "on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>"
+                        if not cross else
+                        "<li>The defects are switched on one at a time, which finds a mask firing on another single "
+                        "defect, but not what a mask does when several defects overlap in the same pixels.</li>")
+    if not cross:
+        cross_section = ""
+    else:
+        n_configs = sum(len(groups) for groups in cross["per_sensor"].values())
+        fired_table = ("<p>No mask fired on a defect that was not its own more often than &alpha; allows.</p>"
+                       if not cross_fire_rows else
+                       table(["Sensor", "Only defect present", "Mask that fired", "Unit", "Fired / trials",
+                              "Rate", "95 % interval", "Median fraction masked", "Against &alpha;"], cross_fire_rows))
+        cross_section = f"""<h2>Result 2 &middot; What a mask fires on when the defect present is not its own</h2>
+<p>Result 1 switches every defect off together, so a mask that fires on <em>another</em> mask's defect passes it
+unseen. Here each sensor is simulated with one defect at its preset value and the other four at zero,
+{n_configs} configurations in all, {cross["n_runs_completed"]} runs each, with the same chain of adaptive
+calibrations and the same things a real sensor cannot switch off. A mask that fires when its own defect is absent
+and another one is present is firing on the wrong thing.</p>
+<p>{cross_text}</p>
+<div class="wide">
+{figure("cross_defect.png",
+        "For each sensor, a grid of masks against the single defect switched on, with the fraction of trials in which each mask fired.",
+        "Dot area and number are the fraction of trials in which the mask fired; orange marks a fraction whose 95 % "
+        "interval lies entirely above &alpha;. Hollow squares are the diagonal, where the mask meets its own defect.")}
+</div>
+{fired_table}
+<details><summary>Every combination, including those consistent with &alpha;</summary>
+{table(["Sensor", "Only defect present", "Mask", "Unit", "Fired / trials", "Rate", "95 % interval",
+        "Median fraction masked", "Against &alpha;"], cross_rows)}
+</details>
+"""
+
+
     held_text = ("" if held is None else
                  f"<p>On the {len(holdout_idx)} seeds run once after the code was frozen: "
                  f"{len(held['paired_harm'])} of {held['n_transplant']} transplanted cases worse than no mask in "
@@ -243,7 +285,8 @@ def main():
                        + ("" if not lec_empty else
                           f", {min(lec_empty):.2f} even in a seed with no low-energy clusters at all")
                        + ": it fires on charge-transfer trail electrons, a false positive that the defect-free test "
-                       "cannot see because it switches every defect off at once.")
+                       "cannot see because it switches every defect off at once"
+                       + ("." if not cross else ", which is why the defects were also switched on one at a time."))
 
     # ---------------- tables
     sensor_rows = []
@@ -264,6 +307,35 @@ def main():
             null_rows.append([SENSOR_NAMES[sensor], NULL_NAMES[mask], f"per {v['unit']}",
                               f"{v['fired']} / {v['trials']}", f"{v['rate']:.3f}",
                               f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]", verdict])
+
+    cross_rows, cross_fire_rows, cross_text = [], [], ""
+    if cross:
+        fires = []
+        for sensor, groups in cross["per_sensor"].items():
+            for group, masks_ in groups.items():
+                for mask, v in masks_.items():
+                    if not isinstance(v, dict) or v["own_defect"] or not v["trials"]:
+                        continue
+                    on_fire = v["verdict"] == "fires on this other defect"
+                    row = [SENSOR_NAMES[sensor], GROUP_NAMES[group], NULL_NAMES[mask],
+                           f"per {v['unit']}", f"{v['fired']} / {v['trials']}", f"{v['rate']:.2f}",
+                           f"[{v['ci95'][0]:.3f}, {v['ci95'][1]:.3f}]",
+                           "&mdash;" if v["median_masked_fraction"] is None else f"{v['median_masked_fraction']:.3f}",
+                           "<strong>fires on it</strong>" if on_fire else "consistent with &alpha;"]
+                    cross_rows.append(row)
+                    if on_fire:
+                        cross_fire_rows.append(row)
+                        fires.append((v["rate"], v["median_masked_fraction"] or 0.0, sensor, group, mask))
+        n_cells = len(cross_rows)
+        fires.sort(reverse=True)
+        worst = ("" if not fires else
+                 f" The largest is the {NULL_NAMES[fires[0][4]].lower()} mask on the "
+                 f"{SENSOR_NAMES[fires[0][2]].lower()} sensor when the only defect present is "
+                 f"{GROUP_NAMES[fires[0][3]].lower()}: it fires in {fires[0][0]:.2f} of trials and masks a median "
+                 f"{fires[0][1]:.3f} of the image.")
+        cross_text = (f"Of the {n_cells} combinations in which the defect present is not the one the mask looks "
+                      f"for, {len(fires)} fire more often than &alpha; allows and {n_cells - len(fires)} are "
+                      f"consistent with it.{worst}")
 
     fom_rows = []
     for sensor in SENSOR_NAMES:
@@ -461,7 +533,8 @@ visible as well.</p>
         "Clopper&ndash;Pearson 95 % intervals; the vertical line is &alpha; = 0.01. Intervals are wide because 50 runs cannot resolve 0.01 from 0.03.")}
 {table(["Sensor", "Adaptive mask", "Unit", "Fired / trials", "Rate", "95 % interval", "Against &alpha;"], null_rows)}
 
-<h2>Result 2 &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
+{cross_section}
+<h2>Result 3 &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
 <div class="wide">
 {figure("compare_masks.png", "Small multiples for three sensors: figure of merit of adaptive masks and of fixed masks transplanted from other sensors, relative to the oracle.",
         f"Figure of merit relative to the oracle tuned with truth on the same sensor (vertical line). Markers are medians over {n_seeds} seed{'s' if n_seeds > 1 else ''}"
@@ -496,7 +569,7 @@ visible as well.</p>
 <li>Adaptive trail lengths are limited by the number of bright pixels in the calibration stack: they are short when data are few.</li>
 <li>The muon figure of merit counts pixels, which weighs every missed track pixel heavily.</li>
 <li>The adaptive muon mask uses the sensor's diffusion model and the minimum-ionising charge per length, and the simulated muons carry exactly that mean charge with no Landau tail, so its charge tolerance is tested against the model it was built from.</li>
-<li>The defect-free test switches every defect off at once, so it cannot see a mask firing on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>
+{cross_limitation}
 {edge_limitation}
 <li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The figure of merit was not changed after this was seen (the no-mask reference and wider grids were added later, for other reasons).</li>
 <li>The adaptive masks were not yet run on the real public images beyond the rate reproduction.</li>
@@ -509,11 +582,13 @@ uv run pytest
 uv run python analysis/reproduce_release_rate.py
 uv run python analysis/check_release_mask_bits.py
 uv run python analysis/null_false_positive_rates.py 50
+uv run python analysis/cross_defect_false_positives.py 20
 for seed in 20260915 20260916 20260917 20260920 20260921; do
   uv run python analysis/compare_masks_across_sensors.py 4 --seed $seed --out results/compare_masks/seed_$seed
 done
 uv run python analysis/figure_release_rate.py
 uv run python analysis/figure_null_rates.py
+uv run python analysis/figure_cross_defect.py
 uv run python analysis/figure_compare_masks.py
 uv run python analysis/build_report.py
 uv run python scripts/make_pdf.py</code></pre>
@@ -533,6 +608,8 @@ hand, unlike every number above it, because it describes a run made outside this
     output.write_text(page, encoding="utf-8")
     inputs = [RES / "release_rate" / "release_rate.json", RES / "release_mask_bits" / "mask_bit_signatures.json",
               RES / "null_false_positive_rates" / "null_rates.json", *seed_files]
+    if cross:
+        inputs.append(cross_path)
     write_sidecar(output, __file__, inputs=inputs, notes="presented page; every number read from the inputs")
     print(f"wrote {output} ({n_seeds} R4 seeds)")
 
