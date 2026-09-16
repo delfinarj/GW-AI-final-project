@@ -230,6 +230,30 @@ marker shape, and every figure has a legend or a single labelled series.
   contains it; `changed_outputs` counts files under `results/` and `report/` that differed from the
   index at that moment, which is expected while a set of results is being regenerated.
 
+### Complete pass at the current code (2026-09-16)
+
+Every analysis except R5 has now been re-run from a clone that shares nothing with this working copy
+but the commit and the pinned environment, and compared with `scripts/compare_results.py` at a
+relative tolerance of 1e-9.
+
+- **R1, R2, R3 and R6**, in a fresh clone of commit `e9c797b`: `git clone`, `uv sync --group dev`,
+  `scripts/fetch_public_data.py` (all four checksums verified), then each analysis re-run. All four
+  results identical, largest relative difference 0.0e+00; the figures of R1 and R3 came out byte for
+  byte the same.
+- **R7**, in a second fresh clone, of commit `3964385` (it needs no public data): identical.
+- **R4**, the five seeds, was reproduced this way at commit `121c688` and that reproduction still
+  stands: of every file R4 reads, `git diff 121c688 HEAD -- src/skmask/simulate.py src/skmask/masks.py
+  src/skmask/events.py src/skmask/estimate.py src/skmask/presets.py
+  analysis/compare_masks_across_sensors.py` reports one file changed, 6 insertions and 3 deletions,
+  all of them inside a module docstring. (`src/skmask/stats.py` was added in between; R4 does not
+  import it.)
+- **R5 was not reproduced from a clone.** Twenty runs of fifteen configurations take about two hours
+  and the machine cannot be left running unattended. What stands in its place is weaker and is worth
+  naming as such: each run is seeded from the run index, so the numbers do not depend on how the run
+  was split, and `tests/test_cross_defect_resume.py` checks that; the summary is recomputed from the
+  counts the file carries; and the file records the commit of every stretch of running. None of that
+  is an independent re-run.
+
 ## Results
 
 ### R1. Single-electron rate of the public SENSEI SNOLAB release

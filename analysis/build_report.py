@@ -753,11 +753,15 @@ uv run python analysis/build_report.py
 uv run python scripts/make_pdf.py</code></pre>
 <p>Every output has a <code>.provenance.json</code> sidecar with the script, git commit, input hashes, parameters and seed;
 <a href="{REPO_URL}/blob/main/PROVENANCE.md">PROVENANCE.md</a> says how each result was checked.</p>
-<p><strong>What that reproduction covered</strong>, as of 2026-09-16: those commands were run in a fresh clone of the
-frozen commit, in the pinned environment, and the results compared with the committed files at a relative tolerance of
-1e-9. Every result came out identical, largest relative difference zero: R1, R2, R3 and all five R4 seeds, the summary
-the figure script derives from them, and the figure itself byte for byte. This sentence is written by hand, unlike every
-number above it, because it describes a run made outside this repository.</p>
+<p><strong>What that reproduction covered</strong>, as of 2026-09-16, written by hand unlike every number above it,
+because it describes runs made outside this repository. Each was re-run in a fresh clone that shares nothing with the
+working copy but the commit and the pinned environment, and compared at a relative tolerance of 1e-9. Identical, largest
+relative difference zero: the rate reproduction, the mask-bit check, the defect-free test and the real-sensor result at
+the current commit; the muon-mask test in a second clone; and all five seeds of the transplant result at the commit that
+froze it, whose code has changed since only inside a docstring. The one-defect-at-a-time result was not re-run that way:
+twenty runs of fifteen configurations take about two hours. In its place it carries per-run seeding, a test that an
+interrupted run lands where an uninterrupted one lands, and the commit of every stretch of running &mdash; none of which
+is an independent re-run.</p>
 </main>
 </body>
 </html>
