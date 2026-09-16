@@ -431,3 +431,60 @@ so both were rewritten and re-run; the numbers produced before this date are not
   signal as S and does not count dark current in B. Both are choices; the evaluation was fixed
   before this was seen and is deliberately not changed now, since changing it after seeing the
   result would tune the test to the method.
+
+### R5. What a mask fires on when the defect present is not its own
+
+- **Output:** `results/cross_defect_false_positives/cross_defect.json`, sidecar, and figure
+  `cross_defect.png` (`analysis/figure_cross_defect.py`).
+- **Produced by:** `analysis/cross_defect_false_positives.py 20`: 15 configurations (the three presets
+  times the five switchable defects), 20 runs of 2 images each, the same chain of adaptive
+  calibrations as R3 in the same order, seed 20260916. Code frozen at commit `c013d54`.
+- **Why it exists:** R3 switches every defect off at once, so it cannot tell a well-behaved mask from
+  one that fires on a defect that happens to be absent too. Its own entry above records that blind
+  spot, and R4 showed the symptom: on the surface sensor the adaptive low-energy-cluster mask keeps
+  only 0.85-0.92 of the signal even in a seed with no low-energy clusters. Here each defect is
+  switched on alone, so a mask that fires when its own defect is absent is firing on the wrong thing.
+- **Written from scratch:** the configuration builder, the per-run generator seeding, the resume from
+  the counts stored in the output, and the verdict rule. From libraries: the masks' own use of
+  `scipy.ndimage`, and `scipy.stats.beta` for the Clopper-Pearson interval (`src/skmask/stats.py`,
+  shared with R3).
+- **Choices with a defensible alternative:**
+  - *Muons and high-energy deposits stay on in every configuration*, as in R3. The halo is generated
+    from deposited charge, so with no tracks there is no halo to switch on and that configuration
+    would be empty. The alternative, switching tracks off too, would make four configurations cleaner
+    and the fifth impossible.
+  - *A defect is present at its preset value*, not at an exaggerated one. A stronger defect would make
+    cross-talk easier to see, but the presets are what the rest of the project claims about these
+    sensors.
+  - *The verdict is one-sided* (the 95 % interval lies entirely above alpha). Unlike R3, the question
+    here is only whether a mask fires on the wrong defect, not whether it is too conservative.
+  - *The exclusion order of R3 is kept* (trails, then halo, then hot columns, then serial rows and
+    clusters), so a mask upstream can protect the one after it. That is how the masks are used
+    together; testing each mask alone would measure a different thing.
+  - *20 runs per configuration, chosen for run time.* 0 of 20 has an upper limit of 0.17, so this test
+    finds gross cross-talk and cannot resolve a rate near alpha; the page says so.
+- **Expectation registered before the run (2026-09-16, before any R5 number existed):** the adaptive
+  low-energy-cluster mask on the surface sensor is expected to fire when charge-transfer trails are
+  the only defect present, since that is the explanation R4 gave for its loss of signal. Any other
+  cell that fires is a finding this analysis was not built to expect.
+- **Incident: a segmentation fault (2026-09-16).** The first attempt, launched while two clean-clone
+  reproductions were running and about 2.2 GB of memory was free, died after one completed run with
+  exit 139 and no Python traceback. Nothing was diagnosed beyond that: with no traceback the evidence
+  does not separate memory exhaustion in a C extension from a defect in one. It is recorded here
+  because it is the second low-level failure on this machine, after the `IndexError` of seed
+  20260917, and both happened with three heavy processes running. What was done: the analysis was
+  made resumable (each run is seeded from the run index and the output carries its counts, so a
+  resumed run lands on the same numbers), and it was re-run with the machine otherwise idle.
+
+## The deliverable pages
+
+- **`report/index.html` is generated**, never edited: `analysis/build_report.py` reads the result
+  JSONs and writes the page, so no number on it is typed by hand and every comparison in its prose
+  ("worse than no mask in every seed", the counts, the medians) is computed from the same files. Its
+  sidecar lists every input with a hash. A section whose result file is absent simply does not appear.
+- **`report/report.pdf` is that page printed** by `scripts/make_pdf.py` with headless Chrome, so the
+  two cannot disagree; its sidecar records the browser and the hash of the page it printed.
+- **`index.html` at the root of the repository is written by hand** and carries no result: it is the
+  front door GitHub Pages serves, with links to the report, the PDF and the two documents. `.nojekyll`
+  next to it tells Pages to serve the files as they are instead of building them.
+- **Authors:** D. Rodriguez Juiz and F. Perez.
