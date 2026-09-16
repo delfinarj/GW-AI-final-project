@@ -66,7 +66,11 @@ def main():
     bits = load(RES / "release_mask_bits" / "mask_bit_signatures.json")
     null = load(RES / "null_false_positive_rates" / "null_rates.json")
     cross_path = RES / "cross_defect_false_positives" / "cross_defect.json"
-    cross = load(cross_path) if cross_path.exists() else None
+    cross_figure = RES / "cross_defect_false_positives" / "cross_defect.png"
+    # the section embeds the figure, so it appears only when both exist
+    cross = load(cross_path) if cross_path.exists() and cross_figure.exists() else None
+    public_path = RES / "adaptive_on_public" / "adaptive_on_public.json"
+    public = load(public_path) if public_path.exists() else None
     seed_files = sorted((RES / "compare_masks").glob("seed_*/compare_masks.json"))
     seeds = [load(p) for p in seed_files]
     n_seeds = len(seeds)
@@ -78,7 +82,7 @@ def main():
     figures = [RES / "release_rate" / "release_rate.png", RES / "null_false_positive_rates" / "null_rates.png",
                RES / "compare_masks" / "compare_masks.png"]
     if cross:
-        figures.append(RES / "cross_defect_false_positives" / "cross_defect.png")
+        figures.append(cross_figure)
     for src in figures:
         shutil.copy2(src, FIG / src.name)
 
@@ -221,6 +225,70 @@ def main():
                        "but the grid is still finite.</li>" if edges_checked else
                        "<li>Several oracle optima lie at the edge of their parameter grids, so ratios to the oracle "
                        "overstate the adaptive masks.</li>")
+
+    if not public:
+        public_section, public_limitation = "", ("<li>The adaptive masks were not yet run on the real "
+                                                 "public images beyond the rate reproduction.</li>")
+    else:
+        PUBLIC_NAMES = {"hot_columns_pixels": "Hot columns & pixels", "cti": "Charge-transfer trails",
+                        "halo": "Halo", "serial_rows": "Serial-register hits"}
+        rows = [public["per_exposure"][k] for k in sorted(public["per_exposure"], key=int)]
+        hours = lambda r: f"{r['exposure_s'] / 3600:.0f} h"
+        chose_rows = [[hours(r), r["images"], f"{r['trigger_pixels']['total']}",
+                       f"{r['measured_noise_e']['median']:.3f}",
+                       sci(r["measured_density_1e"]["median"], 2),
+                       f"{r['constants_chosen']['cti_length_h']} / {r['constants_chosen']['cti_length_v']}",
+                       f"{r['constants_chosen']['halo_radius']}",
+                       f"{len(r['constants_chosen']['hot_columns'])} / {r['constants_chosen']['hot_pixels']}",
+                       f"{sum(r['masked_fraction'].values()):.4f}"] for r in rows]
+        agree_rows = []
+        for r in rows:
+            for name, c in r["against_release"].items():
+                ours = c["median_fraction_of_ours_also_theirs"]
+                theirs = c["median_fraction_of_theirs_also_ours"]
+                agree_rows.append([hours(r), PUBLIC_NAMES[name],
+                                   c["release_bit"], f"{r['masked_fraction'][name]:.4f}",
+                                   "&mdash;" if ours is None else f"{ours:.2f}",
+                                   "&mdash;" if theirs is None else f"{theirs:.3f}"])
+        hot_agreement = [r["against_release"]["hot_columns_pixels"]["median_fraction_of_ours_also_theirs"]
+                         for r in rows if r["against_release"]["hot_columns_pixels"]["median_fraction_of_ours_also_theirs"] is not None]
+        noises = [r["measured_noise_e"]["median"] for r in rows]
+        published_noise = PRESETS["deep_underground"].noise_e
+        last = rows[-1]
+        halo_radii = [r["constants_chosen"]["halo_radius"] for r in rows]
+        trail_zero = all(r["constants_chosen"]["cti_length_h"] == 0 and r["constants_chosen"]["cti_length_v"] == 0
+                         for r in rows)
+        public_limitation = ("<li>On the real release only four of the six masks can be checked at all: it publishes "
+                             "no counterpart to the low-energy-cluster mask, and its binned superpixels make the muon "
+                             "mask's geometry meaningless, so that mask was not run there.</li>")
+        public_section = f"""<h2>Result 4 &middot; The same procedures on a real sensor</h2>
+<p>Everything above is simulated. Here the adaptive masks run unchanged on the {len(rows)} exposures of the public
+SENSEI SNOLAB release: a fourth sensor, real, with a geometry none of the presets has ({last["shape"][1]} &times;
+{last["shape"][0]} active superpixels, each binning {32} physical rows). Nothing about it was tuned, and the release
+publishes its own mask, so where the two overlap they can be compared. The pairing of one of our masks with a bit of
+that mask follows the hypothesis tested against the release's own geometry earlier on this page.</p>
+<p>The estimator, given only the images, measures a readout noise of {min(noises):.3f}&ndash;{max(noises):.3f} e
+against the {published_noise:.2f} e of the release paper, and a single-electron density that grows with exposure.
+Of everything the hot-column and hot-pixel procedure flags, the release also flags between
+{min(hot_agreement):.2f} and {max(hot_agreement):.2f}: on a real sensor, unaided, it lands inside a mask a person
+tuned.</p>
+{table(["Exposure", "Images", "Trigger pixels", "Measured noise (e)", "1e density (e/pix)",
+        "Trail lengths h / v", "Halo radius", "Hot columns / pixels", "Fraction masked"], chose_rows)}
+<p>{"The trail calibration chose length zero on every exposure, which the expectation registered in PLAN.md did not predict." if trail_zero else "The trail calibration chose a non-zero length."}
+The reason is in the result file: the release blinds its hits, so a whole exposure holds
+{", ".join(str(r["trigger_pixels"]["total"]) for r in rows)} trigger pixels. At the longest exposure the test does see
+the excess on the right side &mdash; {last["cti_detail"]["v"]["n_downstream"]} single electrons within
+{last["cti_detail"]["v"]["at_distance_pix"]} superpixels downstream of a trigger against
+{last["cti_detail"]["v"]["n_upstream"]} upstream, p&nbsp;=&nbsp;{last["cti_detail"]["v"]["smallest_p"]:.4f} &mdash; but a
+Bonferroni-corrected &alpha; asks for p&nbsp;&lt;&nbsp;{last["cti_detail"]["v"]["bonferroni_threshold"]:.1e}. The
+procedure is not wrong here; it is refusing to mask on evidence this thin, which is what it was built to do. The halo
+radius behaves the same way: {halo_radii[0]} where there are no triggers, {halo_radii[-1]} superpixels at the longest
+exposure.</p>
+<details><summary>Every mask against its counterpart in the release</summary>
+{table(["Exposure", "Our mask", "Release bit", "Fraction of the image we mask", "Of ours, also theirs",
+        "Of theirs, also ours"], agree_rows)}
+</details>
+"""
 
     cross_limitation = ("<li>The defect-free test switches every defect off at once, so it cannot see a mask firing "
                         "on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>"
@@ -549,6 +617,7 @@ visible as well.</p>
 {table(["Sensor", "Seed", "Trail length h / v (px)", "Halo radius (px)", "Halo calibrated", "Hot columns found", "Hot columns simulated"], calib_rows)}
 </details>
 
+{public_section}
 <h2>What the checks caught</h2>
 <p>Every error below was found by a test or a diagnostic against the simulator's truth, fixed, and recorded.</p>
 <ul>
@@ -572,7 +641,7 @@ visible as well.</p>
 {cross_limitation}
 {edge_limitation}
 <li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The figure of merit was not changed after this was seen (the no-mask reference and wider grids were added later, for other reasons).</li>
-<li>The adaptive masks were not yet run on the real public images beyond the rate reproduction.</li>
+{public_limitation}
 </ul>
 
 <h2>Reproduce</h2>
@@ -581,6 +650,7 @@ uv run python scripts/fetch_public_data.py
 uv run pytest
 uv run python analysis/reproduce_release_rate.py
 uv run python analysis/check_release_mask_bits.py
+uv run python analysis/adaptive_masks_on_public_data.py
 uv run python analysis/null_false_positive_rates.py 50
 uv run python analysis/cross_defect_false_positives.py 20
 for seed in 20260915 20260916 20260917 20260920 20260921; do
@@ -609,6 +679,8 @@ number above it, because it describes a run made outside this repository.</p>
               RES / "null_false_positive_rates" / "null_rates.json", *seed_files]
     if cross:
         inputs.append(cross_path)
+    if public:
+        inputs.append(public_path)
     write_sidecar(output, __file__, inputs=inputs, notes="presented page; every number read from the inputs")
     print(f"wrote {output} ({n_seeds} R4 seeds)")
 

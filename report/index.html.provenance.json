@@ -1,14 +1,14 @@
 {
   "output": "report/index.html",
-  "output_sha256": "073118e383dcbfd31878c5291d301f32ac5f3c391cb1874f9357154653736bab",
+  "output_sha256": "db736501607ce9983f499c69bc74662f270110ee070ee6ce5c5f034883473320",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "ce5cf89fbfd1e874f8162990da66f10d9bee837f",
+    "commit": "e2c4684e5235b11c26812ded2221d975d6ddb343",
     "dirty": true,
     "changed_outputs": 0
   },
   "git_at_write": {
-    "commit": "ce5cf89fbfd1e874f8162990da66f10d9bee837f",
+    "commit": "e2c4684e5235b11c26812ded2221d975d6ddb343",
     "dirty": true,
     "changed_outputs": 1
   },
@@ -44,13 +44,17 @@
     {
       "path": "results/compare_masks/seed_20260921/compare_masks.json",
       "sha256": "6dcc2da318a1f96ba9a35c68017d9ab658cd5cd76d3a3797664d1637f271ddb9"
+    },
+    {
+      "path": "results/adaptive_on_public/adaptive_on_public.json",
+      "sha256": "b3ee443a7825f8dd83766bd67d3a85bfe1e27c571c7534ec41a6c71c94b9cc29"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "presented page; every number read from the inputs",
-  "created": "2026-09-16T14:56:43+00:00",
+  "created": "2026-09-16T15:30:06+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

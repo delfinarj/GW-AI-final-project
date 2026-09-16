@@ -476,6 +476,56 @@ so both were rewritten and re-run; the numbers produced before this date are not
   made resumable (each run is seeded from the run index and the output carries its counts, so a
   resumed run lands on the same numbers), and it was re-run with the machine otherwise idle.
 
+### R6. The adaptive masks on the public SENSEI release
+
+- **Output:** `results/adaptive_on_public/adaptive_on_public.json` and sidecar. No figure: four
+  exposures by five masks is a table, not a chart.
+- **Produced by:** `analysis/adaptive_masks_on_public_data.py`, reading the four release files through
+  `src/skmask/sensei_public.py`. Code frozen at commit `bb8da49`, which also carries the expectation.
+- **Inputs:** the four release ROOT files (SHA-256 in the sidecar), active area only: rows 1-16 of 20
+  and columns 0-3071 of 3200, the selection the release macro defines.
+- **Written from scratch:** the per-image reconstruction of the active area from the flat tree, the
+  overlap statistics against the release mask, and the record of what the trail test had to work with.
+  From libraries: `uproot` to read the files, and everything the masks themselves call.
+- **Choices with a defensible alternative:**
+  - *The masks are calibrated on the raw charge, ignoring the release's own mask.* That is the point:
+    the procedure has to find the defects by itself. The alternative, excluding the release-masked
+    pixels first, would measure something else, namely what is left after a human mask.
+  - *One stack per exposure*, not all exposures pooled: the images of one exposure share conditions,
+    and pooling would mix single-electron densities that differ by a factor of five.
+  - *The pairing of one of our masks with a bit of the release mask is written down, not derived*, and
+    it inherits whatever R2's bit hypothesis gets wrong.
+  - *The muon mask is not run.* It predicts the charge and the length of a track from the sensor's
+    thickness, pixel size and back-surface diffusion; an image that bins 32 physical rows into one
+    superpixel does not have tracks of that shape.
+  - *The low-energy-cluster mask is run but cannot be checked*: the release publishes no counterpart.
+- **Result:** given only the images, the estimator measures a readout noise of 0.141-0.142 e, against
+  the 0.14 e of the release paper, and a single-electron density that grows with exposure. The
+  hot-column and hot-pixel procedure flags 2 to 6 columns and 7 to 8 pixels, and 0.99 to 1.00 of what
+  it flags is also flagged by the release's own bad-column and bad-pixel bits: on a real sensor,
+  unaided, it lands inside a mask a person tuned. The reverse fraction is small (0.03-0.08), so the
+  release masks much more than we do. The halo radius is 0 where there are no trigger pixels and 10
+  and 15 superpixels at 6 and 20 hours, overlapping the release's halo bit by 0.24 and 0.36.
+- **The registered expectation was wrong about the trails, and the result file says why.** PLAN.md,
+  written before the run, expected a non-zero horizontal trail length because the release masks
+  "bleeding". The procedure chose zero on all four exposures. The cause is not a defect in the
+  procedure but the data: the release blinds its hits, so a whole exposure holds 0, 70, 103 and 844
+  pixels above the 20 e trigger. At 20 hours the test does see the excess on the correct side, 13
+  single electrons within 5 superpixels downstream of a trigger against 2 upstream, p = 0.0037, but
+  the Bonferroni-corrected threshold is 6.3e-05. The script now records the trigger counts and the
+  smallest p-value per direction, so this statement is read from the result file rather than typed.
+- **How it was checked:** (i) the noise measured here image by image scatters over 0.1392-0.1456 e and
+  its median per exposure is 0.141-0.142 e, which agrees to 0.001 e with the 0.1413-0.1420 e that R1
+  fits per exposure on the same files through a separate code path; (ii) the
+  hot columns are stable across exposures, with columns 8, 842 and 2229 appearing in three or four of
+  them, which a spurious flag would not do; (iii) the halo radius grows with the number of triggers,
+  as a procedure driven by counting statistics should.
+- **What it does not show:** the single-electron densities here are measured on unmasked data and are
+  therefore larger than R1's, which are fitted after the release mask; they are not the same quantity
+  and the two numbers must not be compared as if they were. And with four masks checkable on one real
+  sensor, this is a demonstration that the procedure survives contact with real data, not a
+  measurement of how well it does in general.
+
 ## The deliverable pages
 
 - **`report/index.html` is generated**, never edited: `analysis/build_report.py` reads the result

@@ -138,6 +138,32 @@ visible as well.</p>
 <div class='table-wrap'><table class=''><thead><tr><th scope='col'>Sensor</th><th scope='col'>Seed</th><th scope='col'>Trail length h / v (px)</th><th scope='col'>Halo radius (px)</th><th scope='col'>Halo calibrated</th><th scope='col'>Hot columns found</th><th scope='col'>Hot columns simulated</th></tr></thead><tbody><tr><td>Deep underground</td><td>seed_20260915</td><td>0 / 0</td><td>0</td><td>yes</td><td>0</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260915</td><td>140 / 55</td><td>10</td><td>yes</td><td>3</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260915</td><td>130 / 95</td><td>0</td><td>yes</td><td>25</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260916</td><td>0 / 0</td><td>0</td><td>no</td><td>0</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260916</td><td>125 / 60</td><td>10</td><td>yes</td><td>7</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260916</td><td>130 / 85</td><td>0</td><td>yes</td><td>25</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260917</td><td>0 / 0</td><td>0</td><td>yes</td><td>2</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260917</td><td>140 / 50</td><td>10</td><td>yes</td><td>7</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260917</td><td>115 / 80</td><td>0</td><td>yes</td><td>27</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260920</td><td>0 / 0</td><td>0</td><td>yes</td><td>1</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260920</td><td>140 / 55</td><td>15</td><td>yes</td><td>10</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260920</td><td>130 / 95</td><td>0</td><td>yes</td><td>25</td><td>25</td></tr><tr><td>Deep underground</td><td>seed_20260921</td><td>0 / 0</td><td>0</td><td>yes</td><td>2</td><td>4</td></tr><tr><td>Shallow underground</td><td>seed_20260921</td><td>150 / 50</td><td>10</td><td>yes</td><td>5</td><td>10</td></tr><tr><td>Surface laboratory</td><td>seed_20260921</td><td>105 / 85</td><td>0</td><td>yes</td><td>31</td><td>25</td></tr></tbody></table></div>
 </details>
 
+<h2>Result 4 &middot; The same procedures on a real sensor</h2>
+<p>Everything above is simulated. Here the adaptive masks run unchanged on the 4 exposures of the public
+SENSEI SNOLAB release: a fourth sensor, real, with a geometry none of the presets has (3072 &times;
+16 active superpixels, each binning 32 physical rows). Nothing about it was tuned, and the release
+publishes its own mask, so where the two overlap they can be compared. The pairing of one of our masks with a bit of
+that mask follows the hypothesis tested against the release's own geometry earlier on this page.</p>
+<p>The estimator, given only the images, measures a readout noise of 0.141&ndash;0.142 e
+against the 0.14 e of the release paper, and a single-electron density that grows with exposure.
+Of everything the hot-column and hot-pixel procedure flags, the release also flags between
+0.99 and 1.00: on a real sensor, unaided, it lands inside a mask a person
+tuned.</p>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Exposure</th><th scope='col'>Images</th><th scope='col'>Trigger pixels</th><th scope='col'>Measured noise (e)</th><th scope='col'>1e density (e/pix)</th><th scope='col'>Trail lengths h / v</th><th scope='col'>Halo radius</th><th scope='col'>Hot columns / pixels</th><th scope='col'>Fraction masked</th></tr></thead><tbody><tr><td>0 h</td><td>14</td><td>0</td><td>0.142</td><td>1.34 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>2 / 8</td><td>0.0007</td></tr><tr><td>2 h</td><td>14</td><td>70</td><td>0.142</td><td>1.72 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>4 / 8</td><td>0.0013</td></tr><tr><td>6 h</td><td>14</td><td>103</td><td>0.141</td><td>2.95 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>10</td><td>6 / 7</td><td>0.0120</td></tr><tr><td>20 h</td><td>13</td><td>844</td><td>0.141</td><td>6.52 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>15</td><td>6 / 8</td><td>0.0534</td></tr></tbody></table></div>
+<p>The trail calibration chose length zero on every exposure, which the expectation registered in PLAN.md did not predict.
+The reason is in the result file: the release blinds its hits, so a whole exposure holds
+0, 70, 103, 844 trigger pixels. At the longest exposure the test does see
+the excess on the right side &mdash; 13 single electrons within
+5 superpixels downstream of a trigger against
+2 upstream, p&nbsp;=&nbsp;0.0037 &mdash; but a
+Bonferroni-corrected &alpha; asks for p&nbsp;&lt;&nbsp;6.3e-05. The
+procedure is not wrong here; it is refusing to mask on evidence this thin, which is what it was built to do. The halo
+radius behaves the same way: 0 where there are no triggers, 15 superpixels at the longest
+exposure.</p>
+<details><summary>Every mask against its counterpart in the release</summary>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Exposure</th><th scope='col'>Our mask</th><th scope='col'>Release bit</th><th scope='col'>Fraction of the image we mask</th><th scope='col'>Of ours, also theirs</th><th scope='col'>Of theirs, also ours</th></tr></thead><tbody><tr><td>0 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0007</td><td>1.00</td><td>0.027</td></tr><tr><td>0 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>0 h</td><td>Halo</td><td>halo</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>0 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>2 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0013</td><td>1.00</td><td>0.055</td></tr><tr><td>2 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>2 h</td><td>Halo</td><td>halo</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>2 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>6 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0020</td><td>1.00</td><td>0.081</td></tr><tr><td>6 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>6 h</td><td>Halo</td><td>halo</td><td>0.0082</td><td>0.24</td><td>0.202</td></tr><tr><td>6 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>20 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0020</td><td>0.99</td><td>0.081</td></tr><tr><td>20 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>20 h</td><td>Halo</td><td>halo</td><td>0.0510</td><td>0.36</td><td>0.362</td></tr><tr><td>20 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr></tbody></table></div>
+</details>
+
 <h2>What the checks caught</h2>
 <p>Every error below was found by a test or a diagnostic against the simulator's truth, fixed, and recorded.</p>
 <ul>
@@ -161,7 +187,7 @@ visible as well.</p>
 <li>The defect-free test switches every defect off at once, so it cannot see a mask firing on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>
 <li>The oracle is the best fixed mask on a grid of parameters. Every seed passed a check that no optimum lies on an edge of its grid other than a physical bound (a length of zero, a factor of one), but the grid is still finite.</li>
 <li>An adaptive mask cannot tell injected signal from dark current, so it estimates signal as every uniform single electron; the evaluation counts only the injected signal. At the surface, where dark current is ~20 times the signal, the adaptive halo therefore chooses not to mask and reaches ~0.7 of the oracle. The figure of merit was not changed after this was seen (the no-mask reference and wider grids were added later, for other reasons).</li>
-<li>The adaptive masks were not yet run on the real public images beyond the rate reproduction.</li>
+<li>On the real release only four of the six masks can be checked at all: it publishes no counterpart to the low-energy-cluster mask, and its binned superpixels make the muon mask's geometry meaningless, so that mask was not run there.</li>
 </ul>
 
 <h2>Reproduce</h2>
@@ -170,6 +196,7 @@ uv run python scripts/fetch_public_data.py
 uv run pytest
 uv run python analysis/reproduce_release_rate.py
 uv run python analysis/check_release_mask_bits.py
+uv run python analysis/adaptive_masks_on_public_data.py
 uv run python analysis/null_false_positive_rates.py 50
 uv run python analysis/cross_defect_false_positives.py 20
 for seed in 20260915 20260916 20260917 20260920 20260921; do
