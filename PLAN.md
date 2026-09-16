@@ -190,6 +190,15 @@ counterpart in the release, so on this data it cannot be checked at all, only re
 of zero would not surprise: the release image bins 32 rows into one superpixel, so the geometry the
 halo procedure assumes is not the geometry of these images.
 
+For R7 (the muon mask with no tracks at all, added 2026-09-16 on noticing that no test asks the sixth
+mask the question the other five are asked), written before the script was run: the expected firing
+rate is zero on all three sensors. The mask requires a cluster carrying about the charge a
+minimum-ionising particle leaves crossing the sensor, which is of order a hundred electrons even for
+the shortest crossing, while what is left in these images is dark current, spurious charge and the
+injected signal, all single electrons. A non-zero rate would mean the cluster finder is joining
+unrelated charged pixels into something long and heavy enough to pass, which would be worth knowing;
+the surface sensor, with about twenty times the dark current of the others, is where that would show.
+
 ## Schedule
 
 | Dates | Work |
