@@ -36,6 +36,7 @@ uv run python scripts/fetch_public_data.py       # downloads and SHA-256-verifie
 uv run pytest                                    # simulator, estimation, events and masks
 uv run python analysis/reproduce_release_rate.py        # R1
 uv run python analysis/check_release_mask_bits.py       # R2
+uv run python analysis/adaptive_masks_on_public_data.py     # R6 (the masks on the real release)
 uv run python analysis/null_false_positive_rates.py 50  # R3 (about 40 min)
 uv run python analysis/cross_defect_false_positives.py 20   # R5 (about 2 h; resumes if interrupted)
 # R4: three seeds used while developing and two run once after the code was frozen
