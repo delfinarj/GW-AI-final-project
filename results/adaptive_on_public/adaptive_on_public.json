@@ -67,6 +67,57 @@
         "serial_rows": 0.0,
         "low_energy_clusters": 0.0
       },
+      "masked_fraction_union": 0.0006510416666666666,
+      "loudest_columns": [
+        {
+          "column": 134,
+          "charged_pixel_rate": 0.13839285714285715,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 8,
+          "charged_pixel_rate": 0.026785714285714284,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 1622,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        },
+        {
+          "column": 2331,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        },
+        {
+          "column": 2155,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        },
+        {
+          "column": 1680,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        },
+        {
+          "column": 2457,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        },
+        {
+          "column": 1560,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        }
+      ],
       "release_mask_fraction": 0.04242088681175595,
       "against_release": {
         "hot_columns_pixels": {
@@ -171,6 +222,57 @@
         "serial_rows": 0.0,
         "low_energy_clusters": 0.0
       },
+      "masked_fraction_union": 0.0013224283854166667,
+      "loudest_columns": [
+        {
+          "column": 134,
+          "charged_pixel_rate": 0.16517857142857142,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 8,
+          "charged_pixel_rate": 0.06696428571428571,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 2229,
+          "charged_pixel_rate": 0.044642857142857144,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 842,
+          "charged_pixel_rate": 0.03571428571428571,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 21,
+          "charged_pixel_rate": 0.013392857142857142,
+          "flagged_by_us": false,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 2995,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        },
+        {
+          "column": 2332,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        },
+        {
+          "column": 1679,
+          "charged_pixel_rate": 0.004464285714285714,
+          "flagged_by_us": false,
+          "in_release_bad_columns": false
+        }
+      ],
       "release_mask_fraction": 0.055235363188244055,
       "against_release": {
         "hot_columns_pixels": {
@@ -215,22 +317,22 @@
         "median_per_image": 1.0
       },
       "hot_column_evidence": {
-        "common_rate_charged_pixels": 0.00019667963675913056,
+        "common_rate_charged_pixels": 0.00020239260087596682,
         "flagged_column_rates": [
           0.08928571428571429,
           0.022321428571428572,
-          0.19047619047619047,
+          0.125,
           0.05357142857142857,
           0.026785714285714284,
           0.06696428571428571
         ],
         "ratio_to_common": [
-          453.9652185501066,
-          113.49130463752665,
-          968.4591329068941,
-          272.37913113006397,
-          136.18956556503198,
-          340.4739139125799
+          441.15107913669067,
+          110.28776978417267,
+          617.611510791367,
+          264.69064748201436,
+          132.34532374100718,
+          330.863309352518
         ]
       },
       "cti_detail": {
@@ -262,7 +364,7 @@
       "constants_chosen": {
         "cti_length_h": 0,
         "cti_length_v": 0,
-        "halo_radius": 10,
+        "halo_radius": 0,
         "halo_calibrated": true,
         "hot_columns": [
           8,
@@ -272,15 +374,66 @@
           1852,
           2229
         ],
-        "hot_pixels": 7
+        "hot_pixels": 12
       },
       "masked_fraction": {
         "hot_columns_pixels": 0.001973470052083333,
         "cti": 0.0,
-        "halo": 0.008217947823660714,
+        "halo": 0.0,
         "serial_rows": 0.0,
         "low_energy_clusters": 0.0018339611235119048
       },
+      "masked_fraction_union": 0.0038074311755952393,
+      "loudest_columns": [
+        {
+          "column": 134,
+          "charged_pixel_rate": 0.125,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 8,
+          "charged_pixel_rate": 0.08928571428571429,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 2229,
+          "charged_pixel_rate": 0.06696428571428571,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 842,
+          "charged_pixel_rate": 0.05357142857142857,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 1852,
+          "charged_pixel_rate": 0.026785714285714284,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 21,
+          "charged_pixel_rate": 0.022321428571428572,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 516,
+          "charged_pixel_rate": 0.013392857142857142,
+          "flagged_by_us": false,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 1659,
+          "charged_pixel_rate": 0.008928571428571428,
+          "flagged_by_us": false,
+          "in_release_bad_columns": true
+        }
+      ],
       "release_mask_fraction": 0.061334519159226185,
       "against_release": {
         "hot_columns_pixels": {
@@ -299,9 +452,9 @@
         },
         "halo": {
           "release_bit": "halo",
-          "median_fraction_of_ours_also_theirs": 0.24073333577384354,
-          "median_fraction_of_theirs_also_ours": 0.20204638787859747,
-          "median_pixels_ours": 207.0,
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": 0.0,
+          "median_pixels_ours": 0.0,
           "median_pixels_theirs": 559.0
         },
         "serial_rows": {
@@ -325,22 +478,24 @@
         "median_per_image": 31.0
       },
       "hot_column_evidence": {
-        "common_rate_charged_pixels": 0.0004742163450973135,
+        "common_rate_charged_pixels": 0.0004771067739682961,
         "flagged_column_rates": [
           0.10096153846153846,
-          0.057692307692307696,
-          0.046875,
-          0.0625,
-          0.052884615384615384,
+          0.057971014492753624,
+          0.09326424870466321,
+          0.04854368932038835,
+          0.06403940886699508,
+          0.05314009661835749,
           0.07692307692307693
         ],
         "ratio_to_common": [
-          212.90185272045028,
-          121.65820155454303,
-          98.8472887630662,
-          131.7963850174216,
-          111.52001809166444,
-          162.21093540605736
+          211.61204151808457,
+          121.50532680679527,
+          195.4787770648183,
+          101.74596540860284,
+          134.2244804749943,
+          111.379882906229,
+          161.22822210901683
         ]
       },
       "cti_detail": {
@@ -372,32 +527,84 @@
       "constants_chosen": {
         "cti_length_h": 0,
         "cti_length_v": 0,
-        "halo_radius": 15,
+        "halo_radius": 25,
         "halo_calibrated": true,
         "hot_columns": [
           8,
           21,
+          134,
           516,
           842,
           1852,
           2229
         ],
-        "hot_pixels": 8
+        "hot_pixels": 11
       },
       "masked_fraction": {
-        "hot_columns_pixels": 0.001993815104166667,
+        "hot_columns_pixels": 0.0023193359375,
         "cti": 0.0,
-        "halo": 0.05096748547676282,
+        "halo": 0.00713954827724359,
         "serial_rows": 0.0,
-        "low_energy_clusters": 0.000482021233974359
+        "low_energy_clusters": 0.0
       },
+      "masked_fraction_union": 0.009419759114583332,
+      "loudest_columns": [
+        {
+          "column": 8,
+          "charged_pixel_rate": 0.10096153846153846,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 134,
+          "charged_pixel_rate": 0.08653846153846154,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 2229,
+          "charged_pixel_rate": 0.07692307692307693,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 842,
+          "charged_pixel_rate": 0.0625,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 21,
+          "charged_pixel_rate": 0.057692307692307696,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 1852,
+          "charged_pixel_rate": 0.052884615384615384,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 516,
+          "charged_pixel_rate": 0.04807692307692308,
+          "flagged_by_us": true,
+          "in_release_bad_columns": true
+        },
+        {
+          "column": 1659,
+          "charged_pixel_rate": 0.019230769230769232,
+          "flagged_by_us": false,
+          "in_release_bad_columns": true
+        }
+      ],
       "release_mask_fraction": 0.13043212890625,
       "against_release": {
         "hot_columns_pixels": {
           "release_bit": "bad column | bad pixel",
-          "median_fraction_of_ours_also_theirs": 0.9897959183673469,
-          "median_fraction_of_theirs_also_ours": 0.08137583892617449,
-          "median_pixels_ours": 98.0,
+          "median_fraction_of_ours_also_theirs": 0.9912280701754386,
+          "median_fraction_of_theirs_also_ours": 0.09479865771812081,
+          "median_pixels_ours": 114.0,
           "median_pixels_theirs": 1192.0
         },
         "cti": {
@@ -409,9 +616,9 @@
         },
         "halo": {
           "release_bit": "halo",
-          "median_fraction_of_ours_also_theirs": 0.36299292214357937,
-          "median_fraction_of_theirs_also_ours": 0.3624432104997476,
-          "median_pixels_ours": 1978.0,
+          "median_fraction_of_ours_also_theirs": 1.0,
+          "median_fraction_of_theirs_also_ours": 0.11936339522546419,
+          "median_pixels_ours": 281.0,
           "median_pixels_theirs": 1981.0
         },
         "serial_rows": {

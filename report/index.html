@@ -76,7 +76,7 @@ a mask tuned with truth on the same sensor they reach a median 0.98, with a wors
 case of 0.38 as a median over seeds (charge-transfer trails on the surface laboratory sensor (adaptive); 0.34 in its worst seed). In 8 cases a transplanted mask beat the adaptive one in every
 seed: self-calibration avoids the large failures but is not free.</p>
 <p>On the three sensors with their defects switched off, the adaptive masks fired no more often than
-&alpha; allows (and apparently less often; 50 runs cannot tell). On the surface sensor, though, the adaptive low-energy-cluster mask keeps only 0.85&ndash;0.92 of the signal, 0.85 even in a seed with no low-energy clusters at all: it fires on charge-transfer trail electrons, a false positive that the defect-free test cannot see because it switches every defect off at once. On a real sensor that nothing here was tuned for, the four exposures of the public SENSEI release, the release's own mask also flags 0.99&ndash;1.00 of every pixel the hot-column procedure flags.</p>
+&alpha; allows (and apparently less often; 50 runs cannot tell). On the surface sensor, though, the adaptive low-energy-cluster mask keeps only 0.85&ndash;0.92 of the signal, 0.85 even in a seed with no low-energy clusters at all: it fires on charge-transfer trail electrons, a false positive that the defect-free test cannot see because it switches every defect off at once. On a real sensor that nothing here was tuned for, the four exposures of the public SENSEI release, the hot-column procedure ends up flagging the 7 loudest columns of the longest exposure and nothing else, all of them inside the mask the collaboration published; it masks 0.0007&ndash;0.0094 of the image where that published mask takes 0.042&ndash;0.130.</p>
 <p>On the 2 seeds run once after the code was frozen: 4 of 26 transplanted cases worse than no mask in every seed, 0 of 13 adaptive ones, and a median adaptive 0.98 of the oracle. The adaptive case that is worse than no mask in every development seed (low-energy clusters on the surface laboratory sensor (adaptive)) has fewer than 20 target events in the held-out seeds, so it is not counted there, although there too its figure of merit is below no mask (0.96, 0.92 of no mask).</p>
 <p class="meta">Counted pairwise: a case is harmful only if the transplanted mask scores more than 1 % below no mask in every seed with at least 20 target events. The rule pre-registered before the re-run compared medians without a margin and gives 6 harmful transplants and 1 harmful adaptive cases; it was replaced after an independent review showed that medians differing in the third decimal were being counted as harm.</p>
 </div>
@@ -141,28 +141,41 @@ visible as well.</p>
 <h2>Result 4 &middot; The same procedures on a real sensor</h2>
 <p>Everything above is simulated. Here the adaptive masks run unchanged on the 4 exposures of the public
 SENSEI SNOLAB release: a fourth sensor, real, with a geometry none of the presets has (3072 &times;
-16 active superpixels, each binning 32 physical rows). Nothing about it was tuned, and the release
-publishes its own mask, so where the two overlap they can be compared. The pairing of one of our masks with a bit of
-that mask follows the hypothesis tested against the release's own geometry earlier on this page.</p>
-<p>The estimator, given only the images, measures a readout noise of 0.141&ndash;0.142 e
-against the 0.14 e of the release paper, and a single-electron density that grows with exposure.
-Of everything the hot-column and hot-pixel procedure flags, the release also flags between
-0.99 and 1.00: on a real sensor, unaided, it lands inside a mask a person
-tuned. The columns it picks are not marginal either: each carries between 99 and
-1830 times the charged-pixel rate of the columns it left alone.</p>
-<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Exposure</th><th scope='col'>Images</th><th scope='col'>Trigger pixels</th><th scope='col'>Measured noise (e)</th><th scope='col'>1e density (e/pix)</th><th scope='col'>Trail lengths h / v</th><th scope='col'>Halo radius</th><th scope='col'>Hot columns / pixels</th><th scope='col'>Fraction masked</th></tr></thead><tbody><tr><td>0 h</td><td>14</td><td>0</td><td>0.142</td><td>1.34 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>2 / 8</td><td>0.0007</td></tr><tr><td>2 h</td><td>14</td><td>70</td><td>0.142</td><td>1.72 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>4 / 8</td><td>0.0013</td></tr><tr><td>6 h</td><td>14</td><td>103</td><td>0.141</td><td>2.95 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>10</td><td>6 / 7</td><td>0.0120</td></tr><tr><td>20 h</td><td>13</td><td>844</td><td>0.141</td><td>6.52 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>15</td><td>6 / 8</td><td>0.0534</td></tr></tbody></table></div>
+16 active superpixels, each binning 32 physical rows, so a step along a column is 32
+times a step along a row). Nothing about it was tuned, and the release publishes its own mask, so where the two
+overlap they can be compared. The pairing of one of our masks with a bit of that mask follows the hypothesis tested
+against the release's own geometry earlier on this page.</p>
+<p>Given only the images, the estimator measures a readout noise of 0.141&ndash;0.142 e,
+where the independent fit of the rate reproduction above, on the same files, gives 0.1413&ndash;0.1420 e,
+and a single-electron density that grows with exposure.</p>
+<p><strong>What the hot-column procedure finds.</strong> It flags
+2, 4, 6, 7 columns as the exposure grows, and the sets
+are nested: each one keeps the previous columns and adds the next loudest. At the longest exposure the
+7 columns with the highest rate of charged pixels are exactly the ones it flags, and every one of them
+lies inside the release's own bad-column mask; the next column down (1659, at
+0.019 charged pixels per pixel) is in the release's mask and is not flagged, which is the
+conservative direction. Each flagged column carries 102 to 1830 times the
+charged-pixel rate of the columns left alone.</p>
+<p>The two directions of agreement say different things, so both are here. Of what we flag, the release also flags
+0.99&ndash;1.00: we stay inside their mask. Of what they flag, we flag
+0.027&ndash;0.095: they mask far more than we do, 0.042 to
+0.130 of the image against our 0.0007 to 0.0094. The first number
+is the easy direction &mdash; a procedure that flagged one true column would score 1.00 &mdash; and it rests on
+2 to 7 column decisions, not on the hundreds of pixels it is counted over.</p>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Exposure</th><th scope='col'>Images</th><th scope='col'>Trigger pixels</th><th scope='col'>Measured noise (e)</th><th scope='col'>1e density (e/pix)</th><th scope='col'>Trail lengths h / v</th><th scope='col'>Halo radius</th><th scope='col'>Hot columns / pixels</th><th scope='col'>We mask (union)</th><th scope='col'>The release masks</th></tr></thead><tbody><tr><td>0 h</td><td>14</td><td>0</td><td>0.142</td><td>1.34 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>2 / 8</td><td>0.0007</td><td>0.042</td></tr><tr><td>2 h</td><td>14</td><td>70</td><td>0.142</td><td>1.72 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>4 / 8</td><td>0.0013</td><td>0.055</td></tr><tr><td>6 h</td><td>14</td><td>103</td><td>0.141</td><td>2.95 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>0</td><td>6 / 12</td><td>0.0038</td><td>0.061</td></tr><tr><td>20 h</td><td>13</td><td>844</td><td>0.141</td><td>6.52 &times; 10<sup>-4</sup></td><td>0 / 0</td><td>25</td><td>7 / 11</td><td>0.0094</td><td>0.130</td></tr></tbody></table></div>
 <p>The trail calibration chose length zero on every exposure, which the expectation registered in PLAN.md did not predict.
 The reason is in the result file: the release blinds its hits, so a whole exposure holds
 0, 70, 103, 844 trigger pixels. At the longest exposure the test does see
 the excess on the right side &mdash; 13 single electrons within
 5 superpixels downstream of a trigger against
-2 upstream, p&nbsp;=&nbsp;0.0037 &mdash; but a
-Bonferroni-corrected &alpha; asks for p&nbsp;&lt;&nbsp;6.3e-05. The
-procedure is not wrong here; it is refusing to mask on evidence this thin, which is what it was built to do. The halo
-radius behaves the same way: 0 where there are no triggers, 15 superpixels at the longest
-exposure.</p>
+2 upstream, p&nbsp;=&nbsp;0.0037 &mdash; but the
+corrected threshold is p&nbsp;&lt;&nbsp;6.3e-05. Part of that strictness is
+an artefact: the correction counts 80 distance blocks per direction, and on an image 16 rows tall only
+three of them can ever be filled. Correcting for the tests that can exist would ask for about 1.7&times;10<sup>-3</sup>,
+which this p-value still does not meet, so the decision stands. The halo radius behaves the same way:
+0 where there are no triggers, 25 column widths at the longest exposure.</p>
 <details><summary>Every mask against its counterpart in the release</summary>
-<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Exposure</th><th scope='col'>Our mask</th><th scope='col'>Release bit</th><th scope='col'>Fraction of the image we mask</th><th scope='col'>Of ours, also theirs</th><th scope='col'>Of theirs, also ours</th></tr></thead><tbody><tr><td>0 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0007</td><td>1.00</td><td>0.027</td></tr><tr><td>0 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>0 h</td><td>Halo</td><td>halo</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>0 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>2 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0013</td><td>1.00</td><td>0.055</td></tr><tr><td>2 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>2 h</td><td>Halo</td><td>halo</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>2 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>6 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0020</td><td>1.00</td><td>0.081</td></tr><tr><td>6 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>6 h</td><td>Halo</td><td>halo</td><td>0.0082</td><td>0.24</td><td>0.202</td></tr><tr><td>6 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>20 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0020</td><td>0.99</td><td>0.081</td></tr><tr><td>20 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>20 h</td><td>Halo</td><td>halo</td><td>0.0510</td><td>0.36</td><td>0.362</td></tr><tr><td>20 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr></tbody></table></div>
+<div class='table-wrap'><table class=''><thead><tr><th scope='col'>Exposure</th><th scope='col'>Our mask</th><th scope='col'>Release bit</th><th scope='col'>Fraction of the image we mask</th><th scope='col'>Of ours, also theirs</th><th scope='col'>Of theirs, also ours</th></tr></thead><tbody><tr><td>0 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0007</td><td>1.00</td><td>0.027</td></tr><tr><td>0 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>0 h</td><td>Halo</td><td>halo</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>0 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>2 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0013</td><td>1.00</td><td>0.055</td></tr><tr><td>2 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>2 h</td><td>Halo</td><td>halo</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>2 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>6 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0020</td><td>1.00</td><td>0.081</td></tr><tr><td>6 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>6 h</td><td>Halo</td><td>halo</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>6 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr><tr><td>20 h</td><td>Hot columns & pixels</td><td>bad column | bad pixel</td><td>0.0023</td><td>0.99</td><td>0.095</td></tr><tr><td>20 h</td><td>Charge-transfer trails</td><td>bleeding</td><td>0.0000</td><td>&mdash;</td><td>0.000</td></tr><tr><td>20 h</td><td>Halo</td><td>halo</td><td>0.0071</td><td>1.00</td><td>0.119</td></tr><tr><td>20 h</td><td>Serial-register hits</td><td>noisy row</td><td>0.0000</td><td>&mdash;</td><td>&mdash;</td></tr></tbody></table></div>
 </details>
 
 <h2>What the checks caught</h2>

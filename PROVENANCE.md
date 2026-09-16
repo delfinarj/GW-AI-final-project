@@ -463,10 +463,15 @@ so both were rewritten and re-run; the numbers produced before this date are not
     together; testing each mask alone would measure a different thing.
   - *20 runs per configuration, chosen for run time.* 0 of 20 has an upper limit of 0.17, so this test
     finds gross cross-talk and cannot resolve a rate near alpha; the page says so.
-- **Expectation registered before the run (2026-09-16, before any R5 number existed):** the adaptive
-  low-energy-cluster mask on the surface sensor is expected to fire when charge-transfer trails are
-  the only defect present, since that is the explanation R4 gave for its loss of signal. Any other
-  cell that fires is a finding this analysis was not built to expect.
+- **Expectation registered before the numbers were looked at, though the repository cannot prove it:**
+  the adaptive low-energy-cluster mask on the surface sensor is expected to fire when charge-transfer
+  trails are the only defect present, since that is the explanation R4 gave for its loss of signal
+  days earlier. Any other cell that fires is a finding this analysis was not built to expect. The
+  independent review checked the commit order and found that PLAN.md's paragraph landed at 11:37,
+  after the first attempt had completed one run at about 11:29; that file was deleted unread at 11:31
+  and the first R5 numbers anyone read came from the second attempt at 12:21. So this is an account,
+  not a proof, and it is weaker on this point than R6, where expectation and script share one commit
+  made before any result existed.
 - **Incident: a segmentation fault (2026-09-16).** The first attempt, launched while two clean-clone
   reproductions were running and about 2.2 GB of memory was free, died after one completed run with
   exit 139 and no Python traceback. Nothing was diagnosed beyond that: with no traceback the evidence
@@ -481,7 +486,13 @@ so both were rewritten and re-run; the numbers produced before this date are not
 - **Output:** `results/adaptive_on_public/adaptive_on_public.json` and sidecar. No figure: four
   exposures by five masks is a table, not a chart.
 - **Produced by:** `analysis/adaptive_masks_on_public_data.py`, reading the four release files through
-  `src/skmask/sensei_public.py`. Code frozen at commit `bb8da49`, which also carries the expectation.
+  `src/skmask/sensei_public.py`. The expectation was registered with the first version of the script,
+  commit `bb8da49`; the script was then revised twice, to record what the trail test had to work with
+  and the evidence behind each flagged column, and once more after the independent review, to measure
+  distances with the right pixel geometry. The shipped result comes from that last version. An earlier
+  version of this entry called `bb8da49` "the frozen commit", which the result's own sidecar
+  contradicted; the sidecar names the commit that was checked out while the file was written, which is
+  always the parent of the commit that stores it.
 - **Inputs:** the four release ROOT files (SHA-256 in the sidecar), active area only: rows 1-16 of 20
   and columns 0-3071 of 3200, the selection the release macro defines.
 - **Written from scratch:** the per-image reconstruction of the active area from the flat tree, the
@@ -499,13 +510,18 @@ so both were rewritten and re-run; the numbers produced before this date are not
     thickness, pixel size and back-surface diffusion; an image that bins 32 physical rows into one
     superpixel does not have tracks of that shape.
   - *The low-energy-cluster mask is run but cannot be checked*: the release publishes no counterpart.
-- **Result:** given only the images, the estimator measures a readout noise of 0.141-0.142 e, against
-  the 0.14 e of the release paper, and a single-electron density that grows with exposure. The
-  hot-column and hot-pixel procedure flags 2 to 6 columns and 7 to 8 pixels, and 0.99 to 1.00 of what
-  it flags is also flagged by the release's own bad-column and bad-pixel bits: on a real sensor,
-  unaided, it lands inside a mask a person tuned. The reverse fraction is small (0.03-0.08), so the
-  release masks much more than we do. The halo radius is 0 where there are no trigger pixels and 10
-  and 15 superpixels at 6 and 20 hours, overlapping the release's halo bit by 0.24 and 0.36.
+- **Result:** given only the images, the estimator measures a readout noise of 0.141-0.142 e, where
+  R1's independent fit on the same files gives 0.1413-0.1420 e, and a single-electron density that
+  grows with exposure. The hot-column and hot-pixel procedure flags 2, 4, 6 and 7 columns as the
+  exposure grows, and the sets are nested: each keeps the previous columns and adds the next loudest.
+  At the longest exposure the seven columns with the highest rate of charged pixels are exactly the
+  seven it flags, all seven lie inside the release's own bad-column mask, and the next column down
+  (1659) is in that mask and is not flagged, which is the conservative direction. Of what we flag the
+  release also flags 0.99-1.00; of what the release flags we flag 0.027-0.095, and our masks together
+  cover 0.0007-0.0094 of the image where the release's mask covers 0.042-0.130. Both directions are on
+  the page now: the first is the easy one, since a procedure that flagged a single true column would
+  score 1.00, and it rests on 2 to 7 column decisions rather than on the hundreds of pixels it is
+  counted over. The halo radius is 0 at the three shorter exposures and 25 column widths at 20 hours.
 - **The registered expectation was wrong about the trails, and the result file says why.** PLAN.md,
   written before the run, expected a non-zero horizontal trail length because the release masks
   "bleeding". The procedure chose zero on all four exposures. The cause is not a defect in the
@@ -516,17 +532,68 @@ so both were rewritten and re-run; the numbers produced before this date are not
   smallest p-value per direction, so this statement is read from the result file rather than typed.
 - **How it was checked:** (i) the noise measured here image by image scatters over 0.1392-0.1456 e and
   its median per exposure is 0.141-0.142 e, which agrees to 0.001 e with the 0.1413-0.1420 e that R1
-  fits per exposure on the same files through a separate code path; (ii) the
-  hot columns are stable across exposures, with columns 8, 842 and 2229 appearing in three or four of
-  them, which a spurious flag would not do; (iii) each flagged column carries 99 to 1830 times the
-  rate of charged low-charge pixels of the columns left alone, the same counts the calibration works
-  with, so these are not marginal flags (recorded per column in the result file); (iv) the halo radius
-  grows with the number of triggers, as a procedure driven by counting statistics should.
+  fits per exposure on the same files through a separate code path; (ii) the flagged sets are nested
+  across the four exposures, 2 then 4 then 6 then 7 columns, each keeping the previous ones, which is
+  what accumulating evidence should look like and what a spurious flag would not do (an earlier
+  version of this entry claimed the sets were "stable" and named three columns that recur, which the
+  independent review correctly called a cherry-pick: at the time one column was flagged at three
+  exposures and lost at the fourth, for the reason recorded below); (iii) each flagged column carries
+  102 to 1830 times the rate of charged low-charge pixels of the columns left alone, the same counts
+  the calibration works with, so these are not marginal flags (recorded per column in the result
+  file); (iv) the eight loudest columns of every exposure are recorded with the rate that makes them
+  loud and whether the procedure flagged them, so a column it misses is visible rather than absent.
 - **What it does not show:** the single-electron densities here are measured on unmasked data and are
   therefore larger than R1's, which are fitted after the release mask; they are not the same quantity
   and the two numbers must not be compared as if they were. And with four masks checkable on one real
   sensor, this is a demonstration that the procedure survives contact with real data, not a
   measurement of how well it does in general.
+
+## Second independent review (2026-09-16), of R5 and R6
+
+A second agent reviewed the new work with no access to this conversation. Its findings are recorded
+here with what was done about each, including the ones that were not acted on.
+
+**Accepted and fixed:**
+
+- **The halo mask was measuring distance in superpixels on an image whose superpixels bin 32 rows.**
+  `adaptive_halo_radius` and `halo_mask` both take a `sampling` argument and R6 passed neither, so a
+  radius of 15 meant 15 columns by 15 superpixel rows, which on a 16-row image is the whole height of
+  the frame. The consequence was concrete and had gone unnoticed: at the longest exposure the halo
+  mask covered every pixel of column 134, the loudest column in the image, so the hot-column
+  calibration could not see it and did not flag it, while the earlier text called the flagged set
+  "stable". R6 now passes `sampling = (32, 1)`; the halo radius becomes 0, 0, 0 and 25 column widths,
+  and the flagged sets become nested, 2, 4, 6 and 7 columns, with column 134 present throughout. This
+  is also the cross-defect failure R5 was built to find, found on real data by a reviewer instead.
+- **"Fraction masked" on the page was the sum of five overlapping masks.** It is now their union,
+  computed in the analysis, and the table also prints what the release's own mask covers, which the
+  page never said.
+- **The page told only the flattering direction of the agreement with the release.** It gave "of what
+  we flag, the release also flags 0.99-1.00" and left the recall, 0.027-0.095, inside a collapsed
+  table. Both are now in the prose, with the sizes of the two masks and a sentence saying why the
+  first number is the easy one.
+- **A number on the page came from a Python constant, not from a result file.** The measured noise was
+  compared against `PRESETS["deep_underground"].noise_e` while the page attributed it to the release
+  paper. It is now compared against R1's fitted noise, read from `release_rate.json`.
+- **"Code frozen at commit `bb8da49`" was false**, as the result's own sidecar showed. Corrected above.
+- **The correction in the trail test counts distance blocks that cannot exist** on a 16-row image: 80
+  per direction, of which three can ever be filled vertically. The page now says so and gives the
+  threshold a correct count would ask for, which this p-value still does not meet, so the decision
+  stands.
+
+**Accepted, recorded, not fixed:**
+
+- **The R5 pre-registration cannot be demonstrated by the repository.** PLAN.md's R5 paragraph was
+  committed at 11:37, after the first attempt at R5 had completed one run and written it to disk at
+  about 11:29. The file was deleted unread at 11:31, when the analysis was made resumable, and the
+  first R5 number that was looked at was at 12:21, from the second attempt; the expectation itself
+  comes from R4, which had recorded the low-energy-cluster mask firing on trail electrons days
+  earlier. That is the honest account, and it is an account: the repository can show only the commit
+  order, so R5's expectation is weaker evidence than R6's, where the expectation and the script land
+  in one commit before any result exists. The entry above has been reworded accordingly.
+- **R5's per-image trials within a run are not independent** (the two images of a run share the
+  stack-calibrated exclusions), so its intervals are narrower than they should be for the two
+  per-image masks. Measuring it properly needs a re-run of about 100 minutes, which did not fit; the
+  page and the entry state it.
 
 ## The deliverable pages
 

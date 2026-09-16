@@ -240,7 +240,7 @@ def main():
                        f"{r['constants_chosen']['cti_length_h']} / {r['constants_chosen']['cti_length_v']}",
                        f"{r['constants_chosen']['halo_radius']}",
                        f"{len(r['constants_chosen']['hot_columns'])} / {r['constants_chosen']['hot_pixels']}",
-                       f"{sum(r['masked_fraction'].values()):.4f}"] for r in rows]
+                       f"{r['masked_fraction_union']:.4f}", f"{r['release_mask_fraction']:.3f}"] for r in rows]
         agree_rows = []
         for r in rows:
             for name, c in r["against_release"].items():
@@ -254,7 +254,18 @@ def main():
                          for r in rows if r["against_release"]["hot_columns_pixels"]["median_fraction_of_ours_also_theirs"] is not None]
         hot_ratios = [x for r in rows for x in (r["hot_column_evidence"]["ratio_to_common"] or [])]
         noises = [r["measured_noise_e"]["median"] for r in rows]
-        published_noise = PRESETS["deep_underground"].noise_e
+        r1_noises = [e["noise"] for e in rate["per_exposure"]]
+        sp_rows = 32
+        hot_recall = [r["against_release"]["hot_columns_pixels"]["median_fraction_of_theirs_also_ours"] for r in rows
+                      if r["against_release"]["hot_columns_pixels"]["median_fraction_of_theirs_also_ours"] is not None]
+        release_fracs = [r["release_mask_fraction"] for r in rows]
+        union_fracs = [r["masked_fraction_union"] for r in rows]
+        loud = rows[-1]["loudest_columns"]
+        n_loud_flagged = next((i for i, c in enumerate(loud) if not c["flagged_by_us"]), len(loud))
+        next_column = loud[n_loud_flagged]["column"] if n_loud_flagged < len(loud) else None
+        next_column_rate = loud[n_loud_flagged]["charged_pixel_rate"] if n_loud_flagged < len(loud) else 0.0
+        n_decisions_low = min(len(r["constants_chosen"]["hot_columns"]) for r in rows)
+        n_decisions_high = max(len(r["constants_chosen"]["hot_columns"]) for r in rows)
         last = rows[-1]
         halo_radii = [r["constants_chosen"]["halo_radius"] for r in rows]
         trail_zero = all(r["constants_chosen"]["cti_length_h"] == 0 and r["constants_chosen"]["cti_length_v"] == 0
@@ -265,27 +276,41 @@ def main():
         public_section = f"""<h2>Result 4 &middot; The same procedures on a real sensor</h2>
 <p>Everything above is simulated. Here the adaptive masks run unchanged on the {len(rows)} exposures of the public
 SENSEI SNOLAB release: a fourth sensor, real, with a geometry none of the presets has ({last["shape"][1]} &times;
-{last["shape"][0]} active superpixels, each binning {32} physical rows). Nothing about it was tuned, and the release
-publishes its own mask, so where the two overlap they can be compared. The pairing of one of our masks with a bit of
-that mask follows the hypothesis tested against the release's own geometry earlier on this page.</p>
-<p>The estimator, given only the images, measures a readout noise of {min(noises):.3f}&ndash;{max(noises):.3f} e
-against the {published_noise:.2f} e of the release paper, and a single-electron density that grows with exposure.
-Of everything the hot-column and hot-pixel procedure flags, the release also flags between
-{min(hot_agreement):.2f} and {max(hot_agreement):.2f}: on a real sensor, unaided, it lands inside a mask a person
-tuned. The columns it picks are not marginal either: each carries between {min(hot_ratios):.0f} and
-{max(hot_ratios):.0f} times the charged-pixel rate of the columns it left alone.</p>
+{last["shape"][0]} active superpixels, each binning {sp_rows} physical rows, so a step along a column is {sp_rows}
+times a step along a row). Nothing about it was tuned, and the release publishes its own mask, so where the two
+overlap they can be compared. The pairing of one of our masks with a bit of that mask follows the hypothesis tested
+against the release's own geometry earlier on this page.</p>
+<p>Given only the images, the estimator measures a readout noise of {min(noises):.3f}&ndash;{max(noises):.3f} e,
+where the independent fit of the rate reproduction above, on the same files, gives {min(r1_noises):.4f}&ndash;{max(r1_noises):.4f} e,
+and a single-electron density that grows with exposure.</p>
+<p><strong>What the hot-column procedure finds.</strong> It flags
+{", ".join(str(len(r["constants_chosen"]["hot_columns"])) for r in rows)} columns as the exposure grows, and the sets
+are nested: each one keeps the previous columns and adds the next loudest. At the longest exposure the
+{n_loud_flagged} columns with the highest rate of charged pixels are exactly the ones it flags, and every one of them
+lies inside the release's own bad-column mask; the next column down ({next_column}, at
+{next_column_rate:.3f} charged pixels per pixel) is in the release's mask and is not flagged, which is the
+conservative direction. Each flagged column carries {min(hot_ratios):.0f} to {max(hot_ratios):.0f} times the
+charged-pixel rate of the columns left alone.</p>
+<p>The two directions of agreement say different things, so both are here. Of what we flag, the release also flags
+{min(hot_agreement):.2f}&ndash;{max(hot_agreement):.2f}: we stay inside their mask. Of what they flag, we flag
+{min(hot_recall):.3f}&ndash;{max(hot_recall):.3f}: they mask far more than we do, {min(release_fracs):.3f} to
+{max(release_fracs):.3f} of the image against our {min(union_fracs):.4f} to {max(union_fracs):.4f}. The first number
+is the easy direction &mdash; a procedure that flagged one true column would score 1.00 &mdash; and it rests on
+{n_decisions_low} to {n_decisions_high} column decisions, not on the hundreds of pixels it is counted over.</p>
 {table(["Exposure", "Images", "Trigger pixels", "Measured noise (e)", "1e density (e/pix)",
-        "Trail lengths h / v", "Halo radius", "Hot columns / pixels", "Fraction masked"], chose_rows)}
+        "Trail lengths h / v", "Halo radius", "Hot columns / pixels", "We mask (union)", "The release masks"],
+       chose_rows)}
 <p>{"The trail calibration chose length zero on every exposure, which the expectation registered in PLAN.md did not predict." if trail_zero else "The trail calibration chose a non-zero length."}
 The reason is in the result file: the release blinds its hits, so a whole exposure holds
 {", ".join(str(r["trigger_pixels"]["total"]) for r in rows)} trigger pixels. At the longest exposure the test does see
 the excess on the right side &mdash; {last["cti_detail"]["v"]["n_downstream"]} single electrons within
 {last["cti_detail"]["v"]["at_distance_pix"]} superpixels downstream of a trigger against
-{last["cti_detail"]["v"]["n_upstream"]} upstream, p&nbsp;=&nbsp;{last["cti_detail"]["v"]["smallest_p"]:.4f} &mdash; but a
-Bonferroni-corrected &alpha; asks for p&nbsp;&lt;&nbsp;{last["cti_detail"]["v"]["bonferroni_threshold"]:.1e}. The
-procedure is not wrong here; it is refusing to mask on evidence this thin, which is what it was built to do. The halo
-radius behaves the same way: {halo_radii[0]} where there are no triggers, {halo_radii[-1]} superpixels at the longest
-exposure.</p>
+{last["cti_detail"]["v"]["n_upstream"]} upstream, p&nbsp;=&nbsp;{last["cti_detail"]["v"]["smallest_p"]:.4f} &mdash; but the
+corrected threshold is p&nbsp;&lt;&nbsp;{last["cti_detail"]["v"]["bonferroni_threshold"]:.1e}. Part of that strictness is
+an artefact: the correction counts {80} distance blocks per direction, and on an image {last["shape"][0]} rows tall only
+three of them can ever be filled. Correcting for the tests that can exist would ask for about 1.7&times;10<sup>-3</sup>,
+which this p-value still does not meet, so the decision stands. The halo radius behaves the same way:
+{halo_radii[0]} where there are no triggers, {halo_radii[-1]} column widths at the longest exposure.</p>
 <details><summary>Every mask against its counterpart in the release</summary>
 {table(["Exposure", "Our mask", "Release bit", "Fraction of the image we mask", "Of ours, also theirs",
         "Of theirs, also ours"], agree_rows)}
@@ -294,8 +319,10 @@ exposure.</p>
 
     public_answer = "" if not public else (
         f" On a real sensor that nothing here was tuned for, the four exposures of the public SENSEI release, the "
-        f"release's own mask also flags {min(hot_agreement):.2f}&ndash;{max(hot_agreement):.2f} of every pixel the "
-        f"hot-column procedure flags.")
+        f"hot-column procedure ends up flagging the {n_loud_flagged} loudest columns of the longest exposure and "
+        f"nothing else, all of them inside the mask the collaboration published; it masks "
+        f"{min(union_fracs):.4f}&ndash;{max(union_fracs):.4f} of the image where that published mask takes "
+        f"{min(release_fracs):.3f}&ndash;{max(release_fracs):.3f}.")
 
     cross_limitation = ("<li>The defect-free test switches every defect off at once, so it cannot see a mask firing "
                         "on another defect (the low-energy-cluster mask on charge-transfer trails, above).</li>"

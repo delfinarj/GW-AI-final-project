@@ -31,6 +31,10 @@ from skmask.provenance import write_sidecar
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "results" / "adaptive_on_public"
 ALPHA = 0.01
+# A superpixel bins 32 physical rows, so a step along y is 32 times a step along x. Distances for the
+# halo are measured in units of the column pitch; without this the halo is a disc in superpixels,
+# which on a 16-row image reaches the top and bottom of the frame and swallows whole columns.
+SAMPLING = (float(sp.ROWS_PER_SUPERPIXEL), 1.0)
 # Our mask -> the release bit it should correspond to, under the R2 hypothesis. Written, not derived.
 COUNTERPART = {"hot_columns_pixels": 0x400 | 0x200, "cti": 0x4, "halo": 0x8, "serial_rows": 0x20}
 BIT_NAMES = {0x400 | 0x200: "bad column | bad pixel", 0x4: "bleeding", 0x8: "halo", 0x20: "noisy row"}
@@ -73,8 +77,8 @@ def run_exposure(exposure_s):
 
     length_h, length_v, cti_profiles = M.adaptive_cti_lengths(stack, alpha=ALPHA)
     cti = [M.cti_mask(e, length_h, length_v) for e in stack]
-    radius, halo_info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=cti)
-    halo = [M.halo_mask(e, radius) for e in stack]
+    radius, halo_info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=cti, sampling=SAMPLING)
+    halo = [M.halo_mask(e, radius, sampling=SAMPLING) for e in stack]
     before_hot = [c | h for c, h in zip(cti, halo)]
     columns = M.adaptive_hot_columns(stack, alpha=ALPHA, exclude=before_hot)
     pixels = M.adaptive_hot_pixels(stack, alpha=ALPHA, exclude=before_hot)
@@ -104,6 +108,21 @@ def run_exposure(exposure_s):
     ours = {"hot_columns_pixels": hot, "cti": cti, "halo": halo, "serial_rows": serial,
             "low_energy_clusters": lec}
     fractions = {name: float(np.mean([m.mean() for m in masks])) for name, masks in ours.items()}
+    # the masks overlap, so what is actually removed is their union, not the sum of the fractions
+    union = [np.logical_or.reduce([masks[i] for masks in ours.values()]) for i in range(len(stack))]
+    union_fraction = float(np.mean([u.mean() for u in union]))
+
+    # The loudest columns before any mask is applied, and whether the procedure ended up flagging
+    # them: a column can be hidden from the hot-column calibration by an earlier mask.
+    raw_charged = np.zeros(stack[0].shape[1])
+    for electrons in stack:
+        raw_charged += M.low_charge_occupancy(electrons).sum(axis=0)
+    raw_rate = raw_charged / (len(stack) * stack[0].shape[0])
+    flagged_set = {int(c) for c in columns}
+    loudest_columns = [{"column": int(c), "charged_pixel_rate": float(raw_rate[c]),
+                        "flagged_by_us": int(c) in flagged_set,
+                        "in_release_bad_columns": bool(((release[0][:, c] & COUNTERPART["hot_columns_pixels"]) != 0).any())}
+                       for c in np.argsort(raw_rate)[::-1][:8]]
     comparison = {}
     for name, bit in COUNTERPART.items():
         per_image = [overlap(m, (r & bit) != 0) for m, r in zip(ours[name], release)]
@@ -143,6 +162,8 @@ def run_exposure(exposure_s):
                                  "hot_columns": [int(c) for c in columns],
                                  "hot_pixels": int(np.count_nonzero(pixels))},
             "masked_fraction": fractions,
+            "masked_fraction_union": union_fraction,
+            "loudest_columns": loudest_columns,
             "release_mask_fraction": float(np.mean([((r & sp.MASK_1E_ANALYSIS) != 0).mean() for r in release])),
             "against_release": comparison}
 
@@ -165,6 +186,10 @@ def main():
               f"{r['trigger_pixels']['median_per_image']:.0f} per image; smallest trail p-value "
               f"h {r['cti_detail']['h']['smallest_p']:.2g}, v {r['cti_detail']['v']['smallest_p']:.2g} "
               f"(needs < {r['cti_detail']['h']['bonferroni_threshold']:.2g})", flush=True)
+        missed = [c for c in r["loudest_columns"] if not c["flagged_by_us"] and c["charged_pixel_rate"] > 0.01]
+        if missed:
+            print(f"  loud columns NOT flagged: {[(c['column'], round(c['charged_pixel_rate'], 3)) for c in missed]}",
+                  flush=True)
         for name, c in r["against_release"].items():
             print(f"  {name:<20} masks {r['masked_fraction'][name]:.4f} of the image; of ours "
                   f"{c['median_fraction_of_ours_also_theirs']} is also '{c['release_bit']}'", flush=True)
@@ -173,7 +198,8 @@ def main():
     output.write_text(json.dumps(results, indent=2), encoding="utf-8")
     write_sidecar(output, __file__,
                   inputs=[sp.DATA_DIR / name for name in sp.EXPOSURES_S.values()],
-                  parameters={"alpha": ALPHA, "counterpart_bits": {k: hex(v) for k, v in COUNTERPART.items()}},
+                  parameters={"alpha": ALPHA, "sampling_rows_columns": list(SAMPLING),
+                              "counterpart_bits": {k: hex(v) for k, v in COUNTERPART.items()}},
                   notes="the adaptive masks run unchanged on the public SENSEI release, against its own mask bits")
     print(f"wrote {output}")
 

@@ -174,6 +174,12 @@ run: the adaptive low-energy-cluster mask on the surface sensor is expected to f
 charge-transfer trails are the only defect present, because that is the explanation R4 gave for its
 loss of signal there; every other cell that fires is a finding this analysis did not expect.
 
+[Note added 2026-09-16, after an independent review, to the paragraph above and not into it: the
+paragraph was committed at 11:37, and a first attempt at R5 had already completed one run at about
+11:29, whose file was deleted unread at 11:31 when the analysis was made resumable. The first R5
+numbers that were read came from the second attempt, at 12:21. The registration is therefore an
+account of what was done, which the commit order can neither confirm nor refute.]
+
 For R6 (the adaptive masks on the public release, added 2026-09-16), written before the script was
 run: the procedure is expected to choose a non-zero horizontal trail length, since the release has a
 "bleeding" mask along the readout direction, and to flag columns that fall inside the release's bad

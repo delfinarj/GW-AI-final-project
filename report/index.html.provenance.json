@@ -1,16 +1,16 @@
 {
   "output": "report/index.html",
-  "output_sha256": "979feb31dd26165157a65c7d403eda32ff7af0dd2817c34e4d74324479c7ae99",
+  "output_sha256": "41c964ff66b945945050f60428461f2ba284bce5e190e0aad42573634fdc346a",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "6324b1cbce669ce94d08166f0aa025f180129e76",
+    "commit": "1f510bbf8ac68deed9ba87cd380e105cf5306d14",
     "dirty": true,
-    "changed_outputs": 2
+    "changed_outputs": 4
   },
   "git_at_write": {
-    "commit": "6324b1cbce669ce94d08166f0aa025f180129e76",
+    "commit": "1f510bbf8ac68deed9ba87cd380e105cf5306d14",
     "dirty": true,
-    "changed_outputs": 3
+    "changed_outputs": 4
   },
   "inputs": [
     {
@@ -47,14 +47,14 @@
     },
     {
       "path": "results/adaptive_on_public/adaptive_on_public.json",
-      "sha256": "7f9718dab833ff9a8be02edd9ea702702a113518fa627d111e21232743495209"
+      "sha256": "a86c001270aefe672fdb4e15b9c3b69c982c5f501a24436561bb3d124922dac1"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "presented page; every number read from the inputs",
-  "created": "2026-09-16T15:56:08+00:00",
+  "created": "2026-09-16T16:15:52+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
