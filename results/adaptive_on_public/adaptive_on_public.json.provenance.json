@@ -1,0 +1,52 @@
+{
+  "output": "results/adaptive_on_public/adaptive_on_public.json",
+  "output_sha256": "b3ee443a7825f8dd83766bd67d3a85bfe1e27c571c7534ec41a6c71c94b9cc29",
+  "script": "analysis/adaptive_masks_on_public_data.py",
+  "git": {
+    "commit": "bb8da49aeff57ad2f0180549d2b4b9b5c1b560db",
+    "dirty": true,
+    "changed_outputs": 0
+  },
+  "git_at_write": {
+    "commit": "bb8da49aeff57ad2f0180549d2b4b9b5c1b560db",
+    "dirty": true,
+    "changed_outputs": 0
+  },
+  "inputs": [
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP0_13.root",
+      "sha256": "e38824424e019e2e5096786e8fa38834da7c2bf61a6087214fe0ec11df02a585"
+    },
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP7200_13.root",
+      "sha256": "21d7294f4238dd83450b9aec56178599ff4eabf62729aeb16a94621b6b58e712"
+    },
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP21600_13.root",
+      "sha256": "9864c9e342b34077759560ee4240faab42f57a8c960f8e832ee517cd71d0f7e6"
+    },
+    {
+      "path": "data/public/sensei_snolab_binned_1/RELEASE_hits_blinded_EXP72000_13.root",
+      "sha256": "79a09c60ecf8e05ca2f742b7816985cf5a31b3ce51b9f925c96f0e47fe4624fb"
+    }
+  ],
+  "parameters": {
+    "alpha": 0.01,
+    "counterpart_bits": {
+      "hot_columns_pixels": "0x600",
+      "cti": "0x4",
+      "halo": "0x8",
+      "serial_rows": "0x20"
+    }
+  },
+  "seed": null,
+  "results": {},
+  "notes": "the adaptive masks run unchanged on the public SENSEI release, against its own mask bits",
+  "created": "2026-09-16T15:27:56+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

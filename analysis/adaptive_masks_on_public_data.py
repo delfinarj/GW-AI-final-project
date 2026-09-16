@@ -71,7 +71,7 @@ def run_exposure(exposure_s):
         noise.append(float(info["noise_e"]))
         density.append(float(info["density"]))
 
-    length_h, length_v, _ = M.adaptive_cti_lengths(stack, alpha=ALPHA)
+    length_h, length_v, cti_profiles = M.adaptive_cti_lengths(stack, alpha=ALPHA)
     cti = [M.cti_mask(e, length_h, length_v) for e in stack]
     radius, halo_info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=cti)
     halo = [M.halo_mask(e, radius) for e in stack]
@@ -102,7 +102,23 @@ def run_exposure(exposure_s):
             "median_pixels_ours": float(np.median([o["ours"] for o in per_image])),
             "median_pixels_theirs": float(np.median([o["theirs"] for o in per_image]))}
 
+    # what the trail calibration had to work with: the release blinds hits, so triggers are few
+    block, max_distance = 5, 400
+    threshold = ALPHA / (2 * (max_distance // block))
+    triggers = [int(np.count_nonzero(e >= M.TRIGGER_E)) for e in stack]
+    cti_detail = {}
+    for axis in ("h", "v"):
+        profile = cti_profiles[axis]
+        best = int(np.argmin(profile["p"]))
+        cti_detail[axis] = {"smallest_p": float(profile["p"][best]),
+                            "at_distance_pix": int((best + 1) * block),
+                            "n_downstream": int(profile["n_down"][best]),
+                            "n_upstream": int(profile["n_up"][best]),
+                            "bonferroni_threshold": threshold}
+
     return {"exposure_s": exposure_s, "images": len(stack), "shape": list(stack[0].shape),
+            "trigger_pixels": {"total": int(sum(triggers)), "median_per_image": float(np.median(triggers))},
+            "cti_detail": cti_detail,
             "measured_noise_e": {"median": float(np.median(noise)), "min": min(noise), "max": max(noise)},
             "measured_density_1e": {"median": float(np.median(density)), "min": min(density), "max": max(density)},
             "constants_chosen": {"cti_length_h": int(length_h), "cti_length_v": int(length_v),
@@ -124,6 +140,10 @@ def main():
         print(f"  {r['images']} images, noise {r['measured_noise_e']['median']:.3f} e, "
               f"1e density {r['measured_density_1e']['median']:.2e}", flush=True)
         print(f"  chose {r['constants_chosen']}", flush=True)
+        print(f"  {r['trigger_pixels']['total']} trigger pixels in all, median "
+              f"{r['trigger_pixels']['median_per_image']:.0f} per image; smallest trail p-value "
+              f"h {r['cti_detail']['h']['smallest_p']:.2g}, v {r['cti_detail']['v']['smallest_p']:.2g} "
+              f"(needs < {r['cti_detail']['h']['bonferroni_threshold']:.2g})", flush=True)
         for name, c in r["against_release"].items():
             print(f"  {name:<20} masks {r['masked_fraction'][name]:.4f} of the image; of ours "
                   f"{c['median_fraction_of_ours_also_theirs']} is also '{c['release_bit']}'", flush=True)

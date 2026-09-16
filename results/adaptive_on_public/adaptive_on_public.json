@@ -1,0 +1,363 @@
+{
+  "alpha": 0.01,
+  "per_exposure": {
+    "0": {
+      "exposure_s": 0,
+      "images": 14,
+      "shape": [
+        16,
+        3072
+      ],
+      "trigger_pixels": {
+        "total": 0,
+        "median_per_image": 0.0
+      },
+      "cti_detail": {
+        "h": {
+          "smallest_p": 1.0,
+          "at_distance_pix": 5,
+          "n_downstream": 0,
+          "n_upstream": 0,
+          "bonferroni_threshold": 6.25e-05
+        },
+        "v": {
+          "smallest_p": 1.0,
+          "at_distance_pix": 5,
+          "n_downstream": 0,
+          "n_upstream": 0,
+          "bonferroni_threshold": 6.25e-05
+        }
+      },
+      "measured_noise_e": {
+        "median": 0.14156583730892136,
+        "min": 0.14059542109241302,
+        "max": 0.14449454482821766
+      },
+      "measured_density_1e": {
+        "median": 0.00013410161927461392,
+        "min": 3.770413468760244e-05,
+        "max": 0.00018371079176392305
+      },
+      "constants_chosen": {
+        "cti_length_h": 0,
+        "cti_length_v": 0,
+        "halo_radius": 0,
+        "halo_calibrated": false,
+        "hot_columns": [
+          8,
+          134
+        ],
+        "hot_pixels": 8
+      },
+      "masked_fraction": {
+        "hot_columns_pixels": 0.0006510416666666666,
+        "cti": 0.0,
+        "halo": 0.0,
+        "serial_rows": 0.0,
+        "low_energy_clusters": 0.0
+      },
+      "release_mask_fraction": 0.04242088681175595,
+      "against_release": {
+        "hot_columns_pixels": {
+          "release_bit": "bad column | bad pixel",
+          "median_fraction_of_ours_also_theirs": 1.0,
+          "median_fraction_of_theirs_also_ours": 0.026845637583892617,
+          "median_pixels_ours": 32.0,
+          "median_pixels_theirs": 1192.0
+        },
+        "cti": {
+          "release_bit": "bleeding",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": null,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        },
+        "halo": {
+          "release_bit": "halo",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": null,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        },
+        "serial_rows": {
+          "release_bit": "noisy row",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": null,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        }
+      }
+    },
+    "7200": {
+      "exposure_s": 7200,
+      "images": 14,
+      "shape": [
+        16,
+        3072
+      ],
+      "trigger_pixels": {
+        "total": 70,
+        "median_per_image": 0.0
+      },
+      "cti_detail": {
+        "h": {
+          "smallest_p": 0.5,
+          "at_distance_pix": 15,
+          "n_downstream": 1,
+          "n_upstream": 0,
+          "bonferroni_threshold": 6.25e-05
+        },
+        "v": {
+          "smallest_p": 1.0,
+          "at_distance_pix": 5,
+          "n_downstream": 0,
+          "n_upstream": 0,
+          "bonferroni_threshold": 6.25e-05
+        }
+      },
+      "measured_noise_e": {
+        "median": 0.1416433228546599,
+        "min": 0.1406076190876032,
+        "max": 0.14423119659065842
+      },
+      "measured_density_1e": {
+        "median": 0.00017163683591478967,
+        "min": 4.153966382100316e-05,
+        "max": 0.0002859509721176263
+      },
+      "constants_chosen": {
+        "cti_length_h": 0,
+        "cti_length_v": 0,
+        "halo_radius": 0,
+        "halo_calibrated": true,
+        "hot_columns": [
+          8,
+          134,
+          842,
+          2229
+        ],
+        "hot_pixels": 8
+      },
+      "masked_fraction": {
+        "hot_columns_pixels": 0.0013224283854166667,
+        "cti": 0.0,
+        "halo": 0.0,
+        "serial_rows": 0.0,
+        "low_energy_clusters": 0.0
+      },
+      "release_mask_fraction": 0.055235363188244055,
+      "against_release": {
+        "hot_columns_pixels": {
+          "release_bit": "bad column | bad pixel",
+          "median_fraction_of_ours_also_theirs": 1.0,
+          "median_fraction_of_theirs_also_ours": 0.05453020134228188,
+          "median_pixels_ours": 65.0,
+          "median_pixels_theirs": 1192.0
+        },
+        "cti": {
+          "release_bit": "bleeding",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": 0.0,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        },
+        "halo": {
+          "release_bit": "halo",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": 0.0,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        },
+        "serial_rows": {
+          "release_bit": "noisy row",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": null,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        }
+      }
+    },
+    "21600": {
+      "exposure_s": 21600,
+      "images": 14,
+      "shape": [
+        16,
+        3072
+      ],
+      "trigger_pixels": {
+        "total": 103,
+        "median_per_image": 1.0
+      },
+      "cti_detail": {
+        "h": {
+          "smallest_p": 0.125,
+          "at_distance_pix": 385,
+          "n_downstream": 3,
+          "n_upstream": 0,
+          "bonferroni_threshold": 6.25e-05
+        },
+        "v": {
+          "smallest_p": 0.015625,
+          "at_distance_pix": 10,
+          "n_downstream": 6,
+          "n_upstream": 0,
+          "bonferroni_threshold": 6.25e-05
+        }
+      },
+      "measured_noise_e": {
+        "median": 0.14131720240542378,
+        "min": 0.13921394537994614,
+        "max": 0.14563916967821702
+      },
+      "measured_density_1e": {
+        "median": 0.0002947562717134528,
+        "min": 0.00017689176787138004,
+        "max": 0.0003872422176689597
+      },
+      "constants_chosen": {
+        "cti_length_h": 0,
+        "cti_length_v": 0,
+        "halo_radius": 10,
+        "halo_calibrated": true,
+        "hot_columns": [
+          8,
+          21,
+          134,
+          842,
+          1852,
+          2229
+        ],
+        "hot_pixels": 7
+      },
+      "masked_fraction": {
+        "hot_columns_pixels": 0.001973470052083333,
+        "cti": 0.0,
+        "halo": 0.008217947823660714,
+        "serial_rows": 0.0,
+        "low_energy_clusters": 0.0018339611235119048
+      },
+      "release_mask_fraction": 0.061334519159226185,
+      "against_release": {
+        "hot_columns_pixels": {
+          "release_bit": "bad column | bad pixel",
+          "median_fraction_of_ours_also_theirs": 1.0,
+          "median_fraction_of_theirs_also_ours": 0.08137583892617449,
+          "median_pixels_ours": 97.0,
+          "median_pixels_theirs": 1192.0
+        },
+        "cti": {
+          "release_bit": "bleeding",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": 0.0,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 212.0
+        },
+        "halo": {
+          "release_bit": "halo",
+          "median_fraction_of_ours_also_theirs": 0.24073333577384354,
+          "median_fraction_of_theirs_also_ours": 0.20204638787859747,
+          "median_pixels_ours": 207.0,
+          "median_pixels_theirs": 559.0
+        },
+        "serial_rows": {
+          "release_bit": "noisy row",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": null,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        }
+      }
+    },
+    "72000": {
+      "exposure_s": 72000,
+      "images": 13,
+      "shape": [
+        16,
+        3072
+      ],
+      "trigger_pixels": {
+        "total": 844,
+        "median_per_image": 31.0
+      },
+      "cti_detail": {
+        "h": {
+          "smallest_p": 0.015625,
+          "at_distance_pix": 15,
+          "n_downstream": 6,
+          "n_upstream": 0,
+          "bonferroni_threshold": 6.25e-05
+        },
+        "v": {
+          "smallest_p": 0.003692626953125,
+          "at_distance_pix": 5,
+          "n_downstream": 13,
+          "n_upstream": 2,
+          "bonferroni_threshold": 6.25e-05
+        }
+      },
+      "measured_noise_e": {
+        "median": 0.141448073833878,
+        "min": 0.14045894675772322,
+        "max": 0.14476537952732246
+      },
+      "measured_density_1e": {
+        "median": 0.0006523635556163279,
+        "min": 0.0004120230416014519,
+        "max": 0.00115103476374679
+      },
+      "constants_chosen": {
+        "cti_length_h": 0,
+        "cti_length_v": 0,
+        "halo_radius": 15,
+        "halo_calibrated": true,
+        "hot_columns": [
+          8,
+          21,
+          516,
+          842,
+          1852,
+          2229
+        ],
+        "hot_pixels": 8
+      },
+      "masked_fraction": {
+        "hot_columns_pixels": 0.001993815104166667,
+        "cti": 0.0,
+        "halo": 0.05096748547676282,
+        "serial_rows": 0.0,
+        "low_energy_clusters": 0.000482021233974359
+      },
+      "release_mask_fraction": 0.13043212890625,
+      "against_release": {
+        "hot_columns_pixels": {
+          "release_bit": "bad column | bad pixel",
+          "median_fraction_of_ours_also_theirs": 0.9897959183673469,
+          "median_fraction_of_theirs_also_ours": 0.08137583892617449,
+          "median_pixels_ours": 98.0,
+          "median_pixels_theirs": 1192.0
+        },
+        "cti": {
+          "release_bit": "bleeding",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": 0.0,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 1172.0
+        },
+        "halo": {
+          "release_bit": "halo",
+          "median_fraction_of_ours_also_theirs": 0.36299292214357937,
+          "median_fraction_of_theirs_also_ours": 0.3624432104997476,
+          "median_pixels_ours": 1978.0,
+          "median_pixels_theirs": 1981.0
+        },
+        "serial_rows": {
+          "release_bit": "noisy row",
+          "median_fraction_of_ours_also_theirs": null,
+          "median_fraction_of_theirs_also_ours": null,
+          "median_pixels_ours": 0.0,
+          "median_pixels_theirs": 0.0
+        }
+      }
+    }
+  }
+}
