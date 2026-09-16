@@ -211,16 +211,16 @@ marker shape, and every figure has a legend or a single labelled series.
   serial-register grid runs without error. The failure therefore does not reproduce on the same data
   and the same code; 32768 is 2^15, a single bit set, which fits a transient memory error on a
   loaded machine better than a defect in the code. Nothing was changed and the seed was re-run.
-  **The reproduction below does not cover this seed**: 20260917 is one of the two seeds that were not
-  re-run in the clean clone, for lack of time. So if that crash had a silent counterpart, one that
-  changed a number instead of raising, the evidence against it here is the diagnostic just described
-  and not the bit-exact reproduction. Re-running seed 20260917 in a clean clone, about 70 minutes, is
-  the check that would close this.
+  **This seed has since been re-run from a clean clone** of the frozen commit, in the pinned
+  environment, and the result is bit-identical to the committed one (largest relative difference
+  0.0e+00). So whatever the crash was, it left no trace in the numbers: the concern that it might
+  have a silent counterpart, one that changed a value instead of raising, is answered for this seed
+  by an independent re-run rather than by the diagnostic alone.
 - **One commit message is wrong:** `d83ef7c` says "R4 re-run over the five seeds" but carries four;
   seed 20260917 was still re-running. The following commit adds it and says so.
 - **Reproduction of R4 from a clean clone** of `121c688` with the pinned environment (Python 3.11.16,
   numpy 2.4.6, scipy 1.17.1), each seed re-run from scratch and compared with
-  `scripts/compare_results.py` at a relative tolerance of 1e-9: seeds 20260915, 20260916 and 20260920 were re-run from scratch in the clone and are identical to the committed files (largest relative difference 0.0e+00 in each). That is two of the three development seeds and one of the two held-out seeds. Seeds 20260917 and 20260921 were not checked by this route: each seed takes about 70 minutes, the machine cannot be left running unattended, and the clone run of 20260921 was started and deliberately stopped for that reason (it appears in the log as exit 127). The reproduction therefore covers three of the five seeds, and R1, R2 and R3 in full.
+  `scripts/compare_results.py` at a relative tolerance of 1e-9: all five seeds (20260915, 20260916, 20260917, 20260920 and 20260921) were re-run from scratch in the clone and every one is identical to the committed file, largest relative difference 0.0e+00. `relative_fom_summary.json`, which the figure script derives from the five, is identical too, and `compare_masks.png` came out byte for byte the same. Together with R1, R2 and R3, reproduced the same way, every result the deliverables rest on has now been produced twice: once here and once in a clone of the frozen commit that shares nothing with this working copy but the commit and the pinned environment (Python 3.11.16, numpy 2.4.6, scipy 1.17.1). The seeds were run in two passes, three on 2026-09-15 and two on 2026-09-16, because each takes about 70 minutes and the machine cannot be left running unattended.
 - **How to read the commit in a sidecar.** A sidecar records the commit that was checked out *while the
   file was being written*, which is by construction the parent of the commit that stores the file: the
   output cannot be committed before it exists. So `report/report.pdf.provenance.json` names `d83ef7c`
