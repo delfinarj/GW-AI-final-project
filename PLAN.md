@@ -174,6 +174,16 @@ run: the adaptive low-energy-cluster mask on the surface sensor is expected to f
 charge-transfer trails are the only defect present, because that is the explanation R4 gave for its
 loss of signal there; every other cell that fires is a finding this analysis did not expect.
 
+For R6 (the adaptive masks on the public release, added 2026-09-16), written before the script was
+run: the procedure is expected to choose a non-zero horizontal trail length, since the release has a
+"bleeding" mask along the readout direction, and to flag columns that fall inside the release's bad
+column mask. The overlap is expected to be partial and asymmetric, with our masks smaller than the
+release's, because the release masks with other definitions and other thresholds; the interesting
+number is what fraction of what we mask the release also masks. The low-energy-cluster mask has no
+counterpart in the release, so on this data it cannot be checked at all, only reported. A halo radius
+of zero would not surprise: the release image bins 32 rows into one superpixel, so the geometry the
+halo procedure assumes is not the geometry of these images.
+
 ## Schedule
 
 | Dates | Work |

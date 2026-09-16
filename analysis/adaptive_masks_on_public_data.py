@@ -1,0 +1,141 @@
+"""R6. What the self-calibrating masks do on a real sensor: the public SENSEI SNOLAB release.
+
+Everything else in this project is measured on the simulator. This runs the adaptive masks, unchanged,
+on the public release images and asks two questions a simulation cannot answer:
+
+1. Does the calibration procedure produce sensible constants on a sensor nobody tuned it for? The
+   release sensor is a fourth sensor, real, with a geometry none of the presets has: 3200 x 20
+   superpixels, each binning 32 physical rows, of which 3072 x 16 are active.
+2. Where the release publishes its own mask, do the two agree? The release's masks were made with
+   other definitions and other parameters, so disagreement is not by itself an error; what the
+   comparison shows is whether the procedure lands on the same pixels a human-tuned mask did.
+
+The bits of the release mask are the hypothesis tested in R2 (`analysis/check_release_mask_bits.py`),
+and the pairing of a bit with one of our masks is written here, not derived.
+
+The muon mask is not run: it uses the sensor's thickness, pixel size and back-surface diffusion to
+predict the charge and length of a track, and in an image that bins 32 rows into one superpixel a
+track is neither straight nor of the predicted length.
+
+Run:  python analysis/adaptive_masks_on_public_data.py
+"""
+import json
+from pathlib import Path
+
+import numpy as np
+
+from skmask import masks as M
+from skmask import sensei_public as sp
+from skmask.estimate import electrons_from_image
+from skmask.provenance import write_sidecar
+
+OUT_DIR = Path(__file__).resolve().parents[1] / "results" / "adaptive_on_public"
+ALPHA = 0.01
+# Our mask -> the release bit it should correspond to, under the R2 hypothesis. Written, not derived.
+COUNTERPART = {"hot_columns_pixels": 0x400 | 0x200, "cti": 0x4, "halo": 0x8, "serial_rows": 0x20}
+BIT_NAMES = {0x400 | 0x200: "bad column | bad pixel", 0x4: "bleeding", 0x8: "halo", 0x20: "noisy row"}
+
+
+def active_images(exposure_s):
+    """Per image of one exposure, the active area as (charge, release mask) arrays."""
+    data = sp.load(exposure_s, extra=("RUNID",))
+    out = []
+    for run in np.unique(data["RUNID"]):
+        sel = data["RUNID"] == run
+        charge = np.zeros((sp.N_ROWS, sp.N_COLUMNS))
+        release = np.zeros((sp.N_ROWS, sp.N_COLUMNS), dtype=np.int64)
+        charge[data["y"][sel], data["x"][sel]] = data["ePix"][sel]
+        release[data["y"][sel], data["x"][sel]] = data["mask"][sel]
+        rows = slice(1, sp.ACTIVE_ROWS + 1)
+        columns = slice(0, sp.ACTIVE_COLUMNS)
+        out.append((charge[rows, columns], release[rows, columns]))
+    return out
+
+
+def overlap(ours, theirs):
+    """How much of each mask the other one also masks."""
+    both = int(np.count_nonzero(ours & theirs))
+    n_ours, n_theirs = int(np.count_nonzero(ours)), int(np.count_nonzero(theirs))
+    return {"ours": n_ours, "theirs": n_theirs, "both": both,
+            "fraction_of_ours_also_theirs": (both / n_ours) if n_ours else None,
+            "fraction_of_theirs_also_ours": (both / n_theirs) if n_theirs else None}
+
+
+def run_exposure(exposure_s):
+    pairs = active_images(exposure_s)
+    stack, release = [], [r for _, r in pairs]
+    noise, density = [], []
+    for charge, _ in pairs:
+        electrons, info = electrons_from_image(charge)
+        stack.append(electrons)
+        noise.append(float(info["noise_e"]))
+        density.append(float(info["density"]))
+
+    length_h, length_v, _ = M.adaptive_cti_lengths(stack, alpha=ALPHA)
+    cti = [M.cti_mask(e, length_h, length_v) for e in stack]
+    radius, halo_info = M.adaptive_halo_radius(stack, alpha=ALPHA, exclude=cti)
+    halo = [M.halo_mask(e, radius) for e in stack]
+    columns = M.adaptive_hot_columns(stack, alpha=ALPHA, exclude=[c | h for c, h in zip(cti, halo)])
+    pixels = M.adaptive_hot_pixels(stack, alpha=ALPHA, exclude=[c | h for c, h in zip(cti, halo)])
+    hot = [M.column_mask(e.shape, columns) | pixels for e in stack]
+
+    serial, lec = [], []
+    for e, h, c in zip(stack, hot, cti):
+        rows = M.adaptive_serial_rows(e, alpha=ALPHA, exclude=h | c)
+        serial.append(M.row_mask(e.shape, rows))
+        lec.append(M.adaptive_low_energy_cluster_mask(e, alpha=ALPHA, exclude=h | c | serial[-1]))
+
+    ours = {"hot_columns_pixels": hot, "cti": cti, "halo": halo, "serial_rows": serial,
+            "low_energy_clusters": lec}
+    fractions = {name: float(np.mean([m.mean() for m in masks])) for name, masks in ours.items()}
+    comparison = {}
+    for name, bit in COUNTERPART.items():
+        per_image = [overlap(m, (r & bit) != 0) for m, r in zip(ours[name], release)]
+        kept = [o["fraction_of_ours_also_theirs"] for o in per_image
+                if o["fraction_of_ours_also_theirs"] is not None]
+        theirs_seen = [o["fraction_of_theirs_also_ours"] for o in per_image
+                       if o["fraction_of_theirs_also_ours"] is not None]
+        comparison[name] = {
+            "release_bit": BIT_NAMES[bit],
+            "median_fraction_of_ours_also_theirs": (float(np.median(kept)) if kept else None),
+            "median_fraction_of_theirs_also_ours": (float(np.median(theirs_seen)) if theirs_seen else None),
+            "median_pixels_ours": float(np.median([o["ours"] for o in per_image])),
+            "median_pixels_theirs": float(np.median([o["theirs"] for o in per_image]))}
+
+    return {"exposure_s": exposure_s, "images": len(stack), "shape": list(stack[0].shape),
+            "measured_noise_e": {"median": float(np.median(noise)), "min": min(noise), "max": max(noise)},
+            "measured_density_1e": {"median": float(np.median(density)), "min": min(density), "max": max(density)},
+            "constants_chosen": {"cti_length_h": int(length_h), "cti_length_v": int(length_v),
+                                 "halo_radius": int(radius), "halo_calibrated": bool(halo_info["calibrated"]),
+                                 "hot_columns": [int(c) for c in columns],
+                                 "hot_pixels": int(np.count_nonzero(pixels))},
+            "masked_fraction": fractions,
+            "release_mask_fraction": float(np.mean([((r & sp.MASK_1E_ANALYSIS) != 0).mean() for r in release])),
+            "against_release": comparison}
+
+
+def main():
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    results = {"alpha": ALPHA, "per_exposure": {}}
+    for exposure_s in sorted(sp.EXPOSURES_S):
+        print(f"exposure {exposure_s} s", flush=True)
+        r = run_exposure(exposure_s)
+        results["per_exposure"][str(exposure_s)] = r
+        print(f"  {r['images']} images, noise {r['measured_noise_e']['median']:.3f} e, "
+              f"1e density {r['measured_density_1e']['median']:.2e}", flush=True)
+        print(f"  chose {r['constants_chosen']}", flush=True)
+        for name, c in r["against_release"].items():
+            print(f"  {name:<20} masks {r['masked_fraction'][name]:.4f} of the image; of ours "
+                  f"{c['median_fraction_of_ours_also_theirs']} is also '{c['release_bit']}'", flush=True)
+
+    output = OUT_DIR / "adaptive_on_public.json"
+    output.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    write_sidecar(output, __file__,
+                  inputs=[sp.DATA_DIR / name for name in sp.EXPOSURES_S.values()],
+                  parameters={"alpha": ALPHA, "counterpart_bits": {k: hex(v) for k, v in COUNTERPART.items()}},
+                  notes="the adaptive masks run unchanged on the public SENSEI release, against its own mask bits")
+    print(f"wrote {output}")
+
+
+if __name__ == "__main__":
+    main()
