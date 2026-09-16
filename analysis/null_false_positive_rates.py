@@ -22,13 +22,13 @@ import sys
 from pathlib import Path
 
 import numpy as np
-from scipy.stats import beta
 
 from skmask import masks as M
 from skmask.estimate import electrons_from_image
 from skmask.presets import PRESETS
 from skmask.provenance import write_sidecar
 from skmask.simulate import simulate
+from skmask.stats import clopper_pearson
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "results" / "null_false_positive_rates"
 ALPHA = 0.01
@@ -42,12 +42,6 @@ DEFECTS_OFF = dict(n_hot_columns=0, hot_column_e_per_pix=0.0, n_hot_pixels=0, ho
 CLEAN_PRESETS = {name: sensor.with_(**DEFECTS_OFF) for name, sensor in PRESETS.items()}
 PER_RUN = ("hot_columns", "cti", "halo")
 PER_IMAGE = ("serial", "low_energy_clusters")
-
-
-def clopper_pearson(k, n, level=0.95):
-    lo = beta.ppf((1 - level) / 2, k, n - k + 1) if k > 0 else 0.0
-    hi = beta.ppf(1 - (1 - level) / 2, k + 1, n - k) if k < n else 1.0
-    return float(lo), float(hi)
 
 
 def main(n_runs):
