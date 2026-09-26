@@ -56,7 +56,7 @@ ones that did the most work:
 
 ## What the reviews found
 
-Four independent reviews were run, each by an agent that had not seen the work being produced.
+Five independent reviews were run, each by an agent that had not seen the work being produced.
 
 | Review | What it was asked | What it found |
 |---|---|---|
@@ -64,6 +64,7 @@ Four independent reviews were run, each by an agent that had not seen the work b
 | Second, on the corrected analyses | check the statistics and the claims | Exclusions applied to medians instead of per seed; harm decided by rounding; oracle optima sitting on the edges of their parameter grids; Python version unpinned |
 | Third, on the one-defect-at-a-time test and the real-data analysis | check for overstatement | The halo mask measured distance in superpixels on a sensor that bins 32 rows into one, so a radius of 15 covered the whole height of the frame and hid the loudest column from the hot-column calibration; the page reported a sum of overlapping masks as if it were their union; the page gave only the flattering direction of the agreement with the published mask; a verdict applied to sixty cells with no correction for their number |
 | Fourth, an audit against the assignment | what is missing | The development material lived outside the repository; there was no account of the method (this file); `PLAN.md` had gone stale; sidecar hashes depended on the operating system's line endings |
+| Fifth, a stranger with only the repository | clone it, follow `README.md`, and report where you get stuck | Everything ran first try and four analyses came back bit for bit, but: the comparison step in `README.md` destroyed the reference it needed, the reproduce block assumed a shell and an installed tool it never named, a sentence attributed the union of five masks to one of them, and a result file carried a token that is valid JSON only for Python |
 
 Findings that were **accepted and not fixed** are recorded too, in `PROVENANCE.md`: that R5's
 pre-registration cannot be demonstrated from the commit order alone, and that the two images of a

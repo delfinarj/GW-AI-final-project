@@ -46,8 +46,9 @@ def e(text):
 
 
 def sci(x, digits=2):
+    """A number in scientific notation that will not be broken across two lines in a narrow column."""
     mantissa, exponent = f"{x:.{digits}e}".split("e")
-    return f"{mantissa} &times; 10<sup>{int(exponent)}</sup>"
+    return f"<span class='nb'>{mantissa} &times; 10<sup>{int(exponent)}</sup></span>"
 
 
 def table(headers, rows, cls=""):
@@ -597,6 +598,7 @@ table {{ border-collapse: collapse; width: 100%; font-size: .88rem; font-variant
 th, td {{ text-align: left; padding: .4rem .6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }}
 th {{ color: var(--ink-2); font-weight: 600; }}
 .range {{ color: var(--muted); }}
+.nb {{ white-space: nowrap; }}
 code {{ font-family: Consolas, "SFMono-Regular", Menlo, monospace; font-size: .88em; }}
 pre {{ background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: .9rem 1rem;
   overflow-x: auto; font-size: .85rem; line-height: 1.5; }}

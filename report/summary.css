@@ -27,6 +27,7 @@ table { border-collapse: collapse; width: 100%; font-size: 7.9pt; font-variant-n
 th, td { text-align: left; padding: 0.9mm 1.4mm; border-bottom: 0.4pt solid var(--rule);
          vertical-align: top; }
 th { color: var(--ink-2); font-weight: 600; }
+.nb { white-space: nowrap; }
 code { font-family: Consolas, "SFMono-Regular", monospace; font-size: 0.9em; }
 pre { background: #f6f6f4; border: 0.4pt solid var(--rule); padding: 1.5mm 2mm; font-size: 7.6pt;
       line-height: 1.35; overflow: hidden; break-inside: avoid; }

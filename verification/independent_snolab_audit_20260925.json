@@ -1,0 +1,1136 @@
+{
+  "provenance": {
+    "created_utc": "2026-09-26T02:10:24.822169+00:00",
+    "script": "verification/independent_snolab_audit_20260925.py",
+    "script_sha256": "3333273465924917083f3bfe121bd6bad162eb3ca0a4f4cb5a8d5acc7ef3ad79",
+    "repository_git_commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
+    "public_release_git_commit": "d30c4a7688b9ffbd4ee7a4ecc6a9957da691f98f",
+    "imports_project_analysis_or_src": false
+  },
+  "parameters": {
+    "active_columns": 3072,
+    "active_rows_inclusive": [
+      1,
+      16
+    ],
+    "release_mask_word": "0x67d",
+    "physical_pixels_per_superpixel": 32,
+    "readout_seconds": 965.0,
+    "column_family_alpha": 0.01,
+    "charged_threshold_e": 0.5
+  },
+  "files": [
+    {
+      "filename": "RELEASE_hits_blinded_EXP0_13.root",
+      "sha256": "e38824424e019e2e5096786e8fa38834da7c2bf61a6087214fe0ec11df02a585",
+      "nominal_exposure_seconds": 0.0,
+      "entries": 896000,
+      "images": 14,
+      "x_range": [
+        0,
+        3199
+      ],
+      "y_range": [
+        0,
+        19
+      ],
+      "release_selected_pixels": 658937,
+      "release_selected_fraction": 0.7354207589285714,
+      "exposure_days_mean": 0.005018285099502029,
+      "exposure_days_std": 0.0025786885168120896,
+      "negative_half_peak_sigma_e": 0.1416032603276467,
+      "mixture_fit": {
+        "n_fit": 658795,
+        "sigma_e": 0.1419561830925354,
+        "single_e_fraction": 7.384019817011447e-05,
+        "single_e_fraction_se_counting": 1.0586569300939523e-05,
+        "nll": 4198890.0172534175
+      },
+      "independent_bad_columns": {
+        "criterion": "iterated exact binomial upper-tail p-value < 0.01/3072; common null estimated from currently unflagged active columns; charged means ePix>0.5; release mask bits ignored",
+        "flagged_columns": [
+          8,
+          134
+        ],
+        "null_probability": 0.0003140995812005584,
+        "bonferroni_threshold": 3.2552083333333335e-06,
+        "history": [
+          {
+            "iteration": 0,
+            "null_probability": 0.0004330589657738095,
+            "columns": [
+              8,
+              134
+            ]
+          },
+          {
+            "iteration": 1,
+            "null_probability": 0.0003140995812005584,
+            "columns": [
+              8,
+              134
+            ]
+          }
+        ],
+        "top_20": [
+          {
+            "rank": 1,
+            "column": 134,
+            "charged": 73,
+            "pixels": 224,
+            "rate": 0.32589285714285715,
+            "pvalue": 2.675301792567719e-196
+          },
+          {
+            "rank": 2,
+            "column": 8,
+            "charged": 9,
+            "pixels": 224,
+            "rate": 0.04017857142857143,
+            "pvalue": 9.310795369221933e-17
+          },
+          {
+            "rank": 3,
+            "column": 586,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 4,
+            "column": 851,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 5,
+            "column": 1079,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 6,
+            "column": 1472,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 7,
+            "column": 1858,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 8,
+            "column": 2155,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 9,
+            "column": 2549,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 10,
+            "column": 2787,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 11,
+            "column": 2996,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.002352475714375788
+          },
+          {
+            "rank": 12,
+            "column": 10,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 13,
+            "column": 11,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 14,
+            "column": 12,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 15,
+            "column": 18,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 16,
+            "column": 20,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 17,
+            "column": 21,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 18,
+            "column": 24,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 19,
+            "column": 35,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          },
+          {
+            "rank": 20,
+            "column": 36,
+            "charged": 1,
+            "pixels": 224,
+            "rate": 0.004464285714285714,
+            "pvalue": 0.0679505038601826
+          }
+        ]
+      }
+    },
+    {
+      "filename": "RELEASE_hits_blinded_EXP7200_13.root",
+      "sha256": "21d7294f4238dd83450b9aec56178599ff4eabf62729aeb16a94621b6b58e712",
+      "nominal_exposure_seconds": 7200.0,
+      "entries": 896000,
+      "images": 14,
+      "x_range": [
+        0,
+        3199
+      ],
+      "y_range": [
+        0,
+        19
+      ],
+      "release_selected_pixels": 650119,
+      "release_selected_fraction": 0.7255792410714286,
+      "exposure_days_mean": 0.0883736722893806,
+      "exposure_days_std": 0.0025764956009225477,
+      "negative_half_peak_sigma_e": 0.14122165754570512,
+      "mixture_fit": {
+        "n_fit": 649997,
+        "sigma_e": 0.1417547073388475,
+        "single_e_fraction": 0.00010240761108192552,
+        "single_e_fraction_se_counting": 1.2551285338249928e-05,
+        "nll": 4142082.7450538934
+      },
+      "independent_bad_columns": {
+        "criterion": "iterated exact binomial upper-tail p-value < 0.01/3072; common null estimated from currently unflagged active columns; charged means ePix>0.5; release mask bits ignored",
+        "flagged_columns": [
+          8,
+          134,
+          842,
+          2229
+        ],
+        "null_probability": 0.0004336235798100205,
+        "bonferroni_threshold": 3.2552083333333335e-06,
+        "history": [
+          {
+            "iteration": 0,
+            "null_probability": 0.0005972726004464286,
+            "columns": [
+              8,
+              134,
+              842,
+              2229
+            ]
+          },
+          {
+            "iteration": 1,
+            "null_probability": 0.0004336235798100205,
+            "columns": [
+              8,
+              134,
+              842,
+              2229
+            ]
+          }
+        ],
+        "top_20": [
+          {
+            "rank": 1,
+            "column": 134,
+            "charged": 80,
+            "pixels": 224,
+            "rate": 0.35714285714285715,
+            "pvalue": 1.233577001308378e-207
+          },
+          {
+            "rank": 2,
+            "column": 8,
+            "charged": 15,
+            "pixels": 224,
+            "rate": 0.06696428571428571,
+            "pvalue": 2.811238691686912e-28
+          },
+          {
+            "rank": 3,
+            "column": 2229,
+            "charged": 10,
+            "pixels": 224,
+            "rate": 0.044642857142857144,
+            "pvalue": 1.5442159217813638e-17
+          },
+          {
+            "rank": 4,
+            "column": 842,
+            "charged": 8,
+            "pixels": 224,
+            "rate": 0.03571428571428571,
+            "pvalue": 1.593375385809762e-13
+          },
+          {
+            "rank": 5,
+            "column": 21,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.00014026489493888458
+          },
+          {
+            "rank": 6,
+            "column": 680,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.00014026489493888458
+          },
+          {
+            "rank": 7,
+            "column": 681,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.00014026489493888458
+          },
+          {
+            "rank": 8,
+            "column": 2210,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.00014026489493888458
+          },
+          {
+            "rank": 9,
+            "column": 2212,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.00014026489493888458
+          },
+          {
+            "rank": 10,
+            "column": 38,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 11,
+            "column": 605,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 12,
+            "column": 683,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 13,
+            "column": 684,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 14,
+            "column": 685,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 15,
+            "column": 686,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 16,
+            "column": 687,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 17,
+            "column": 688,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 18,
+            "column": 689,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 19,
+            "column": 1496,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          },
+          {
+            "rank": 20,
+            "column": 2208,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.004405396997266618
+          }
+        ]
+      }
+    },
+    {
+      "filename": "RELEASE_hits_blinded_EXP21600_13.root",
+      "sha256": "9864c9e342b34077759560ee4240faab42f57a8c960f8e832ee517cd71d0f7e6",
+      "nominal_exposure_seconds": 21600.0,
+      "entries": 896000,
+      "images": 14,
+      "x_range": [
+        0,
+        3199
+      ],
+      "y_range": [
+        0,
+        19
+      ],
+      "release_selected_pixels": 645922,
+      "release_selected_fraction": 0.7208950892857143,
+      "exposure_days_mean": 0.2550377761569228,
+      "exposure_days_std": 0.0025774553291382945,
+      "negative_half_peak_sigma_e": 0.1411074517621913,
+      "mixture_fit": {
+        "n_fit": 645792,
+        "sigma_e": 0.1415129412846687,
+        "single_e_fraction": 0.000188359698186161,
+        "single_e_fraction_se_counting": 1.7076810414504768e-05,
+        "nll": 4114693.5862358133
+      },
+      "independent_bad_columns": {
+        "criterion": "iterated exact binomial upper-tail p-value < 0.01/3072; common null estimated from currently unflagged active columns; charged means ePix>0.5; release mask bits ignored",
+        "flagged_columns": [
+          8,
+          21,
+          134,
+          842,
+          1852,
+          2229
+        ],
+        "null_probability": 0.0005431110800484578,
+        "bonferroni_threshold": 3.2552083333333335e-06,
+        "history": [
+          {
+            "iteration": 0,
+            "null_probability": 0.0007469540550595238,
+            "columns": [
+              8,
+              21,
+              134,
+              842,
+              1852,
+              2229
+            ]
+          },
+          {
+            "iteration": 1,
+            "null_probability": 0.0005431110800484578,
+            "columns": [
+              8,
+              21,
+              134,
+              842,
+              1852,
+              2229
+            ]
+          }
+        ],
+        "top_20": [
+          {
+            "rank": 1,
+            "column": 134,
+            "charged": 83,
+            "pixels": 224,
+            "rate": 0.3705357142857143,
+            "pvalue": 6.861554204374069e-209
+          },
+          {
+            "rank": 2,
+            "column": 8,
+            "charged": 20,
+            "pixels": 224,
+            "rate": 0.08928571428571429,
+            "pvalue": 7.784334247473545e-38
+          },
+          {
+            "rank": 3,
+            "column": 2229,
+            "charged": 15,
+            "pixels": 224,
+            "rate": 0.06696428571428571,
+            "pvalue": 8.057804948943958e-27
+          },
+          {
+            "rank": 4,
+            "column": 842,
+            "charged": 12,
+            "pixels": 224,
+            "rate": 0.05357142857142857,
+            "pvalue": 1.4619711203262986e-20
+          },
+          {
+            "rank": 5,
+            "column": 1852,
+            "charged": 6,
+            "pixels": 224,
+            "rate": 0.026785714285714284,
+            "pvalue": 3.803004453652667e-09
+          },
+          {
+            "rank": 6,
+            "column": 21,
+            "charged": 5,
+            "pixels": 224,
+            "rate": 0.022321428571428572,
+            "pvalue": 1.9230384228385915e-07
+          },
+          {
+            "rank": 7,
+            "column": 271,
+            "charged": 4,
+            "pixels": 224,
+            "rate": 0.017857142857142856,
+            "pvalue": 8.076111336548415e-06
+          },
+          {
+            "rank": 8,
+            "column": 165,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.0002706666848178309
+          },
+          {
+            "rank": 9,
+            "column": 175,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.0002706666848178309
+          },
+          {
+            "rank": 10,
+            "column": 516,
+            "charged": 3,
+            "pixels": 224,
+            "rate": 0.013392857142857142,
+            "pvalue": 0.0002706666848178309
+          },
+          {
+            "rank": 11,
+            "column": 164,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 12,
+            "column": 166,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 13,
+            "column": 167,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 14,
+            "column": 168,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 15,
+            "column": 169,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 16,
+            "column": 170,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 17,
+            "column": 171,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 18,
+            "column": 172,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 19,
+            "column": 173,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          },
+          {
+            "rank": 20,
+            "column": 174,
+            "charged": 2,
+            "pixels": 224,
+            "rate": 0.008928571428571428,
+            "pvalue": 0.006800811534243971
+          }
+        ]
+      }
+    },
+    {
+      "filename": "RELEASE_hits_blinded_EXP72000_13.root",
+      "sha256": "79a09c60ecf8e05ca2f742b7816985cf5a31b3ce51b9f925c96f0e47fe4624fb",
+      "nominal_exposure_seconds": 72000.0,
+      "entries": 832000,
+      "images": 13,
+      "x_range": [
+        0,
+        3199
+      ],
+      "y_range": [
+        0,
+        19
+      ],
+      "release_selected_pixels": 555633,
+      "release_selected_fraction": 0.667828125,
+      "exposure_days_mean": 0.838395755843128,
+      "exposure_days_std": 0.0025848937503128097,
+      "negative_half_peak_sigma_e": 0.14105094618209746,
+      "mixture_fit": {
+        "n_fit": 555519,
+        "sigma_e": 0.14126305824205354,
+        "single_e_fraction": 0.0004396974092085468,
+        "single_e_fraction_se_counting": 2.8127555777253613e-05,
+        "nll": 3539678.7202133373
+      },
+      "independent_bad_columns": {
+        "criterion": "iterated exact binomial upper-tail p-value < 0.01/3072; common null estimated from currently unflagged active columns; charged means ePix>0.5; release mask bits ignored",
+        "flagged_columns": [
+          8,
+          21,
+          134,
+          516,
+          842,
+          1852,
+          2229
+        ],
+        "null_probability": 0.002268164136027105,
+        "bonferroni_threshold": 3.2552083333333335e-06,
+        "history": [
+          {
+            "iteration": 0,
+            "null_probability": 0.0025165264423076925,
+            "columns": [
+              8,
+              21,
+              134,
+              516,
+              842,
+              1852,
+              2229
+            ]
+          },
+          {
+            "iteration": 1,
+            "null_probability": 0.002268164136027105,
+            "columns": [
+              8,
+              21,
+              134,
+              516,
+              842,
+              1852,
+              2229
+            ]
+          }
+        ],
+        "top_20": [
+          {
+            "rank": 1,
+            "column": 134,
+            "charged": 74,
+            "pixels": 208,
+            "rate": 0.3557692307692308,
+            "pvalue": 5.658532724328871e-139
+          },
+          {
+            "rank": 2,
+            "column": 8,
+            "charged": 22,
+            "pixels": 208,
+            "rate": 0.10576923076923077,
+            "pvalue": 1.2480666014660931e-29
+          },
+          {
+            "rank": 3,
+            "column": 842,
+            "charged": 16,
+            "pixels": 208,
+            "rate": 0.07692307692307693,
+            "pvalue": 1.057056319877713e-19
+          },
+          {
+            "rank": 4,
+            "column": 2229,
+            "charged": 16,
+            "pixels": 208,
+            "rate": 0.07692307692307693,
+            "pvalue": 1.057056319877713e-19
+          },
+          {
+            "rank": 5,
+            "column": 21,
+            "charged": 12,
+            "pixels": 208,
+            "rate": 0.057692307692307696,
+            "pvalue": 1.2187523732427376e-13
+          },
+          {
+            "rank": 6,
+            "column": 516,
+            "charged": 11,
+            "pixels": 208,
+            "rate": 0.052884615384615384,
+            "pvalue": 3.275897257014994e-12
+          },
+          {
+            "rank": 7,
+            "column": 1852,
+            "charged": 11,
+            "pixels": 208,
+            "rate": 0.052884615384615384,
+            "pvalue": 3.275897257014994e-12
+          },
+          {
+            "rank": 8,
+            "column": 838,
+            "charged": 5,
+            "pixels": 208,
+            "rate": 0.02403846153846154,
+            "pvalue": 0.00012665327728068697
+          },
+          {
+            "rank": 9,
+            "column": 61,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 10,
+            "column": 836,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 11,
+            "column": 841,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 12,
+            "column": 847,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 13,
+            "column": 1486,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 14,
+            "column": 1659,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 15,
+            "column": 2014,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 16,
+            "column": 2015,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 17,
+            "column": 2024,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 18,
+            "column": 2027,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 19,
+            "column": 2120,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          },
+          {
+            "rank": 20,
+            "column": 2121,
+            "charged": 4,
+            "pixels": 208,
+            "rate": 0.019230769230769232,
+            "pvalue": 0.0013883726137366107
+          }
+        ]
+      }
+    }
+  ],
+  "rate_fit": {
+    "intercept_superpixel_per_image": 6.928544107582137e-05,
+    "intercept_se": 8.331053389056292e-06,
+    "slope_superpixel_per_day": 0.00044385642968904814,
+    "slope_se": 3.454188107709722e-05,
+    "rate_pixel_per_day": 1.3870513427782754e-05,
+    "rate_pixel_per_day_se": 1.0794337836592881e-06,
+    "chi2": 0.40681050669087426,
+    "dof": 2
+  },
+  "bad_column_sets_nested_in_exposure_order": true,
+  "combined_bad_columns": {
+    "criterion": "iterated exact binomial upper-tail p-value < 0.01/3072; common null estimated from currently unflagged active columns; charged means ePix>0.5; release mask bits ignored",
+    "flagged_columns": [
+      8,
+      21,
+      134,
+      516,
+      842,
+      1852,
+      2229
+    ],
+    "null_probability": 0.0008612635325522764,
+    "bonferroni_threshold": 3.2552083333333335e-06,
+    "history": [
+      {
+        "iteration": 0,
+        "null_probability": 0.0010472153172348484,
+        "columns": [
+          8,
+          21,
+          134,
+          516,
+          842,
+          1852,
+          2229
+        ]
+      },
+      {
+        "iteration": 1,
+        "null_probability": 0.0008612635325522764,
+        "columns": [
+          8,
+          21,
+          134,
+          516,
+          842,
+          1852,
+          2229
+        ]
+      }
+    ],
+    "top_20": [
+      {
+        "rank": 1,
+        "column": 134,
+        "charged": 310,
+        "pixels": 880,
+        "rate": 0.3522727272727273,
+        "pvalue": 0.0
+      },
+      {
+        "rank": 2,
+        "column": 8,
+        "charged": 66,
+        "pixels": 880,
+        "rate": 0.075,
+        "pvalue": 8.571398322168184e-103
+      },
+      {
+        "rank": 3,
+        "column": 2229,
+        "charged": 42,
+        "pixels": 880,
+        "rate": 0.04772727272727273,
+        "pvalue": 1.1437249912240478e-57
+      },
+      {
+        "rank": 4,
+        "column": 842,
+        "charged": 37,
+        "pixels": 880,
+        "rate": 0.042045454545454546,
+        "pvalue": 5.844683916266318e-49
+      },
+      {
+        "rank": 5,
+        "column": 21,
+        "charged": 21,
+        "pixels": 880,
+        "rate": 0.023863636363636365,
+        "pvalue": 2.2521728601517843e-23
+      },
+      {
+        "rank": 6,
+        "column": 1852,
+        "charged": 17,
+        "pixels": 880,
+        "rate": 0.019318181818181818,
+        "pvalue": 1.072156122103461e-17
+      },
+      {
+        "rank": 7,
+        "column": 516,
+        "charged": 15,
+        "pixels": 880,
+        "rate": 0.017045454545454544,
+        "pvalue": 5.2802414655763415e-15
+      },
+      {
+        "rank": 8,
+        "column": 838,
+        "charged": 6,
+        "pixels": 880,
+        "rate": 0.006818181818181818,
+        "pvalue": 0.00013633529703005034
+      },
+      {
+        "rank": 9,
+        "column": 1659,
+        "charged": 6,
+        "pixels": 880,
+        "rate": 0.006818181818181818,
+        "pvalue": 0.00013633529703005034
+      },
+      {
+        "rank": 10,
+        "column": 102,
+        "charged": 5,
+        "pixels": 880,
+        "rate": 0.005681818181818182,
+        "pvalue": 0.0011058201761417231
+      },
+      {
+        "rank": 11,
+        "column": 2125,
+        "charged": 5,
+        "pixels": 880,
+        "rate": 0.005681818181818182,
+        "pvalue": 0.0011058201761417231
+      },
+      {
+        "rank": 12,
+        "column": 9,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 13,
+        "column": 61,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 14,
+        "column": 68,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 15,
+        "column": 86,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 16,
+        "column": 88,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 17,
+        "column": 92,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 18,
+        "column": 95,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 19,
+        "column": 96,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      },
+      {
+        "rank": 20,
+        "column": 97,
+        "charged": 4,
+        "pixels": 880,
+        "rate": 0.004545454545454545,
+        "pvalue": 0.007525253258868723
+      }
+    ]
+  }
+}

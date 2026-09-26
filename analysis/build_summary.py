@@ -42,8 +42,9 @@ def e(text):
 
 
 def sci(x, digits=1):
+    """Scientific notation that stays on one line inside a narrow table column."""
     mantissa, exponent = f"{x:.{digits}e}".split("e")
-    return f"{mantissa}&times;10<sup>{int(exponent)}</sup>"
+    return f"<span class='nb'>{mantissa}&times;10<sup>{int(exponent)}</sup></span>"
 
 
 def table(headers, rows):

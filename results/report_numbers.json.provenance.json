@@ -3,14 +3,14 @@
   "output_sha256": "20656e9af340917ac7c20c704bc0170ce3924e701657a5d7783fa0707f3840e1",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
     "dirty": true,
-    "changed_outputs": 10
+    "changed_outputs": 9
   },
   "git_at_write": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
     "dirty": true,
-    "changed_outputs": 10
+    "changed_outputs": 9
   },
   "inputs": [
     {
@@ -38,7 +38,7 @@
   "seed": null,
   "results": {},
   "notes": "the headline numbers of the transplant comparison, for the short summary",
-  "created": "2026-09-26T01:39:59+00:00",
+  "created": "2026-09-26T02:14:44+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

@@ -1,0 +1,203 @@
+{
+  "sidecars": {
+    "sidecars": 21,
+    "output_mismatches": [
+      {
+        "sidecar": "results\\adaptive_on_public\\adaptive_on_public.json.provenance.json",
+        "output": "results/adaptive_on_public/adaptive_on_public.json",
+        "expected": "a86c001270aefe672fdb4e15b9c3b69c982c5f501a24436561bb3d124922dac1",
+        "actual": "a1355376e7d0b21d2931dfd9aa57cf9bee7f7b8d34bc1bc5fafa26f7a3a9eb80"
+      },
+      {
+        "sidecar": "results\\compare_masks\\seed_20260915\\compare_masks.json.provenance.json",
+        "output": "results/compare_masks/seed_20260915/compare_masks.json",
+        "expected": "34770a139dfa87cfab9ef8fba59f352258dd0608e5e590fdd6c24efb66b25614",
+        "actual": "f080d1d19052b15c13d0429963489ebb3dadf380464586fddd2b048895deaaa4"
+      },
+      {
+        "sidecar": "results\\compare_masks\\seed_20260916\\compare_masks.json.provenance.json",
+        "output": "results/compare_masks/seed_20260916/compare_masks.json",
+        "expected": "31e1622f205422451b82050a0c23d8d377ef6c9a7b3e13eeb9e4798c894842e3",
+        "actual": "37dbe2322b667c5cc1be8761a3793af1f8c7ba3fbdad1b587295adea27e6beb3"
+      },
+      {
+        "sidecar": "results\\compare_masks\\seed_20260917\\compare_masks.json.provenance.json",
+        "output": "results/compare_masks/seed_20260917/compare_masks.json",
+        "expected": "f8a380a501fccb2322bce813f62164797a0f64fdec396c568c98d200395062b7",
+        "actual": "4dd70b9baabeca3e772b2e67266ab9062f56edc419e8b0336b3ab4cac76cf3e1"
+      },
+      {
+        "sidecar": "results\\compare_masks\\seed_20260920\\compare_masks.json.provenance.json",
+        "output": "results/compare_masks/seed_20260920/compare_masks.json",
+        "expected": "8f45cc27c4c657441631c25a9c45d07ea9f3d29e3b505aedcdeffe8408cd5bd1",
+        "actual": "f4f3c5bca57e375074b4dc8c175cc7200a67eb93eac74b49d4cd9aa8bf65af37"
+      },
+      {
+        "sidecar": "results\\compare_masks\\seed_20260921\\compare_masks.json.provenance.json",
+        "output": "results/compare_masks/seed_20260921/compare_masks.json",
+        "expected": "6dcc2da318a1f96ba9a35c68017d9ab658cd5cd76d3a3797664d1637f271ddb9",
+        "actual": "03e580a80c1ab6ff06085074ec5e50eb60409f41e9fff111d2fdb05cf51448e7"
+      },
+      {
+        "sidecar": "results\\cross_defect_false_positives\\cross_defect.json.provenance.json",
+        "output": "results/cross_defect_false_positives/cross_defect.json",
+        "expected": "2fdf4444406920265e34d871d6ed88b398019afee381757681b3cea5bf773b5f",
+        "actual": "e481dc2d621cecf028ecb5da18e2e3228b9228c55ba47a32ff5dc621645279d6"
+      },
+      {
+        "sidecar": "results\\muon_mask_null_rate\\muon_null.json.provenance.json",
+        "output": "results/muon_mask_null_rate/muon_null.json",
+        "expected": "6cbd28aedd612ef6d1b32514ace8d3d6675867eb8245ab75c5281a83a691e2f8",
+        "actual": "4122fcc14199699d42844a1d08631d9d93932d7f6c26c759f4a5d28b4db4f870"
+      },
+      {
+        "sidecar": "results\\null_false_positive_rates\\null_rates.json.provenance.json",
+        "output": "results/null_false_positive_rates/null_rates.json",
+        "expected": "004c009b2c905c42827963383ceba3273e2e345f4b63ae22b356ee3bfae8ce53",
+        "actual": "17624d2da4b7f848ddb23499766a2c0759796c3bef9d79ea233d53dd7b04aef5"
+      },
+      {
+        "sidecar": "results\\release_rate\\release_rate.json.provenance.json",
+        "output": "results/release_rate/release_rate.json",
+        "expected": "8c1a92c08462616f91de2f9d9bccb60c3c0bbbab68436b5f9f3b5fbbc7a3d29e",
+        "actual": "e307903a46ad1e25d5aea2982cbd1c8fc1d3c29aedcd977b85224943209970bf"
+      }
+    ],
+    "input_mismatches": []
+  },
+  "headline_all_five": {
+    "adaptive_cases": 14,
+    "transplant_cases": 28,
+    "transplant_harmful": 5,
+    "transplant_no_difference": 2,
+    "adaptive_harmful": 1,
+    "adaptive_better": 12,
+    "adaptive_median_of_oracle": 0.9788470733846588,
+    "adaptive_worst_case": [
+      "surface_lab",
+      "cti"
+    ],
+    "adaptive_worst_median": 0.3811200902807409,
+    "adaptive_worst_seed": 0.33731388061417045,
+    "transplant_beats_adaptive": 8
+  },
+  "headline_held_out": {
+    "adaptive_cases": 13,
+    "transplant_cases": 26,
+    "transplant_harmful": 4,
+    "transplant_no_difference": 4,
+    "adaptive_harmful": 0,
+    "adaptive_better": 12,
+    "adaptive_median_of_oracle": 0.98015686485528,
+    "adaptive_worst_case": [
+      "surface_lab",
+      "cti"
+    ],
+    "adaptive_worst_median": 0.3798025297606882,
+    "adaptive_worst_seed": 0.36693496078329946,
+    "transplant_beats_adaptive": 8
+  },
+  "intervals": {
+    "null_max_abs_interval_difference": 0.0,
+    "cross_max_abs_family_lower_difference": 0.0,
+    "reported_cross_firing_cells": 7,
+    "paired_run_level_recheck": [
+      {
+        "sensor": "shallow_underground",
+        "defect": "cti",
+        "mask": "serial",
+        "image_fired": 5,
+        "image_trials": 40,
+        "run_any_fired": 5,
+        "run_trials": 20,
+        "family_corrected_lower": 0.033289395745846745,
+        "exceeds_union_bound_null_0.02": true
+      },
+      {
+        "sensor": "shallow_underground",
+        "defect": "cti",
+        "mask": "low_energy_clusters",
+        "image_fired": 19,
+        "image_trials": 40,
+        "run_any_fired": 14,
+        "run_trials": 20,
+        "family_corrected_lower": 0.31230459827043816,
+        "exceeds_union_bound_null_0.02": true
+      },
+      {
+        "sensor": "shallow_underground",
+        "defect": "low_energy_clusters",
+        "mask": "serial",
+        "image_fired": 6,
+        "image_trials": 40,
+        "run_any_fired": 5,
+        "run_trials": 20,
+        "family_corrected_lower": 0.033289395745846745,
+        "exceeds_union_bound_null_0.02": true
+      },
+      {
+        "sensor": "shallow_underground",
+        "defect": "halo",
+        "mask": "low_energy_clusters",
+        "image_fired": 10,
+        "image_trials": 40,
+        "run_any_fired": 8,
+        "run_trials": 20,
+        "family_corrected_lower": 0.1000362091786015,
+        "exceeds_union_bound_null_0.02": true
+      },
+      {
+        "sensor": "surface_lab",
+        "defect": "cti",
+        "mask": "serial",
+        "image_fired": 34,
+        "image_trials": 40,
+        "run_any_fired": 20,
+        "run_trials": 20,
+        "family_corrected_lower": 0.6776250275012987,
+        "exceeds_union_bound_null_0.02": true
+      },
+      {
+        "sensor": "surface_lab",
+        "defect": "cti",
+        "mask": "low_energy_clusters",
+        "image_fired": 40,
+        "image_trials": 40,
+        "run_any_fired": 20,
+        "run_trials": 20,
+        "family_corrected_lower": 0.6776250275012987,
+        "exceeds_union_bound_null_0.02": true
+      }
+    ]
+  },
+  "public_columns": {
+    "counts": [
+      2,
+      4,
+      6,
+      7
+    ],
+    "nested": true,
+    "selected_20h": [
+      8,
+      21,
+      134,
+      516,
+      842,
+      1852,
+      2229
+    ],
+    "bad_column_bit_0x400_fraction": {
+      "8": 1.0,
+      "21": 1.0,
+      "134": 1.0,
+      "516": 1.0,
+      "842": 1.0,
+      "1852": 1.0,
+      "2229": 1.0,
+      "1659": 1.0
+    },
+    "release_full_bad_columns": 74,
+    "ours_over_release_full_columns": 0.0945945945945946
+  }
+}
