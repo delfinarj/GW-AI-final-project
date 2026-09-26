@@ -14,6 +14,9 @@ Times in these logs are local time on the machine the project was produced on.
 | `clone4_seed_*.log` | The five R4 seeds re-run in a clean clone | "all five seeds … identical to the committed file, largest relative difference 0.0e+00" |
 | `rerun_all.log` | The full re-run after the truth-leak fix, 71 KB | The two-stale-seed incident: it opens with the `git rm` refusal that left seeds 20260918 and 20260919 on disk, which is how a figure came to say "7 independent seeds" |
 | `r5.log` | The one-defect-at-a-time run | The segmentation fault that killed the first attempt (`attempt 1 exit 139`), and the 20 runs of the second |
+| `page_desktop_1280.png` | The report page rendered at desktop width | That the page was looked at, not only generated. Phone-width screenshots were taken and discarded: headless Chrome laid the page out at its own width and cropped them, so they showed a clipping a phone would not |
+| `independent_snolab_audit_20260925.{py,json}` | An independent re-derivation of the public-data results by a model from another vendor, run against this repository, reading the ROOT files and not our code | Its own rate fit (1.3871e-05 +- 1.079e-06 e/pix/day), its own noise, and its own bad-column criterion, which flags the same seven columns |
+| `recompute_claims_20260925.{py,json}` | The same check recomputing our headline numbers and intervals from the raw result files, and verifying every sidecar hash | The headline counts, the Clopper-Pearson intervals (largest difference 0.0), and the ten sidecar hashes that led to `hash_convention` and `scripts/check_sidecars.py` |
 
 ## What is not here
 

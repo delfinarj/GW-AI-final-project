@@ -16,6 +16,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 # would find that none of them matches. Binary inputs (the ROOT data, the figures, the PDFs) are
 # hashed byte for byte, which is what they are compared on.
 TEXT_SUFFIXES = {".json", ".md", ".py", ".html", ".css", ".txt", ".yml", ".yaml", ".toml", ".cfg", ".C"}
+# Recorded in every sidecar written from 2026-09-25 on, so a reader who finds a hash that does not
+# match knows which rule to apply. Sidecars without this field predate the change and their hashes
+# are of the bytes on disk, which on the machine this was produced on means CRLF for text.
+HASH_CONVENTION = "sha256; text normalised to LF before hashing, binary hashed byte for byte"
 
 
 def sha256(path):
@@ -66,6 +70,7 @@ def write_sidecar(output, script, inputs=(), parameters=None, seed=None, results
     record = {
         "output": _relative(output),
         "output_sha256": sha256(output) if Path(output).exists() else None,
+        "hash_convention": HASH_CONVENTION,
         "script": _relative(script),
         "git": STATE_AT_START,
         "git_at_write": git_state(),

@@ -1,28 +1,29 @@
 {
   "output": "results/cross_defect_false_positives/cross_defect.png",
   "output_sha256": "9ef191dcd40f0953fcc5294d0539a4c7fde30e1c5501525616345625e2788c22",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/figure_cross_defect.py",
   "git": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 4
+    "changed_outputs": 5
   },
   "git_at_write": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 4
+    "changed_outputs": 5
   },
   "inputs": [
     {
       "path": "results/cross_defect_false_positives/cross_defect.json",
-      "sha256": "e481dc2d621cecf028ecb5da18e2e3228b9228c55ba47a32ff5dc621645279d6"
+      "sha256": "4e7bcef29467022083ad05c60c1a422e3dfc2007b989c783443712cfa937da75"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "figure of R5",
-  "created": "2026-09-26T01:27:00+00:00",
+  "created": "2026-09-26T02:23:27+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

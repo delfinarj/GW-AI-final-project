@@ -1,16 +1,17 @@
 {
   "output": "results/cross_defect_false_positives/cross_defect.json",
-  "output_sha256": "2fdf4444406920265e34d871d6ed88b398019afee381757681b3cea5bf773b5f",
+  "output_sha256": "4e7bcef29467022083ad05c60c1a422e3dfc2007b989c783443712cfa937da75",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/cross_defect_false_positives.py",
   "git": {
-    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
-    "dirty": false,
-    "changed_outputs": 2
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
+    "dirty": true,
+    "changed_outputs": 0
   },
   "git_at_write": {
-    "commit": "7ad4b43fa3d384e59951c818e4698a467b8944b1",
-    "dirty": false,
-    "changed_outputs": 2
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
+    "dirty": true,
+    "changed_outputs": 1
   },
   "inputs": [],
   "parameters": {
@@ -68,7 +69,7 @@
   "seed": 20260916,
   "results": {},
   "notes": "firing rates of the adaptive masks with one defect switched on at a time",
-  "created": "2026-09-16T16:40:59+00:00",
+  "created": "2026-09-26T02:21:08+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

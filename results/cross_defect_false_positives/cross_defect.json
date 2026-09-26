@@ -15,6 +15,7 @@
   "images_per_run": 2,
   "seed": 20260916,
   "images_of_a_run_are_not_independent_trials": true,
+  "per_image_cells_also_counted_per_run": true,
   "per_sensor": {
     "deep_underground": {
       "hot_columns_pixels": {
@@ -84,7 +85,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -101,7 +109,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 15
       },
@@ -172,7 +187,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -189,7 +211,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 15
       },
@@ -277,7 +306,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 17
       },
@@ -348,7 +384,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 4,
+            "trials": 20,
+            "rate": 0.2,
+            "lower_bound_family_corrected": 0.018151609991693282,
+            "verdict": "fires on this other defect"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -436,7 +479,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -453,7 +503,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 16
       }
@@ -526,7 +583,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -543,7 +607,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 0
       },
@@ -614,7 +685,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": true,
           "median_masked_fraction": 0.0,
-          "verdict": "fires on this other defect"
+          "verdict": "fires on this other defect",
+          "counted_per_run_instead": {
+            "fired": 5,
+            "trials": 20,
+            "rate": 0.25,
+            "lower_bound_family_corrected": 0.033289395745846745,
+            "verdict": "fires on this other defect"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -631,7 +709,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "fires on this other defect"
+          "verdict": "fires on this other defect",
+          "counted_per_run_instead": {
+            "fired": 14,
+            "trials": 20,
+            "rate": 0.7,
+            "lower_bound_family_corrected": 0.31230459827043816,
+            "verdict": "fires on this other defect"
+          }
         },
         "halo_uncalibrated_runs": 0
       },
@@ -719,7 +804,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 0
       },
@@ -790,7 +882,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "fires on this other defect"
+          "verdict": "fires on this other defect",
+          "counted_per_run_instead": {
+            "fired": 5,
+            "trials": 20,
+            "rate": 0.25,
+            "lower_bound_family_corrected": 0.033289395745846745,
+            "verdict": "fires on this other defect"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -878,7 +977,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -895,7 +1001,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "fires on this other defect"
+          "verdict": "fires on this other defect",
+          "counted_per_run_instead": {
+            "fired": 8,
+            "trials": 20,
+            "rate": 0.4,
+            "lower_bound_family_corrected": 0.1000362091786015,
+            "verdict": "fires on this other defect"
+          }
         },
         "halo_uncalibrated_runs": 0
       }
@@ -968,7 +1081,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -985,7 +1105,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 0
       },
@@ -1056,7 +1183,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.000945179584120983,
-          "verdict": "fires on this other defect"
+          "verdict": "fires on this other defect",
+          "counted_per_run_instead": {
+            "fired": 20,
+            "trials": 20,
+            "rate": 1.0,
+            "lower_bound_family_corrected": 0.6776250275012987,
+            "verdict": "fires on this other defect"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -1073,7 +1207,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.12146851915948537,
-          "verdict": "fires on this other defect"
+          "verdict": "fires on this other defect",
+          "counted_per_run_instead": {
+            "fired": 20,
+            "trials": 20,
+            "rate": 1.0,
+            "lower_bound_family_corrected": 0.6776250275012987,
+            "verdict": "fires on this other defect"
+          }
         },
         "halo_uncalibrated_runs": 0
       },
@@ -1161,7 +1302,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 0
       },
@@ -1232,7 +1380,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -1320,7 +1475,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "low_energy_clusters": {
           "unit": "image",
@@ -1337,7 +1499,14 @@
           "smallest_count_that_would_fire": 5,
           "at_detection_floor": false,
           "median_masked_fraction": 0.0,
-          "verdict": "consistent with alpha"
+          "verdict": "consistent with alpha",
+          "counted_per_run_instead": {
+            "fired": 0,
+            "trials": 20,
+            "rate": 0.0,
+            "lower_bound_family_corrected": 0.0,
+            "verdict": "consistent with alpha"
+          }
         },
         "halo_uncalibrated_runs": 0
       }

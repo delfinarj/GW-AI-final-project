@@ -1,16 +1,17 @@
 {
   "output": "results/report_numbers.json",
   "output_sha256": "20656e9af340917ac7c20c704bc0170ce3924e701657a5d7783fa0707f3840e1",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 9
+    "changed_outputs": 13
   },
   "git_at_write": {
-    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 9
+    "changed_outputs": 13
   },
   "inputs": [
     {
@@ -38,7 +39,7 @@
   "seed": null,
   "results": {},
   "notes": "the headline numbers of the transplant comparison, for the short summary",
-  "created": "2026-09-26T02:14:44+00:00",
+  "created": "2026-09-26T02:25:16+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

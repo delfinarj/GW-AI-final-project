@@ -1,16 +1,17 @@
 {
   "output": "report/summary.html",
-  "output_sha256": "cf5fc98634888467d74a280e9b31e0059fd160be77753a219bb4be4ad038626a",
+  "output_sha256": "0be83f3d219e1db7b26485e479c75e59479eae0a51ee2da8a63a66f60835c778",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/build_summary.py",
   "git": {
-    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 3
+    "changed_outputs": 14
   },
   "git_at_write": {
-    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 4
+    "changed_outputs": 15
   },
   "inputs": [
     {
@@ -27,7 +28,7 @@
     },
     {
       "path": "results/cross_defect_false_positives/cross_defect.json",
-      "sha256": "e481dc2d621cecf028ecb5da18e2e3228b9228c55ba47a32ff5dc621645279d6"
+      "sha256": "4e7bcef29467022083ad05c60c1a422e3dfc2007b989c783443712cfa937da75"
     },
     {
       "path": "results/adaptive_on_public/adaptive_on_public.json",
@@ -42,7 +43,7 @@
   "seed": null,
   "results": {},
   "notes": "five-page summary; every number read from the inputs",
-  "created": "2026-09-26T02:13:26+00:00",
+  "created": "2026-09-26T02:25:21+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

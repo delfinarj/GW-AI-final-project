@@ -1,16 +1,17 @@
 {
   "output": "results/release_rate/release_rate.json",
-  "output_sha256": "8c1a92c08462616f91de2f9d9bccb60c3c0bbbab68436b5f9f3b5fbbc7a3d29e",
+  "output_sha256": "e307903a46ad1e25d5aea2982cbd1c8fc1d3c29aedcd977b85224943209970bf",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/reproduce_release_rate.py",
   "git": {
-    "commit": "121c688a932c16f430a22e67265e447bd197da48",
-    "dirty": false,
-    "changed_outputs": 10
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
+    "dirty": true,
+    "changed_outputs": 2
   },
   "git_at_write": {
-    "commit": "121c688a932c16f430a22e67265e447bd197da48",
-    "dirty": false,
-    "changed_outputs": 11
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
+    "dirty": true,
+    "changed_outputs": 2
   },
   "inputs": [
     {
@@ -49,7 +50,7 @@
     "pull": -0.023214388380355756
   },
   "notes": "Python re-implementation of the release macro plotRate.C",
-  "created": "2026-09-15T20:49:09+00:00",
+  "created": "2026-09-26T02:21:43+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

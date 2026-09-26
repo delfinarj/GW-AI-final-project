@@ -352,6 +352,12 @@ not here, since the release publishes no counterpart to it, although the union a
                         cross_fire_rows.append(row)
                         fires.append((v["rate"], v["median_masked_fraction"] or 0.0, sensor, group, mask))
         n_cells = len(cross_rows)
+        per_image_fires = [v for groups in cross["per_sensor"].values() for rows_ in groups.values()
+                           for v in rows_.values()
+                           if isinstance(v, dict) and not v["own_defect"] and v["trials"]
+                           and v["verdict"].startswith("fires") and v.get("counted_per_run_instead")]
+        per_run_survivors = [v for v in per_image_fires
+                             if v["counted_per_run_instead"]["verdict"].startswith("fires")]
         fires.sort(reverse=True)
         worst = ("" if not fires else
                  f" The largest is the {NULL_NAMES[fires[0][4]].lower()} mask on the "
@@ -393,10 +399,12 @@ and another one is present is firing on the wrong thing.</p>
 to clear is taken at {100 * cross["confidence_of_the_corrected_bound"]:.2f} % confidence rather than 95 %, which
 controls a {100 * cross["family_wise_error"]:.0f} % chance of one false call over the whole grid. The hot-column row
 is compared with {2 * cross["alpha"]:.2f} rather than &alpha;, because it fires when either of two &alpha;-level
-procedures does. Two caveats the design cannot remove: the {cross["images_per_run"]} images of a run share the
-calibrations made on that run's stack, so for the two per-image masks they are not independent trials and the
-intervals are narrower than they should be; and a cell marked below as sitting at its detection floor fired the
-fewest times that could produce this verdict at all.</p>
+procedures does. The {cross["images_per_run"]} images of a run share the calibrations made on that run's stack, so
+for the two per-image masks they are not independent trials and the per-image interval is narrower than it should
+be. Counted one run at a time instead &mdash; a run counts as firing if either of its images did, which cannot
+invent a firing and throws the second image away &mdash; {len(per_run_survivors)} of those {len(per_image_fires)}
+cells still fire. One caveat stands: a cell marked below as sitting at its detection floor fired the fewest times
+that could produce this verdict at all.</p>
 <p>{cross_text}</p>
 <div class="wide">
 {figure("cross_defect.png",

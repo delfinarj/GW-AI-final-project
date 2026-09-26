@@ -731,6 +731,56 @@ every tracked file that no private material has ever entered the repository.
   for. Found by running the clean-clone reproduction of R5 rather than trusting it. Resuming is now
   `--resume`, and the default is to start from zero.
 
+## An independent check with another vendor's model (2026-09-25)
+
+The authors gave the public repository to a coding agent from a different vendor (OpenAI Codex), with
+a prompt that asked it to re-derive the real-data results *itself* before reading any of our analysis
+code, then compare, then try to falsify the claims. Its two scripts and their outputs are committed
+in `verification/`, and it wrote them directly into this repository rather than into a copy.
+
+**What it reproduced independently, without our code:**
+
+- Its own fit of the single-electron rate of the public release, from the ROOT files:
+  1.3871e-05 +- 1.079e-06 e/pix/day, chi2 0.407 with 2 degrees of freedom. Ours is
+  1.38641e-05 +- 1.085e-06 and the published value is 1.39e-05 +- 1.1e-06. Two implementations that
+  share no code agree to about 0.05 %.
+- Its own readout noise from the negative half of the peak and from a two-component fit,
+  0.1416-0.1420 e, against our 0.1413-0.1416 e.
+- Its own bad-column criterion, and this is the useful part because the criterion is *different* from
+  ours: an exact binomial upper tail on pixels above 0.5 e, Bonferroni-corrected over the 3072 active
+  columns, with the null re-estimated from the columns not yet flagged, and the release's own mask
+  bits deliberately ignored. It flags columns 8, 21, 134, 516, 842, 1852 and 2229 - exactly the seven
+  our procedure flags at the longest exposure - and confirms that the sets are nested in exposure
+  order.
+
+**What it confirmed about our numbers:** it recomputed the headline counts from the raw seed files
+with its own script and got the same 28 transplant cases, 5 harmful, 2 with no difference, 14
+adaptive cases, 1 harmful, 12 better, median 0.9788, worst 0.3811 with 0.3373 in its worst seed, 8
+cases where a transplant beats the adaptive mask, and the same held-out figures. It recomputed every
+Clopper-Pearson interval in R3 and R5: largest absolute difference 0.0.
+
+**What it found wrong, and what was done:**
+
+- **Ten sidecars recorded a hash that its checker could not reproduce.** The cause was ours and it was
+  fresh: hashing had been changed that same evening to normalise line endings, so sidecars written
+  before the change recorded the bytes on disk and sidecars written after recorded the normalised
+  form, with nothing in the file saying which. Every sidecar now carries a `hash_convention` field,
+  and `scripts/check_sidecars.py` verifies every output and every input against its sidecar under the
+  convention that sidecar declares (67 hashes, all matching). The analyses whose sidecars predate the
+  change and cost hours to re-run keep their old-style hashes, which the checker accepts explicitly
+  rather than silently.
+- **It showed that a caveat we had declared unmeasurable was measurable.** R5 counts the two
+  per-image masks once per image, and the two images of a run share that run's calibrations, so the
+  intervals are too narrow; we had written that measuring it properly needed a two-hour re-run. It
+  pointed out that the per-image masked fractions are stored in order, so a run-level count can be
+  recovered from the result file we already ship. R5 now computes it: a run counts as firing if
+  either of its images did, which cannot invent a firing, and **all six** per-image cells that fire
+  still fire under that count. The page states it instead of warning about it.
+
+This is the strongest check in the project, because it is the only one that re-derived a result
+rather than auditing ours, and because it came from a different model family: the failure modes an
+agent shares with itself do not carry across.
+
 ## The deliverable pages
 
 - **`report/index.html` is generated**, never edited: `analysis/build_report.py` reads the result

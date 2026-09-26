@@ -80,6 +80,7 @@ uv run python analysis/build_summary.py                 # report/summary.html, t
 uv run python scripts/make_pdf.py                       # report/report.pdf (needs Chrome, Chromium or Edge)
 uv run python scripts/make_pdf.py report/summary.html report/summary.pdf
 uv run python scripts/compare_results.py ../reference/results results   # did the numbers come back?
+uv run python scripts/check_sidecars.py                 # does every file still match its sidecar?
 ```
 
 `compare_results.py` exits non-zero if any result moved by more than a relative 1e-9, and reports the

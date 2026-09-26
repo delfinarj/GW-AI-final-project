@@ -56,7 +56,10 @@ ones that did the most work:
 
 ## What the reviews found
 
-Five independent reviews were run, each by an agent that had not seen the work being produced.
+Six independent reviews were run, each by an agent that had not seen the work being produced. The
+last one matters out of proportion to its size: it was a model from a different vendor, and it was
+asked to *re-derive* the real-data results rather than to audit ours. An agent reviewing work by an
+agent like itself shares its blind spots; one that computes the answer separately does not.
 
 | Review | What it was asked | What it found |
 |---|---|---|
@@ -65,6 +68,7 @@ Five independent reviews were run, each by an agent that had not seen the work b
 | Third, on the one-defect-at-a-time test and the real-data analysis | check for overstatement | The halo mask measured distance in superpixels on a sensor that bins 32 rows into one, so a radius of 15 covered the whole height of the frame and hid the loudest column from the hot-column calibration; the page reported a sum of overlapping masks as if it were their union; the page gave only the flattering direction of the agreement with the published mask; a verdict applied to sixty cells with no correction for their number |
 | Fourth, an audit against the assignment | what is missing | The development material lived outside the repository; there was no account of the method (this file); `PLAN.md` had gone stale; sidecar hashes depended on the operating system's line endings |
 | Fifth, a stranger with only the repository | clone it, follow `README.md`, and report where you get stuck | Everything ran first try and four analyses came back bit for bit, but: the comparison step in `README.md` destroyed the reference it needed, the reproduce block assumed a shell and an installed tool it never named, a sentence attributed the union of five masks to one of them, and a result file carried a token that is valid JSON only for Python |
+| Sixth, a model from another vendor (OpenAI Codex) | re-derive the real-data results yourself before reading our code, then compare, then falsify | Its own rate fit, noise and bad-column criterion agree with ours (the same seven columns, by a different test); it recomputed the headline counts and every interval from the raw files and matched; it found ten sidecars whose hashes its checker could not reproduce, and it showed that a caveat we had called unmeasurable was recoverable from the file we already ship |
 
 Findings that were **accepted and not fixed** are recorded too, in `PROVENANCE.md`: that R5's
 pre-registration cannot be demonstrated from the commit order alone, and that the two images of a

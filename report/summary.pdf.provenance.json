@@ -1,21 +1,22 @@
 {
   "output": "report/summary.pdf",
-  "output_sha256": "65f261693f53ffb5dffb76569b386ac24dc7cd24091de357e50dddc55a34a1cb",
+  "output_sha256": "819c9156f2c16179ce246281b0aef4bc3d1ac0690f729572a13be3eea3511316",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "scripts/make_pdf.py",
   "git": {
-    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 8
+    "changed_outputs": 15
   },
   "git_at_write": {
-    "commit": "be5a1cbac124a058120e92f87e97941e05a51cec",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 8
+    "changed_outputs": 15
   },
   "inputs": [
     {
       "path": "report/summary.html",
-      "sha256": "cf5fc98634888467d74a280e9b31e0059fd160be77753a219bb4be4ad038626a"
+      "sha256": "0be83f3d219e1db7b26485e479c75e59479eae0a51ee2da8a63a66f60835c778"
     }
   ],
   "parameters": {
@@ -24,7 +25,7 @@
   "seed": null,
   "results": {},
   "notes": "the report page printed to PDF; same document, no number retyped",
-  "created": "2026-09-26T02:14:08+00:00",
+  "created": "2026-09-26T02:26:18+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

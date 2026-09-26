@@ -88,6 +88,8 @@ def main():
                 if isinstance(v, dict) and not v["own_defect"] and v["trials"] and v["verdict"].startswith("fires"):
                     fires.append((v["rate"], v["median_masked_fraction"] or 0.0, sensor, group, mask, v))
     fires.sort(reverse=True)
+    run_survivors = [v for *_, v in fires
+                     if v.get("counted_per_run_instead", {}).get("verdict", "").startswith("fires")]
     fire_rows = [[SENSOR_NAMES[s], GROUP_NAMES[g], MASK_NAMES[m], f"{v['fired']}/{v['trials']}",
                   f"{r:.2f}", f"{f:.4f}"] for r, f, s, g, m, v in fires]
     worst_fire = fires[0] if fires else None
@@ -197,7 +199,9 @@ all, {cross["n_runs_completed"]} runs each, with the bound each cell must clear 
 cells above the rate that mask should not exceed; hollow circles are the diagonal, where a mask meets its own
 defect.</figcaption>
 </figure>
-<p>{len(fires)} of {cross["cells_tested"]} cells fire on a defect that is not their own, and charge-transfer trails
+<p>{len(fires)} of {cross["cells_tested"]} cells fire on a defect that is not their own &mdash; and the
+{len(run_survivors)} of them counted per image survive being recounted one run at a time, which is the conservative
+way to treat two images that share a calibration. Charge-transfer trails
 are what most often set them off. The largest is unambiguous: on the surface sensor, with trails as the only defect
 present, the adaptive low-energy-cluster mask fires in every one of its trials and masks a median
 {worst_fire[1]:.3f} of the image. This is the one real failure of self-calibration found here, and it was predicted

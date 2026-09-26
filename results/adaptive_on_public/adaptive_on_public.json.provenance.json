@@ -1,16 +1,17 @@
 {
   "output": "results/adaptive_on_public/adaptive_on_public.json",
-  "output_sha256": "a86c001270aefe672fdb4e15b9c3b69c982c5f501a24436561bb3d124922dac1",
+  "output_sha256": "a1355376e7d0b21d2931dfd9aa57cf9bee7f7b8d34bc1bc5fafa26f7a3a9eb80",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/adaptive_masks_on_public_data.py",
   "git": {
-    "commit": "1f510bbf8ac68deed9ba87cd380e105cf5306d14",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 0
+    "changed_outputs": 4
   },
   "git_at_write": {
-    "commit": "1f510bbf8ac68deed9ba87cd380e105cf5306d14",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
-    "changed_outputs": 1
+    "changed_outputs": 4
   },
   "inputs": [
     {
@@ -46,7 +47,7 @@
   "seed": null,
   "results": {},
   "notes": "the adaptive masks run unchanged on the public SENSEI release, against its own mask bits",
-  "created": "2026-09-16T16:12:23+00:00",
+  "created": "2026-09-26T02:23:03+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

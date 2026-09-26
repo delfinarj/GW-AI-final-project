@@ -120,6 +120,27 @@ def raw_key(name, group):
     return f"{name}|{group}"
 
 
+def run_level(fractions, level, nominal):
+    """The same cell counted once per run instead of once per image.
+
+    The two images of a run share the calibrations made on that run's stack, so as binomial trials
+    they are not independent and the per-image interval is narrower than it should be. Counting a run
+    as one trial that fired if either of its images did is conservative: it cannot invent a firing,
+    and it throws away the second image's information. A mask that fires on a defect fires in almost
+    every image, so this mostly costs precision; a cell that survives it is not an artefact of the
+    dependence. The fractions are stored per image in order, which is what makes this recoverable
+    without running anything again (the idea came from an outside check, see PROVENANCE.md).
+    """
+    fired = [fraction > 0 for fraction in fractions]
+    runs = [any(fired[i:i + IMAGES_PER_RUN]) for i in range(0, len(fired), IMAGES_PER_RUN)]
+    if not runs:
+        return None
+    k, n = int(sum(runs)), len(runs)
+    lo = clopper_pearson(k, n, level)[0]
+    return {"fired": k, "trials": n, "rate": k / n, "lower_bound_family_corrected": lo,
+            "verdict": "fires on this other defect" if lo > nominal else "consistent with alpha"}
+
+
 def smallest_firing_count(n, level, nominal):
     """The fewest firings at which this cell could be called to fire: its detection floor."""
     for k in range(1, n + 1):
@@ -152,6 +173,8 @@ def summarise(cells, n_runs_done, n_runs_target):
                           "verdict": ("its own defect" if own else
                                       ("fires on this other defect" if n and lo_family > NOMINAL[mask] else
                                        "consistent with alpha" if n else None))}
+            if mask in PER_IMAGE and not own and fractions:
+                rows[mask]["counted_per_run_instead"] = run_level(fractions, level, NOMINAL[mask])
         rows["halo_uncalibrated_runs"] = cell["uncalibrated"]
         per_sensor.setdefault(name, {})[group] = rows
     raw = {raw_key(n, g): {"fired": c["fired"], "trials": c["trials"], "fraction": c["fraction"],
@@ -161,6 +184,7 @@ def summarise(cells, n_runs_done, n_runs_target):
             "n_runs_completed": n_runs_done, "n_runs_target": n_runs_target,
             "images_per_run": IMAGES_PER_RUN, "seed": SEED,
             "images_of_a_run_are_not_independent_trials": True,
+            "per_image_cells_also_counted_per_run": True,
             "per_sensor": per_sensor, "counts_this_was_built_from": raw}
 
 
