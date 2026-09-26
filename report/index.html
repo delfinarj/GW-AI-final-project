@@ -260,11 +260,11 @@ uv run python scripts/make_pdf.py</code></pre>
 because it describes runs made outside this repository. Each was re-run in a fresh clone that shares nothing with the
 working copy but the commit and the pinned environment, and compared at a relative tolerance of 1e-9. Identical, largest
 relative difference zero: the rate reproduction, the mask-bit check, the defect-free test and the real-sensor result at
-the current commit; the muon-mask test in a second clone; and all five seeds of the transplant result at the commit that
-froze it, whose code has changed since only inside a docstring. The one-defect-at-a-time result was not re-run that way:
-twenty runs of fifteen configurations take about two hours. In its place it carries per-run seeding, a test that an
-interrupted run lands where an uninterrupted one lands, and the commit of every stretch of running &mdash; none of which
-is an independent re-run.</p>
+the current commit; the muon-mask test in a second clone; all five seeds of the transplant result at the commit that
+froze it, whose code has changed since only inside a docstring; and the one-defect-at-a-time result, the slowest of them
+at about two and a half hours, re-run in a clone that had to be resumed after something killed it six runs in. Every
+analysis in this repository has therefore been produced twice, the second time somewhere that shares nothing with the
+working copy but the commit and the pinned environment.</p>
 </main>
 </body>
 </html>

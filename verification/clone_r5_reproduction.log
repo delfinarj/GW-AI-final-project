@@ -1,0 +1,93 @@
+22:20:14
+15 configurations: deep_underground/hot_columns_pixels, deep_underground/cti, deep_underground/serial, deep_underground/low_energy_clusters, deep_underground/halo, shallow_underground/hot_columns_pixels, shallow_underground/cti, shallow_underground/serial, shallow_underground/low_energy_clusters, shallow_underground/halo, surface_lab/hot_columns_pixels, surface_lab/cti, surface_lab/serial, surface_lab/low_energy_clusters, surface_lab/halo
+1/20 runs done
+2/20 runs done
+3/20 runs done
+4/20 runs done
+5/20 runs done
+6/20 runs done
+R5 clone exit 127
+23:09:28
+CLONE8 DONE
+7/20 runs done
+8/20 runs done
+9/20 runs done
+10/20 runs done
+11/20 runs done
+12/20 runs done
+13/20 runs done
+14/20 runs done
+15/20 runs done
+16/20 runs done
+17/20 runs done
+18/20 runs done
+19/20 runs done
+20/20 runs done
+deep_underground     only hot_columns_pixels   cti                    0/20   rate 0.000  consistent with alpha
+deep_underground     only hot_columns_pixels   halo                   0/5    rate 0.000  consistent with alpha
+deep_underground     only hot_columns_pixels   serial                 0/40   rate 0.000  consistent with alpha
+deep_underground     only hot_columns_pixels   low_energy_clusters    0/40   rate 0.000  consistent with alpha
+deep_underground     only cti                  hot_co20/20 runs done
+deep_underground     only hot_columns_pixels   cti                    0/20   rate 0.000  consistent with alpha
+deep_underground     only hot_columns_pixels   halo                   0/5    rate 0.000  consistent with alpha
+deep_underground     only hot_columns_pixels   serial                 0/40   rate 0.000  consistent with alpha
+deep_underground     only hot_columns_pixels   low_energy_clusters    0/40   rate 0.000  consistent with alpha
+deep_underground     only cti                  hot_columns            0/20   rate 0.000  consistent with alpha
+deep_underground     only cti                  halo                   0/5    rate 0.000  consistent with alpha
+deep_underground     only cti                  serial                 0/40   rate 0.000  consistent with alpha
+deep_underground     only cti                  low_energy_clusters    0/40   rate 0.000  consistent with alpha
+deep_underground     only serial               hot_columns            0/20   rate 0.000  consistent with alpha
+deep_underground     only serial               cti                    0/20   rate 0.000  consistent with alpha
+deep_underground     only serial               halo                   0/3    rate 0.000  consistent with alpha
+deep_underground     only serial               low_energy_clusters    0/40   rate 0.000  consistent with alpha
+deep_underground     only low_energy_clusters  hot_columns            0/20   rate 0.000  consistent with alpha
+deep_underground     only low_energy_clusters  cti                    0/20   rate 0.000  consistent with alpha
+deep_underground     only low_energy_clusters  halo                   0/7    rate 0.000  consistent with alpha
+deep_underground     only low_energy_clusters  serial                 4/40   rate 0.100  consistent with alpha
+deep_underground     only halo                 hot_columns            0/20   rate 0.000  consistent with alpha
+deep_underground     only halo                 cti                    0/20   rate 0.000  consistent with alpha
+deep_underground     only halo                 serial                 0/40   rate 0.000  consistent with alpha
+deep_underground     only halo                 low_energy_clusters    0/40   rate 0.000  consistent with alpha
+shallow_underground  only hot_columns_pixels   cti                    0/20   rate 0.000  consistent with alpha
+shallow_underground  only hot_columns_pixels   halo                   0/20   rate 0.000  consistent with alpha
+shallow_underground  only hot_columns_pixels   serial                 0/40   rate 0.000  consistent with alpha
+shallow_underground  only hot_columns_pixels   low_energy_clusters    0/40   rate 0.000  consistent with alpha
+shallow_underground  only cti                  hot_columns            2/20   rate 0.100  consistent with alpha
+shallow_underground  only cti                  halo                   0/20   rate 0.000  consistent with alpha
+shallow_underground  only cti                  serial                 5/40   rate 0.125  fires on this other defect
+shallow_underground  only cti                  low_energy_clusters   19/40   rate 0.475  fires on this other defect
+shallow_underground  only serial               hot_columns            0/20   rate 0.000  consistent with alpha
+shallow_underground  only serial               cti                    0/20   rate 0.000  consistent with alpha
+shallow_underground  only serial               halo                   0/20   rate 0.000  consistent with alpha
+shallow_underground  only serial               low_energy_clusters    0/40   rate 0.000  consistent with alpha
+shallow_underground  only low_energy_clusters  hot_columns            2/20   rate 0.100  consistent with alpha
+shallow_underground  only low_energy_clusters  cti                    0/20   rate 0.000  consistent with alpha
+shallow_underground  only low_energy_clusters  halo                   0/20   rate 0.000  consistent with alpha
+shallow_underground  only low_energy_clusters  serial                 6/40   rate 0.150  fires on this other defect
+shallow_underground  only halo                 hot_columns            0/20   rate 0.000  consistent with alpha
+shallow_underground  only halo                 cti                    0/20   rate 0.000  consistent with alpha
+shallow_underground  only halo                 serial                 0/40   rate 0.000  consistent with alpha
+shallow_underground  only halo                 low_energy_clusters   10/40   rate 0.250  fires on this other defect
+surface_lab          only hot_columns_pixels   cti                    1/20   rate 0.050  consistent with alpha
+surface_lab          only hot_columns_pixels   halo                   0/20   rate 0.000  consistent with alpha
+surface_lab          only hot_columns_pixels   serial                 0/40   rate 0.000  consistent with alpha
+surface_lab          only hot_columns_pixels   low_energy_clusters    0/40   rate 0.000  consistent with alpha
+surface_lab          only cti                  hot_columns            9/20   rate 0.450  fires on this other defect
+surface_lab          only cti                  halo                   0/20   rate 0.000  consistent with alpha
+surface_lab          only cti                  serial                34/40   rate 0.850  fires on this other defect
+surface_lab          only cti                  low_energy_clusters   40/40   rate 1.000  fires on this other defect
+surface_lab          only serial               hot_columns            0/20   rate 0.000  consistent with alpha
+surface_lab          only serial               cti                    0/20   rate 0.000  consistent with alpha
+surface_lab          only serial               halo                   0/20   rate 0.000  consistent with alpha
+surface_lab          only serial               low_energy_clusters    0/40   rate 0.000  consistent with alpha
+surface_lab          only low_energy_clusters  hot_columns            0/20   rate 0.000  consistent with alpha
+surface_lab          only low_energy_clusters  cti                    1/20   rate 0.050  consistent with alpha
+surface_lab          only low_energy_clusters  halo                   0/20   rate 0.000  consistent with alpha
+surface_lab          only low_energy_clusters  serial                 0/40   rate 0.000  consistent with alpha
+surface_lab          only halo                 hot_columns            0/20   rate 0.000  consistent with alpha
+surface_lab          only halo                 cti                    1/20   rate 0.050  consistent with alpha
+surface_lab          only halo                 serial                 0/40   rate 0.000  consistent with alpha
+surface_lab          only halo                 low_energy_clusters    0/40   rate 0.000  consistent with alpha
+00:52:22 attempt 1 exit 0
+00:52:23 attempt 2, 20 runs already there
+00:52:23 CLONE8 R5 FINISHED

@@ -3,7 +3,9 @@ committed results).
 
 Every *.json of the reference except the *.provenance.json sidecars (which hold dates, commits and
 paths that legitimately differ) must exist in the reproduction with the same keys, the same strings
-and numbers equal within a relative tolerance. Figures are compared by SHA-256 for information only,
+and numbers equal within a relative tolerance. One key inside a result file is skipped for the same
+reason, `code_commits`: it says in how many stretches a resumable run was split, which is a fact
+about the machine that ran it. Figures are compared by SHA-256 for information only,
 since image encoders may embed metadata.
 
 Usage:  python scripts/compare_results.py <reference_results_dir> <reproduced_results_dir> [--rel 1e-9]
@@ -17,9 +19,17 @@ import sys
 from pathlib import Path
 
 
+# Keys that record how a run happened rather than what it found. Two honest reproductions of the same
+# analysis differ here by construction: `code_commits` lists the stretches a resumable run was split
+# into, which depends on what interrupted it, not on the numbers.
+RUN_METADATA_KEYS = {"code_commits"}
+
+
 def compare(a, b, path, rel, problems, worst):
     if isinstance(a, dict) and isinstance(b, dict):
         for key in sorted(set(a) | set(b)):
+            if key in RUN_METADATA_KEYS:
+                continue
             if key not in a or key not in b:
                 problems.append(f"{path}/{key}: present in only one file")
             else:

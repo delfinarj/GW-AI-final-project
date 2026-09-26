@@ -250,12 +250,24 @@ relative tolerance of 1e-9.
   analysis/compare_masks_across_sensors.py` reports one file changed, 6 insertions and 3 deletions,
   all of them inside a module docstring. (`src/skmask/stats.py` was added in between; R4 does not
   import it.)
-- **R5 was not reproduced from a clone.** Twenty runs of fifteen configurations take about two hours
-  and the machine cannot be left running unattended. What stands in its place is weaker and is worth
-  naming as such: each run is seeded from the run index, so the numbers do not depend on how the run
-  was split, and `tests/test_cross_defect_resume.py` checks that; the summary is recomputed from the
-  counts the file carries; and the file records the commit of every stretch of running. None of that
-  is an independent re-run.
+- **R5 was reproduced from a clean clone on 2026-09-26**, which completes the set: every analysis in
+  this repository has now been produced twice, the second time in a checkout that shares nothing with
+  the working copy but the commit and the pinned environment. Twenty runs of fifteen configurations,
+  about two and a half hours, and the result is identical to the committed file, largest relative
+  difference 0.0e+00, with `cross_defect.png` byte for byte the same.
+
+  Two things are worth recording about how it went, because both are the kind of thing that would
+  otherwise be quietly smoothed over. The **first attempt did not run at all**: the clone ships a
+  finished result file, the analysis found it, reported "20 runs already done" and rewrote only the
+  summary, so the command in `README.md` was a no-op for exactly the reader it is written for.
+  Resuming is now `--resume` and the default starts from zero. The **second attempt was killed** after
+  six runs by something outside it - exit 127, no traceback, no message - and was resumed rather than
+  restarted, which is what the resumability was built for; the file it produced records the two
+  stretches in `code_commits`.
+
+  That field is also the only thing that differed between the two files, since the working copy's run
+  was not split. `scripts/compare_results.py` now skips it, with the reason written next to it: it is
+  a fact about the machine that ran the analysis, not about what the analysis found.
 
 ## Results
 

@@ -177,10 +177,11 @@ found real defects: truth from the simulator leaking into an "adaptive" threshol
 nothing; a halo mask measuring distance in superpixels on a binned sensor, which hid the loudest column from the
 hot-column calibration; a verdict applied to sixty cells with no correction for their number. Each is recorded in
 <code>PROVENANCE.md</code> with what was done about it, including the findings that were <em>not</em> acted on.</li>
-<li><strong>Everything was reproduced from a clean clone</strong> &mdash; a fresh checkout sharing nothing with the
+<li><strong>Every result was reproduced from a clean clone</strong> &mdash; a fresh checkout sharing nothing with the
 working copy but the commit and the pinned environment &mdash; and compared at a relative tolerance of
-10<sup>&minus;9</sup>. All results but one are bit-identical, figures included; the exception, the
-one-defect-at-a-time run, takes about two hours and was not re-run, which the report states.</li>
+10<sup>&minus;9</sup>. All of them came back bit-identical, figures included. The slowest, two and a half hours, was
+resumed after something killed it part way through, which is what showed that the command a stranger would run to
+reproduce it did nothing at all in a fresh clone: it found the finished file we ship and skipped the work.</li>
 </ul>
 <p>Errors the checks caught are listed on the full report page rather than hidden: a simulator that redrew its hot
 columns every image, a hot-column mask that flagged innocent neighbours, a halo test that treated its reference rate

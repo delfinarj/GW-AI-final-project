@@ -1,17 +1,17 @@
 {
   "output": "report/summary.html",
-  "output_sha256": "0be83f3d219e1db7b26485e479c75e59479eae0a51ee2da8a63a66f60835c778",
+  "output_sha256": "ab0a24d36b001128b2b2eadff4c50301918b6d665863c4cc7dcd0299023027f8",
   "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/build_summary.py",
   "git": {
-    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
+    "commit": "c936bc2651ce4d2e12c7e484b93045c1bca34b28",
     "dirty": true,
-    "changed_outputs": 14
+    "changed_outputs": 3
   },
   "git_at_write": {
-    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
+    "commit": "c936bc2651ce4d2e12c7e484b93045c1bca34b28",
     "dirty": true,
-    "changed_outputs": 15
+    "changed_outputs": 4
   },
   "inputs": [
     {
@@ -43,7 +43,7 @@
   "seed": null,
   "results": {},
   "notes": "five-page summary; every number read from the inputs",
-  "created": "2026-09-26T02:25:21+00:00",
+  "created": "2026-09-26T03:55:02+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
