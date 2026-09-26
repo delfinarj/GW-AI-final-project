@@ -53,7 +53,7 @@ def test_resumed_run_matches_uninterrupted_run(module):
     interrupted = result(module)
     assert interrupted["n_runs_completed"] == 2
 
-    module.main(4)          # resumes from the file left behind
+    module.main(4, resume=True)   # resumes from the file left behind
     resumed = result(module)
 
     # the numbers must match; the record of how the file was produced must not pretend they do
@@ -66,7 +66,7 @@ def test_resumed_run_matches_uninterrupted_run(module):
 def test_a_finished_run_is_not_repeated(module, capsys):
     module.main(2)
     before = result(module)
-    module.main(2)
+    module.main(2, resume=True)
     capsys.readouterr()
     assert result(module) == before
 
@@ -89,7 +89,7 @@ def test_a_file_from_other_settings_does_not_poison_a_run(module):
     (module.OUT_DIR / "cross_defect.json").write_text(
         json.dumps({"seed": 1, "alpha": 0.5, "images_per_run": 7, "n_runs_completed": 9,
                     "counts_this_was_built_from": {}}), encoding="utf-8")
-    module.main(2)
+    module.main(2, resume=True)
     assert result(module)["n_runs_completed"] == 2
     assert np.isfinite(result(module)["alpha"])
 
@@ -99,6 +99,6 @@ def test_a_different_configuration_order_starts_over(module, capsys):
     module.main(2)
     capsys.readouterr()
     module.configurations = lambda: [("sensor_b", "halo", None), ("sensor_a", "cti", None)]
-    module.main(4)
+    module.main(4, resume=True)
     assert "starting over" in capsys.readouterr().out
     assert result(module)["n_runs_completed"] == 4

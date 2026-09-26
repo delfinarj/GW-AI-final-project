@@ -39,7 +39,7 @@ uv run python analysis/check_release_mask_bits.py       # R2
 uv run python analysis/adaptive_masks_on_public_data.py     # R6 (the masks on the real release)
 uv run python analysis/null_false_positive_rates.py 50  # R3 (about 40 min)
 uv run python analysis/muon_mask_null_rate.py 100        # R7 (about 15 min)
-uv run python analysis/cross_defect_false_positives.py 20   # R5 (about 2 h; resumes if interrupted)
+uv run python analysis/cross_defect_false_positives.py 20   # R5 (about 2 h; add --resume to continue one that was killed)
 # R4: three seeds used while developing and two run once after the code was frozen
 for seed in 20260915 20260916 20260917 20260920 20260921; do
   uv run python analysis/compare_masks_across_sensors.py 4 --seed $seed       --out results/compare_masks/seed_$seed

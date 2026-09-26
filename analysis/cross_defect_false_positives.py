@@ -23,13 +23,19 @@ because the same question is asked of every mask in every configuration; without
 with 60 cells at 5 %, about one and a half cells would be declared to fire by chance alone. Both
 intervals are written out: the plain 95 % one, and the corrected one the verdict uses.
 
-Run:  python analysis/cross_defect_false_positives.py [n_runs]
+Run:  python analysis/cross_defect_false_positives.py [n_runs] [--resume]
 
 Each run draws from its own generator, seeded by (SEED, run index), so a run does not depend on the
 runs before it. The result file is rewritten after every completed run and carries the counts it was
-built from, so an interrupted run resumes from it and lands on the same numbers as an uninterrupted
-one; `n_runs_completed` says how many runs each rate is based on. This matters on the machine these
-were produced on, which killed one attempt with a segmentation fault (see PROVENANCE.md).
+built from, so `--resume` continues an interrupted run and lands on the same numbers as an
+uninterrupted one; `n_runs_completed` says how many runs each rate is based on. This matters on the
+machine these were produced on, which killed one attempt with a segmentation fault (see
+PROVENANCE.md).
+
+**Without `--resume` the run starts from zero and overwrites whatever is there**, which is what
+reproducing from a clean clone needs: the repository ships a finished result file, and an earlier
+version of this script saw it, said "already done" and re-wrote only the summary, so the command in
+README.md quietly did nothing in a fresh clone.
 """
 import json
 import sys
@@ -165,7 +171,7 @@ def sidecar_parameters(n_runs):
             "nominal_rate_per_mask": NOMINAL}
 
 
-def main(n_runs):
+def main(n_runs, resume=False):
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     configs = list(configurations())
     print(f"{len(configs)} configurations: " + ", ".join(f"{n}/{g}" for n, g, _ in configs), flush=True)
@@ -177,7 +183,7 @@ def main(n_runs):
     first_run = 0
     segments = []
 
-    if output.exists():                       # continue an interrupted run, run by run
+    if output.exists() and resume:            # continue an interrupted run, run by run
         previous = json.loads(output.read_text(encoding="utf-8"))
         counts = previous.get("counts_this_was_built_from", {})
         # the order matters: within a run the configurations draw from one generator in sequence
@@ -248,4 +254,5 @@ def main(n_runs):
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 20)
+    arguments = [a for a in sys.argv[1:] if a != "--resume"]
+    main(int(arguments[0]) if arguments else 20, resume="--resume" in sys.argv)
