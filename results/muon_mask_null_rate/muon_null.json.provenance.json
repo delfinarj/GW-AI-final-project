@@ -1,16 +1,17 @@
 {
   "output": "results/muon_mask_null_rate/muon_null.json",
-  "output_sha256": "6cbd28aedd612ef6d1b32514ace8d3d6675867eb8245ab75c5281a83a691e2f8",
+  "output_sha256": "4122fcc14199699d42844a1d08631d9d93932d7f6c26c759f4a5d28b4db4f870",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/muon_mask_null_rate.py",
   "git": {
-    "commit": "ddcec994bfd2149304b5587b51e28d6b8155e578",
-    "dirty": false,
-    "changed_outputs": 0
-  },
-  "git_at_write": {
-    "commit": "ddcec994bfd2149304b5587b51e28d6b8155e578",
+    "commit": "c575d6b14bd3b9e695522df9d253b93218c5004a",
     "dirty": true,
     "changed_outputs": 2
+  },
+  "git_at_write": {
+    "commit": "76ea6a813509bde0ab6d031a7a35cdf87d7e82cb",
+    "dirty": false,
+    "changed_outputs": 0
   },
   "inputs": [],
   "parameters": {
@@ -33,7 +34,7 @@
   "seed": 20260917,
   "results": {},
   "notes": "how often the adaptive muon mask fires on sensors with no tracks at all",
-  "created": "2026-09-16T17:01:40+00:00",
+  "created": "2026-09-26T02:35:38+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
