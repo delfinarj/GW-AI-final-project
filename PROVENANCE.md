@@ -223,8 +223,11 @@ marker shape, and every figure has a legend or a single labelled series.
   `scripts/compare_results.py` at a relative tolerance of 1e-9: all five seeds (20260915, 20260916, 20260917, 20260920 and 20260921) were re-run from scratch in the clone and every one is identical to the committed file, largest relative difference 0.0e+00. `relative_fom_summary.json`, which the figure script derives from the five, is identical too, and `compare_masks.png` came out byte for byte the same. Together with R1, R2 and R3, reproduced the same way, every result the deliverables rest on has now been produced twice: once here and once in a clone of the frozen commit that shares nothing with this working copy but the commit and the pinned environment (Python 3.11.16, numpy 2.4.6, scipy 1.17.1). The seeds were run in two passes, three on 2026-09-15 and two on 2026-09-16, because each takes about 70 minutes and the machine cannot be left running unattended.
 - **How to read the commit in a sidecar.** A sidecar records the commit that was checked out *while the
   file was being written*, which is by construction the parent of the commit that stores the file: the
-  output cannot be committed before it exists. So `report/report.pdf.provenance.json` names `d83ef7c`
-  although the file is stored in `377dbea`, and seed 20260921, run in the third process, names
+  output cannot be committed before it exists. As this is written, `report/report.pdf.provenance.json`
+  names `6c9401a` while the file itself was last stored in `9fe5f4b`; an earlier version of this entry
+  quoted a pair of commits from 2026-09-16, which the fresh-clone review found no longer matched the
+  repository, because the PDF has been reprinted since. The rule is what matters, not the example.
+  Seed 20260921, run in the third process, names
   `c4b59f2`. To
   check what code produced an output, read the commit named in its sidecar, not the commit that
   contains it; `changed_outputs` counts files under `results/` and `report/` that differed from the
@@ -667,6 +670,66 @@ here with what was done about each, including the ones that were not acted on.
   stack-calibrated exclusions), so its intervals are narrower than they should be for the two
   per-image masks. Measuring it properly needs a re-run of about 100 minutes, which did not fit; the
   page and the entry state it.
+
+## Third and fourth reviews (2026-09-25): a stranger, and the assignment
+
+Two more agents were given the repository with no access to the work that produced it.
+
+**A fresh-clone reproduction, by an agent told to behave as someone who had never spoken to the
+authors and to follow only `README.md`.** It cloned the public repository, installed the environment,
+fetched the data, ran the tests and the four analyses that take minutes, and compared everything with
+`scripts/compare_results.py`. Result: every step worked first try with no edits; 56 tests passed; the
+four re-run analyses came back **bit for bit identical** to the committed files; `build_report.py`
+regenerated `report/index.html` with a zero-byte diff; and more than twenty numbers taken from the
+page's prose and tables were traced to the result file each came from, including the headline counts,
+which the reviewer recomputed from the raw seed files with its own script rather than trusting ours.
+It also verified three claims of this document against the repository, among them the git diff that
+carries the R4 reproduction forward to the current commit.
+
+What it found wrong, all of it fixed in the commit that adds this section:
+
+- **The comparison step destroyed the reference it needed.** `README.md` ended with
+  `compare_results.py <a reference results/> results`, but every analysis overwrites `results/` in
+  place, so by the time a reader reached that line the committed numbers were gone. The README now
+  starts by saving them with `git archive HEAD results`.
+- **The reproduce block assumed a POSIX shell and never said so**, gave no cost for its most
+  expensive step (about six hours for the five R4 seeds), and assumed `uv` was installed. All three
+  are stated now.
+- **The labels R1 to R7 appeared in this document and in `README.md` with no key** to the "Result 1"
+  to "Result 4" of the page, which do not correspond one to one. `README.md` now carries the table.
+- **A sentence in the short answer attributed the wrong quantity to the hot-column procedure**: the
+  0.0007-0.0094 of the image is the union of the five adaptive masks, not what the hot-column mask
+  takes. Corrected, and the table that omits the low-energy-cluster mask now says that it does.
+- **`mask_bit_signatures.json` contained the bare token `Infinity`**, which Python writes and reads
+  but which `jq`, `JSON.parse` and most other readers reject. The distance is now `null` where no
+  pixel above 100 e- exists in an image, those images are left out of the weighted average instead of
+  dragging it to infinity, and the file is written with `allow_nan=False` so it cannot happen again.
+  One number changed: the median distance for the bad-column bit, which was infinite, is 481.4 px.
+- **Two analyses wrote their result without saying so.** They print the path now, like the others.
+- Two smaller ones: a mixed notation in the sensor table, and the worked example of the sidecar
+  convention above, which had gone stale.
+
+**An audit against the assignment**, by a second agent, reading the brief and checking the repository
+against it point by point. It found the deliverables, the provenance and the checks in place, and
+three gaps, all closed now: the material produced during development lived outside the repository
+(`verification/`), there was no account of how the work was done with agents (`METHOD.md`), and
+`PLAN.md` had gone stale. It also found the line-ending defect below, and confirmed by grep over
+every tracked file that no private material has ever entered the repository.
+
+### Two defects of the repository itself, found in this round
+
+- **Sidecar hashes depended on the operating system.** Git stored text files with LF and checked them
+  out with CRLF on Windows, and `provenance.sha256` hashed the bytes on disk, so every recorded hash
+  of a text input would fail to match for anyone who cloned the repository on Linux or macOS - in a
+  project whose argument rests on hash-verified provenance. Text files are now hashed with their line
+  endings normalised to LF (`src/skmask/provenance.py`), binary inputs still byte for byte, and
+  `.gitattributes` fixes one canonical form in the repository. Every figure, page and PDF was
+  regenerated so the recorded hashes are the normalised ones.
+- **The command that reproduces R5 did nothing in a clean clone.** The repository ships a finished
+  `cross_defect.json`; the analysis found it, said "20 runs already done" and rewrote only the
+  summary. So the instruction in `README.md` silently no-opped for exactly the reader it is written
+  for. Found by running the clean-clone reproduction of R5 rather than trusting it. Resuming is now
+  `--resume`, and the default is to start from zero.
 
 ## The deliverable pages
 

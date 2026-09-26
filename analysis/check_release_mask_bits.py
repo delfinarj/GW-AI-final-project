@@ -36,6 +36,18 @@ HYPOTHESIS = {0x1: "neighbour", 0x4: "bleeding", 0x8: "halo", 0x10: "crosstalk",
 EXPOSURE_S = 21600    # the file in which the most bits occur
 
 
+def weighted_mean(values, weights):
+    pairs = [(v, w) for v, w in zip(values, weights) if v is not None]
+    if not pairs or not sum(w for _, w in pairs):
+        return None
+    return float(np.average([v for v, _ in pairs], weights=[w for _, w in pairs]))
+
+
+def finite(value):
+    """None where a value is infinite or undefined, so the result file is strict JSON."""
+    return value if np.isfinite(value) else None
+
+
 def images(data):
     """Split the flat tree into per-image (20, 3200) arrays, keyed by RUNID."""
     out = {}
@@ -84,9 +96,11 @@ def signatures(charge, mask, bit):
         "n_masked": n,
         "frac_in_full_columns": float(full_columns[xs].mean()),
         "frac_in_full_rows": float(full_rows[ys].mean()),
-        "median_distance_to_border_pix": float(np.median(border)),
+        "median_distance_to_border_pix": finite(float(np.median(border))),
         "frac_touching_charge_above_0.5e": float(touching[ys, xs].mean()),
-        "median_distance_to_100e_pix": float(np.median(distance)),
+        # null, not Infinity: an image with no pixel above 100 e- has no distance to one, and a
+        # bare Infinity is not valid JSON for anything but Python
+        "median_distance_to_100e_pix": finite(float(np.median(distance))),
         "frac_with_100e_upstream": float(upstream.mean()),
         "frac_with_100e_only_downstream": float(downstream_only.mean()),
     }
@@ -107,22 +121,25 @@ def main():
             "hypothesis": name,
             "images_with_bit": len(rows),
             "n_masked_total": int(sum(r["n_masked"] for r in rows)),
-            **{k: float(np.average([r[k] for r in rows], weights=[r["n_masked"] for r in rows]))
-               for k in keys},
+            # an image where a distance is undefined (no pixel above 100 e-) is left out of that
+            # average rather than dragging it to infinity; the key is null if no image has it
+            **{k: weighted_mean([r[k] for r in rows], [r["n_masked"] for r in rows]) for k in keys},
         }
         s = summary[hex(bit)]
         print(f"{hex(bit):>6} {name:<11} images {s['images_with_bit']:>2}  masked {s['n_masked_total']:>8}  "
               f"fullcol {s['frac_in_full_columns']:.2f}  fullrow {s['frac_in_full_rows']:.2f}  "
               f"border {s['median_distance_to_border_pix']:>7.1f}  touch>0.5e {s['frac_touching_charge_above_0.5e']:.2f}  "
-              f"d100e {s['median_distance_to_100e_pix']:>7.1f}  up {s['frac_with_100e_upstream']:.2f}  "
+              f"d100e {'    none' if s['median_distance_to_100e_pix'] is None else format(s['median_distance_to_100e_pix'], '>7.1f')}"
+              f"  up {s['frac_with_100e_upstream']:.2f}  "
               f"downonly {s['frac_with_100e_only_downstream']:.2f}")
 
     output = OUT_DIR / "mask_bit_signatures.json"
-    output.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    output.write_text(json.dumps(summary, indent=2, allow_nan=False), encoding="utf-8")
     write_sidecar(output, __file__, inputs=[sp.DATA_DIR / sp.EXPOSURES_S[EXPOSURE_S]],
                   parameters={"exposure_s": EXPOSURE_S, "hypothesis": {hex(k): v for k, v in HYPOTHESIS.items()},
                               "full_line_fraction": 0.9, "bright_threshold_e": 100, "touch_threshold_e": 0.5},
                   notes="Bit-to-name mapping of the public release, tested by geometric signature")
+    print(f"wrote {output}")
 
 
 if __name__ == "__main__":

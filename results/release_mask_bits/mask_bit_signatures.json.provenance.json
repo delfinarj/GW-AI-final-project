@@ -1,10 +1,16 @@
 {
   "output": "results/release_mask_bits/mask_bit_signatures.json",
-  "output_sha256": "b1ed2d607f341aa7d6f4d3182ac944665bd932e78721fb148c7058620f2a7fa6",
+  "output_sha256": "2de406bdd1d598f7c6d7240734c14566e1fb798e8835e29d12b817b5734daf34",
   "script": "analysis/check_release_mask_bits.py",
   "git": {
-    "commit": "fc3b0ea3f13d4e565d1eb7b1a9a3eaeb30874f22",
-    "dirty": false
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 8
+  },
+  "git_at_write": {
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 9
   },
   "inputs": [
     {
@@ -31,7 +37,7 @@
   "seed": null,
   "results": {},
   "notes": "Bit-to-name mapping of the public release, tested by geometric signature",
-  "created": "2026-09-14T15:55:52+00:00",
+  "created": "2026-09-26T01:34:31+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

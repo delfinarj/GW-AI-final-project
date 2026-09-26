@@ -110,6 +110,7 @@ def main():
                               "hist_range": [-1.1, 1.6], "fit_range": [-1.0, 1.5]},
                   results={"rate": rate, "rate_err": rate_err, "pull": pull},
                   notes="Python re-implementation of the release macro plotRate.C")
+    print(f"wrote {output}")
 
 
 if __name__ == "__main__":

@@ -3,24 +3,26 @@
   "output_sha256": "8cb97f84441a625207b64087ccb098c225a6d2973dfce5f029daf6c60d2d674a",
   "script": "analysis/figure_null_rates.py",
   "git": {
-    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
-    "dirty": true
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 3
   },
   "git_at_write": {
-    "commit": "1a0c649ff1f85c534417bdf424bafd21ba7ec6c2",
-    "dirty": true
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 3
   },
   "inputs": [
     {
       "path": "results/null_false_positive_rates/null_rates.json",
-      "sha256": "004c009b2c905c42827963383ceba3273e2e345f4b63ae22b356ee3bfae8ce53"
+      "sha256": "17624d2da4b7f848ddb23499766a2c0759796c3bef9d79ea233d53dd7b04aef5"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "figure of R3",
-  "created": "2026-09-15T17:19:30+00:00",
+  "created": "2026-09-26T01:26:48+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

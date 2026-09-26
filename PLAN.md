@@ -1,7 +1,12 @@
 # Plan: sensor-independent pixel masks for Skipper-CCD images
 
-Deadline: 2026-09-30. Deliverables: an HTML page and a PDF (English), and this repository,
-reproducible end to end by an agent that has never spoken to the author.
+Deadline: the repository complete on 2026-09-28. Deliverables: an HTML page, a PDF printed from it,
+a five-page summary PDF, and this repository, reproducible end to end by an agent that has never
+spoken to the author.
+
+*This file is the plan as it was made, kept so that what was intended can be compared with what
+happened. Where a part of it was superseded, the note says so in place rather than rewriting it; the
+section "Changes to this plan" below carries the reasons.*
 
 ## The question
 
@@ -55,6 +60,8 @@ For each: the **fixed** reference (hand-tuned constants, as in the public litera
 5. **Low-energy clusters.** Fixed: disc around every cluster. Adaptive: nearest-neighbour
    statistic D_j = sum 1/r^2 over the n nearest events, p-values from a Monte Carlo of uniform
    events over the unmasked area, regional combination with Fisher's method and a binomial
+   **[superseded: implemented instead as a neighbour count within a radius against a local Poisson
+   expectation, Bonferroni-corrected; see "Changes to this plan"]**
    excess criterion.
 6. **Muon tracks.** Fixed: charge and length cuts on clusters. Adaptive: morphology that scales
    with the sensor rather than with pixel counts - straightness (principal-axis eigenvalue
@@ -102,6 +109,9 @@ per-pixel mask bits. Two checks:
 1. Reproduce the single-electron rate the release macro computes, which validates reading the
    data and the exposure bookkeeping.
 2. Run the adaptive hot-column, halo, CTI and edge procedures on the same images and compare
+   **[there is no edge mask: the six are hot columns and pixels, charge-transfer trails, halo,
+   serial-register hits, low-energy clusters and muon tracks. R6 ran five of them on the release and
+   four have a counterpart there to compare against]**
    with the shipped bits: overlap, exposure kept, and resulting rate.
 
 ## Provenance and checks
@@ -201,6 +211,8 @@ the surface sensor, with about twenty times the dark current of the others, is w
 
 ## Schedule
 
+Planned on 14 September:
+
 | Dates | Work |
 |---|---|
 | Sep 14-16 | environment, data fetch, public-data reader and rate reproduction, simulator core |
@@ -208,3 +220,15 @@ the surface sensor, with about twenty times the dark current of the others, is w
 | Sep 21-25 | six masks, fixed and adaptive; metrics across presets; real-data comparison |
 | Sep 26-28 | figures, provenance review, independent re-check by a second agent |
 | Sep 29-30 | HTML page, PDF, final reproduction from a clean clone |
+
+What actually happened:
+
+| Dates | Work |
+|---|---|
+| Sep 14-15 | all of the above through the first cross-sensor comparison; an independent review found truth leaking into the adaptive threshold, and R3 and R4 were redesigned and re-run |
+| Sep 15 | second review: per-seed exclusion, the paired rule with a margin, wider oracle grids with an edge check, Python pinned; five seeds re-run, page and PDF |
+| Sep 16 | the clean-clone reproduction completed seed by seed; R5 (one defect at a time), R6 (the masks on the real release) and R7 (the muon mask with no tracks) added, each with its expectation registered first; a third review of R5 and R6 found the halo geometry error |
+| Sep 25 | a fourth review against the assignment and a fresh-clone reproduction by an agent following only the README; the development logs, `METHOD.md` and the five-page summary added |
+
+The work ran ahead of the plan because the agents produced code faster than expected; what took the
+time was not writing the analyses but checking them, which the plan had underestimated.

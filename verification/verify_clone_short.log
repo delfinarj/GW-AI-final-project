@@ -1,0 +1,230 @@
+=== clone  (start 14:27:30)
+=== clone  exit 0 after 0 min
+=== commit  (start 14:27:32)
+ab04ab9 Figure, page and PDF regenerated from a clean commit
+=== commit  exit 0 after 0 min
+=== environment (uv sync)  (start 14:27:33)
+Using CPython 3.14.7
+Creating virtual environment at: .venv
+Resolved 46 packages in 4ms
+   Building skmask @ file:///C:/Users/HP/AppData/Local/Temp/claude/C--Users-HP-GW-AI-course/914a4d5f-53f6-4c1c-9abf-42f366d1e28b/scratchpad/clone2/gw-final-project
+Downloading fonttools (2.4MiB)
+Downloading matplotlib (9.1MiB)
+ Downloaded fonttools
+ Downloaded matplotlib
+      Built skmask @ file:///C:/Users/HP/AppData/Local/Temp/claude/C--Users-HP-GW-AI-course/914a4d5f-53f6-4c1c-9abf-42f366d1e28b/scratchpad/clone2/gw-final-project
+Prepared 4 packages in 13.00s
+Installed 30 packages in 18.21s
+ + astropy==8.0.1
+ + astropy-iers-data==0.2026.9.14.0.56.43
+ + awkward==2.13.0
+ + awkward-cpp==56
+ + colorama==0.4.6
+ + contourpy==1.4.0
+ + cramjam==2.12.1
+ + cycler==0.12.1
+ + fonttools==4.65.0
+ + fsspec==2026.7.0
+ + iniconfig==2.3.0
+ + kiwisolver==1.5.1
+ + matplotlib==3.11.2
+ + numpy==2.5.3
+ + packaging==26.3
+ + pandas==3.0.5
+ + pillow==12.3.0
+ + pluggy==1.6.0
+ + pyerfa==2.0.1.5
+ + pygments==2.21.0
+ + pyparsing==3.3.2
+ + pytest==9.1.1
+ + python-dateutil==2.9.0.post0
+ + pyyaml==6.0.3
+ + scipy==1.18.1
+ + six==1.17.0
+ + skmask==0.1.0 (from file:///C:/Users/HP/AppData/Local/Temp/claude/C--Users-HP-GW-AI-course/914a4d5f-53f6-4c1c-9abf-42f366d1e28b/scratchpad/clone2/gw-final-project)
+ + tzdata==2026.4
+ + uproot==5.7.6
+ + xxhash==4.0.1
+=== environment (uv sync)  exit 0 after 0 min
+=== versions  (start 14:28:05)
+python 3.14.7
+numpy 2.5.3
+scipy 1.18.1
+matplotlib 3.11.2
+astropy 8.0.1
+uproot 5.7.6
+awkward 2.13.0
+pandas 3.0.5
+=== versions  exit 0 after 0 min
+=== fetch data  (start 14:28:34)
+downloading RELEASE_hits_blinded_EXP0_13.root
+               ok  RELEASE_hits_blinded_EXP0_13.root
+downloading RELEASE_hits_blinded_EXP7200_13.root
+               ok  RELEASE_hits_blinded_EXP7200_13.root
+downloading RELEASE_hits_blinded_EXP21600_13.root
+               ok  RELEASE_hits_blinded_EXP21600_13.root
+downloading RELEASE_hits_blinded_EXP72000_13.root
+               ok  RELEASE_hits_blinded_EXP72000_13.root
+downloading plotRate.C
+               ok  plotRate.C
+=== fetch data  exit 0 after 0 min
+=== pytest  (start 14:28:47)
+...................................................                      [100%]
+51 passed in 83.95s (0:01:23)
+=== pytest  exit 0 after 1 min
+=== SHORT R1  (start 14:30:15)
+     0 s  density 7.380e-05 +- 1.1e-05 e-/superpix  noise 0.142 e-  unmasked 658937
+  7200 s  density 1.021e-04 +- 1.3e-05 e-/superpix  noise 0.142 e-  unmasked 650119
+ 21600 s  density 1.879e-04 +- 1.7e-05 e-/superpix  noise 0.142 e-  unmasked 645922
+ 72000 s  density 4.396e-04 +- 2.8e-05 e-/superpix  noise 0.141 e-  unmasked 555633
+rate 1.386e-05 +- 1.1e-06 e-/pix/day   published 1.39e-05 +- 1.1e-06   pull -0.02
+=== SHORT R1  exit 0 after 0 min
+=== SHORT R2  (start 14:30:27)
+   0x1 neighbour   images 14  masked     2252  fullcol 0.06  fullrow 0.00  border    94.1  touch>0.5e 0.96  d100e     inf  up 0.15  downonly 0.06
+   0x4 bleeding    images  8  masked     3434  fullcol 0.05  fullrow 0.00  border   109.7  touch>0.5e 0.07  d100e   104.3  up 1.00  downonly 0.00
+   0x8 halo        images  8  masked     6427  fullcol 0.00  fullrow 0.00  border   105.6  touch>0.5e 0.07  d100e    50.9  up 0.20  downonly 0.18
+  0x10 crosstalk   images 14  masked     4767  fullcol 0.01  fullrow 0.00  border   101.6  touch>0.5e 0.03  d100e     inf  up 0.07  downonly 0.00
+  0x40 edge        images 14  masked    12992  fullcol 1.00  fullrow 0.00  border    12.0  touch>0.5e 0.02  d100e     inf  up 0.02  downonly 0.04
+ 0x200 bad pixel   images 14  masked      770  fullcol 0.00  fullrow 0.00  border   128.0  touch>0.5e 0.11  d100e     inf  up 0.04  downonly 0.01
+ 0x400 bad column  images 14  masked    16576  fullcol 1.00  fullrow 0.00  border    96.0  touch>0.5e 0.05  d100e     inf  up 0.04  downonly 0.02
+=== SHORT R2  exit 0 after 0 min
+=== SHORT R4 seed 20260920  (start 14:30:34)
+simulated deep_underground (15 s)
+simulated shallow_underground (39 s)
+simulated surface_lab (171 s)
+oracle deep_underground: {'hot': {'factor': 3, 'min_images': 2}, 'cti': {'length_h': 0, 'length_v': 0}, 'halo': {'radius': 5}, 'serial': {'window': 5, 'min_charged': 2}, 'lec': {'radius': 20, 'min_neighbours': 3}, 'muon': {'min_charge': 50, 'min_length': 2, 'dilation': 0}} (544 s)
+oracle shallow_underground: {'hot': {'factor': 3, 'min_images': 2}, 'cti': {'length_h': 400, 'length_v': 200}, 'halo': {'radius': 20}, 'serial': {'window': 50, 'min_charged': 8}, 'lec': {'radius': 20, 'min_neighbours': 10}, 'muon': {'min_charge': 50, 'min_length': 2, 'dilation': 2}} (856 s)
+oracle surface_lab: {'hot': {'factor': 1.2, 'min_images': 3}, 'cti': {'length_h': 400, 'length_v': 200}, 'halo': {'radius': 20}, 'serial': {'window': 10, 'min_charged': 6}, 'lec': {'radius': 2, 'min_neighbours': 3}, 'muon': {'min_charge': 50, 'min_length': 2, 'dilation': 2}} (1184 s)
+
+=== deep_underground ===
+hot     adaptive                           target     64 removed 0.391  clean kept 1.000  signal eff 1.000  FoM 24.2
+hot     no_mask                            target     64 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 23.7
+hot     oracle                             target     64 removed 0.906  clean kept 0.996  signal eff 0.995  FoM 24.8
+hot     transplant_from_shallow_underground target     64 removed 0.906  clean kept 0.996  signal eff 0.995  FoM 24.8
+hot     transplant_from_surface_lab        target     64 removed 1.000  clean kept 0.960  signal eff 0.759  FoM 21.7
+cti     adaptive                           target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+cti     no_mask                            target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+cti     oracle                             target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+cti     transplant_from_shallow_underground target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+cti     transplant_from_surface_lab        target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+halo    adaptive                           target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+halo    no_mask                            target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+halo    oracle                             target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+halo    transplant_from_shallow_underground target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+halo    transplant_from_surface_lab        target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+serial  adaptive                           target      1 removed 1.000  clean kept 0.999  signal eff 1.000  FoM 24.9
+serial  no_mask                            target      1 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 24.9
+serial  oracle                             target      1 removed 1.000  clean kept 0.998  signal eff 0.997  FoM 24.9
+serial  transplant_from_shallow_underground target      1 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 24.9
+serial  transplant_from_surface_lab        target      1 removed 1.000  clean kept 1.000  signal eff 1.000  FoM 24.9
+lec     adaptive                           target     43 removed 1.000  clean kept 0.992  signal eff 0.995  FoM 24.9
+lec     no_mask                            target     43 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 24.1
+lec     oracle                             target     43 removed 1.000  clean kept 0.998  signal eff 0.998  FoM 24.9
+lec     transplant_from_shallow_underground target     43 removed 0.837  clean kept 0.999  signal eff 1.000  FoM 24.8
+lec     transplant_from_surface_lab        target     43 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 24.1
+muon    adaptive                           target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+muon    no_mask                            target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+muon    oracle                             target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+muon    transplant_from_shallow_underground target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+muon    transplant_from_surface_lab        target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 24.9
+all     adaptive                           target    108 removed 0.639  clean kept 0.991  signal eff 0.995  FoM 24.1
+all     fixed_tuned_on_deep_underground    target    108 removed 0.944  clean kept 0.992  signal eff 0.990  FoM 24.7
+all     fixed_tuned_on_shallow_underground target    108 removed 0.870  clean kept 0.996  signal eff 0.995  FoM 24.6
+all     fixed_tuned_on_surface_lab         target    108 removed 0.769  clean kept 0.960  signal eff 0.759  FoM 21.2
+all     no_mask                            target    108 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 23.0
+
+=== shallow_underground ===
+hot     adaptive                           target    173 removed 0.792  clean kept 0.997  signal eff 0.998  FoM 21.5
+hot     no_mask                            target    173 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 19.2
+hot     transplant_from_deep_underground   target    173 removed 0.971  clean kept 0.973  signal eff 0.948  FoM 21.6
+hot     oracle                             target    173 removed 0.971  clean kept 0.973  signal eff 0.948  FoM 21.6
+hot     transplant_from_surface_lab        target    173 removed 1.000  clean kept 0.640  signal eff 0.413  FoM 14.3
+cti     adaptive                           target   2994 removed 0.898  clean kept 0.939  signal eff 0.952  FoM 16.9
+cti     no_mask                            target   2994 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 8.4
+cti     transplant_from_deep_underground   target   2994 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 8.4
+cti     oracle                             target   2994 removed 0.998  clean kept 0.832  signal eff 0.817  FoM 20.0
+cti     transplant_from_surface_lab        target   2994 removed 0.998  clean kept 0.832  signal eff 0.817  FoM 20.0
+halo    adaptive                           target    183 removed 0.858  clean kept 0.972  signal eff 0.980  FoM 21.5
+halo    no_mask                            target    183 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 19.0
+halo    transplant_from_deep_underground   target    183 removed 0.377  clean kept 0.994  signal eff 1.000  FoM 20.1
+halo    oracle                             target    183 removed 0.940  clean kept 0.957  signal eff 0.968  FoM 21.7
+halo    transplant_from_surface_lab        target    183 removed 0.940  clean kept 0.957  signal eff 0.968  FoM 21.7
+serial  adaptive                           target     24 removed 0.833  clean kept 0.996  signal eff 0.996  FoM 22.1
+serial  no_mask                            target     24 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 21.8
+serial  transplant_from_deep_underground   target     24 removed 1.000  clean kept 0.866  signal eff 0.855  FoM 20.6
+serial  oracle                             target     24 removed 0.792  clean kept 0.996  signal eff 1.000  FoM 22.2
+serial  transplant_from_surface_lab        target     24 removed 0.542  clean kept 0.998  signal eff 1.000  FoM 22.0
+lec     adaptive                           target    212 removed 0.934  clean kept 0.945  signal eff 0.954  FoM 21.4
+lec     no_mask                            target    212 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 18.6
+lec     transplant_from_deep_underground   target    212 removed 0.995  clean kept 0.866  signal eff 0.833  FoM 20.3
+lec     oracle                             target    212 removed 0.915  clean kept 0.948  signal eff 0.952  FoM 21.3
+lec     transplant_from_surface_lab        target    212 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 18.6
+muon    adaptive                           target  14116 removed 0.996  clean kept 0.996  signal eff 1.000  FoM 21.1
+muon    no_mask                            target  14116 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 4.1
+muon    transplant_from_deep_underground   target  14116 removed 1.000  clean kept 1.000  signal eff 1.000  FoM 22.2
+muon    oracle                             target  14116 removed 1.000  clean kept 0.998  signal eff 1.000  FoM 22.2
+muon    transplant_from_surface_lab        target  14116 removed 1.000  clean kept 0.998  signal eff 1.000  FoM 22.2
+all     adaptive                           target   3586 removed 0.908  clean kept 0.864  signal eff 0.881  FoM 15.8
+all     fixed_tuned_on_deep_underground    target   3586 removed 0.949  clean kept 0.737  signal eff 0.683  FoM 14.8
+all     fixed_tuned_on_shallow_underground target   3586 removed 0.993  clean kept 0.772  signal eff 0.734  FoM 18.4
+all     fixed_tuned_on_surface_lab         target   3586 removed 0.986  clean kept 0.525  signal eff 0.327  FoM 11.2
+all     no_mask                            target   3586 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 7.8
+
+=== surface_lab ===
+hot     adaptive                           target   1528 removed 0.949  clean kept 0.981  signal eff 0.971  FoM 17.3
+hot     no_mask                            target   1528 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 8.6
+hot     transplant_from_deep_underground   target   1528 removed 0.174  clean kept 0.998  signal eff 0.920  FoM 8.6
+hot     transplant_from_shallow_underground target   1528 removed 0.174  clean kept 0.998  signal eff 0.920  FoM 8.6
+hot     oracle                             target   1528 removed 0.960  clean kept 0.886  signal eff 0.866  FoM 16.5
+cti     adaptive                           target  73347 removed 0.889  clean kept 0.421  signal eff 0.492  FoM 2.0
+cti     no_mask                            target  73347 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 1.4
+cti     transplant_from_deep_underground   target  73347 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 1.4
+cti     transplant_from_shallow_underground target  73347 removed 0.998  clean kept 0.128  signal eff 0.136  FoM 4.0
+cti     oracle                             target  73347 removed 0.998  clean kept 0.128  signal eff 0.136  FoM 4.0
+halo    adaptive                           target   2081 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 7.5
+halo    no_mask                            target   2081 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 7.5
+halo    transplant_from_deep_underground   target   2081 removed 0.269  clean kept 0.938  signal eff 0.971  FoM 8.4
+halo    transplant_from_shallow_underground target   2081 removed 0.852  clean kept 0.652  signal eff 0.714  FoM 11.1
+halo    oracle                             target   2081 removed 0.852  clean kept 0.652  signal eff 0.714  FoM 11.1
+serial  adaptive                           target    114 removed 0.763  clean kept 0.996  signal eff 0.995  FoM 18.6
+serial  no_mask                            target    114 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 16.9
+serial  transplant_from_deep_underground   target    114 removed 1.000  clean kept 0.031  signal eff 0.029  FoM 3.3
+serial  transplant_from_shallow_underground target    114 removed 1.000  clean kept 0.809  signal eff 0.834  FoM 17.7
+serial  oracle                             target    114 removed 0.632  clean kept 0.982  signal eff 0.984  FoM 18.2
+lec     adaptive                           target     15 removed 0.400  clean kept 0.893  signal eff 0.901  FoM 18.1
+lec     no_mask                            target     15 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 19.0
+lec     transplant_from_deep_underground   target     15 removed 1.000  clean kept 0.008  signal eff 0.011  FoM 2.0
+lec     transplant_from_shallow_underground target     15 removed 0.867  clean kept 0.078  signal eff 0.091  FoM 5.7
+lec     oracle                             target     15 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 19.0
+muon    adaptive                           target 202401 removed 0.999  clean kept 0.947  signal eff 0.976  FoM 14.2
+muon    no_mask                            target 202401 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 0.8
+muon    transplant_from_deep_underground   target 202401 removed 0.999  clean kept 1.000  signal eff 1.000  FoM 16.1
+muon    transplant_from_shallow_underground target 202401 removed 1.000  clean kept 0.969  signal eff 0.995  FoM 19.0
+muon    oracle                             target 202401 removed 1.000  clean kept 0.969  signal eff 0.995  FoM 19.0
+all     adaptive                           target  77085 removed 0.915  clean kept 0.358  signal eff 0.412  FoM 1.9
+all     fixed_tuned_on_deep_underground    target  77085 removed 1.000  clean kept 0.001  signal eff 0.000  FoM 0.0
+all     fixed_tuned_on_shallow_underground target  77085 removed 0.999  clean kept 0.035  signal eff 0.035  FoM 1.3
+all     fixed_tuned_on_surface_lab         target  77085 removed 0.998  clean kept 0.091  signal eff 0.096  FoM 2.7
+all     no_mask                            target  77085 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 1.3
+done in 1339 s
+=== SHORT R4 seed 20260920  exit 0 after 22 min
+=== SHORT COMPARISON  (start 14:53:00)
+MATCH     compare_masks\seed_20260920\compare_masks.json  (largest relative difference 0.0e+00)
+MATCH     release_mask_bits\mask_bit_signatures.json  (largest relative difference 0.0e+00)
+DIFFER    release_rate\release_rate.json  (largest relative difference 6.6e-03)
+            /chi2: 0.402831303868592 vs 0.4027614881636115 (relative difference 1.73e-04)
+            /intercept_e_per_superpix: 6.91036252601195e-05 vs 6.910818995551146e-05 (relative difference 6.61e-05)
+            /per_exposure[0]/mu: 7.379704046232548e-05 vs 7.379710077952005e-05 (relative difference 8.17e-07)
+            /per_exposure[0]/mu_err: 1.0705286571091994e-05 vs 1.0694820360559548e-05 (relative difference 9.78e-04)
+            /per_exposure[0]/noise: 0.14197172254504065 vs 0.1419717244711125 (relative difference 1.36e-08)
+            /per_exposure[1]/mu: 0.00010213675175675354 vs 0.00010213682283597407 (relative difference 6.96e-07)
+            /per_exposure[1]/mu_err: 1.2618289336714196e-05 vs 1.2622784737782495e-05 (relative difference 3.56e-04)
+            /per_exposure[1]/noise: 0.14174402213991275 vs 0.14174402441971942 (relative difference 1.61e-08)
+            /per_exposure[2]/mu_err: 1.7161072507730885e-05 vs 1.71610724370179e-05 (relative difference 4.12e-09)
+            /per_exposure[3]/mu: 0.00043958814013599334 vs 0.00043958801746613843 (relative difference 2.79e-07)
+            ... 5 more
+FIGURE    release_rate\release_rate.png: identical bytes
+
+2 of 3 result files match
+=== SHORT COMPARISON  exit 1 after 0 min
+SHORT PASS DONE

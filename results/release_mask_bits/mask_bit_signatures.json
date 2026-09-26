@@ -7,7 +7,7 @@
     "frac_in_full_rows": 0.0,
     "median_distance_to_border_pix": 94.08170515097692,
     "frac_touching_charge_above_0.5e": 0.9613676731793961,
-    "median_distance_to_100e_pix": Infinity,
+    "median_distance_to_100e_pix": 358.80922637723637,
     "frac_with_100e_upstream": 0.14520426287744229,
     "frac_with_100e_only_downstream": 0.05728241563055062
   },
@@ -43,7 +43,7 @@
     "frac_in_full_rows": 0.0,
     "median_distance_to_border_pix": 101.62429200755192,
     "frac_touching_charge_above_0.5e": 0.027690371302706105,
-    "median_distance_to_100e_pix": Infinity,
+    "median_distance_to_100e_pix": 752.3953445343469,
     "frac_with_100e_upstream": 0.0671281728550451,
     "frac_with_100e_only_downstream": 0.0023075309418921753
   },
@@ -59,7 +59,7 @@
     "frac_in_full_rows": 0.0,
     "median_distance_to_border_pix": 12.0,
     "frac_touching_charge_above_0.5e": 0.017780172413793104,
-    "median_distance_to_100e_pix": Infinity,
+    "median_distance_to_100e_pix": 434.7717135959732,
     "frac_with_100e_upstream": 0.022629310344827586,
     "frac_with_100e_only_downstream": 0.03987068965517242
   },
@@ -71,7 +71,7 @@
     "frac_in_full_rows": 0.0,
     "median_distance_to_border_pix": 128.0,
     "frac_touching_charge_above_0.5e": 0.11168831168831168,
-    "median_distance_to_100e_pix": Infinity,
+    "median_distance_to_100e_pix": 573.5638284306809,
     "frac_with_100e_upstream": 0.04025974025974026,
     "frac_with_100e_only_downstream": 0.005194805194805195
   },
@@ -83,7 +83,7 @@
     "frac_in_full_rows": 0.0,
     "median_distance_to_border_pix": 96.0,
     "frac_touching_charge_above_0.5e": 0.052063223938223935,
-    "median_distance_to_100e_pix": Infinity,
+    "median_distance_to_100e_pix": 481.357026379106,
     "frac_with_100e_upstream": 0.04416023166023166,
     "frac_with_100e_only_downstream": 0.020994208494208494
   }

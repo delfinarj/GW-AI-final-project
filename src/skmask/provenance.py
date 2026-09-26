@@ -10,8 +10,20 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+# Text files are hashed with their line endings normalised to LF. Git checks the same file out with
+# CRLF on Windows and LF elsewhere, so hashing the bytes on disk would make every recorded hash of a
+# text input depend on the operating system of whoever cloned the repository, and a reader on Linux
+# would find that none of them matches. Binary inputs (the ROOT data, the figures, the PDFs) are
+# hashed byte for byte, which is what they are compared on.
+TEXT_SUFFIXES = {".json", ".md", ".py", ".html", ".css", ".txt", ".yml", ".yaml", ".toml", ".cfg", ".C"}
+
+
 def sha256(path):
+    path = Path(path)
     digest = hashlib.sha256()
+    if path.suffix in TEXT_SUFFIXES:
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n"))
+        return digest.hexdigest()
     with open(path, "rb") as handle:
         for chunk in iter(lambda: handle.read(1 << 20), b""):
             digest.update(chunk)

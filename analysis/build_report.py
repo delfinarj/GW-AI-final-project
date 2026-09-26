@@ -315,7 +315,8 @@ an artefact: the correction counts {80} distance blocks per direction, and on an
 three of them can ever be filled. Correcting for the tests that can exist would ask for about 1.7&times;10<sup>-3</sup>,
 which this p-value still does not meet, so the decision stands. The halo radius behaves the same way:
 {halo_radii[0]} where there are no triggers, {halo_radii[-1]} column widths at the longest exposure.</p>
-<details><summary>Every mask against its counterpart in the release</summary>
+<details><summary>Every mask against its counterpart in the release &mdash; the low-energy-cluster mask is
+not here, since the release publishes no counterpart to it, although the union above includes it</summary>
 {table(["Exposure", "Our mask", "Release bit", "Fraction of the image we mask", "Of ours, also theirs",
         "Of theirs, also ours"], agree_rows)}
 </details>
@@ -324,8 +325,8 @@ which this p-value still does not meet, so the decision stands. The halo radius 
     public_answer = "" if not public else (
         f" On a real sensor that nothing here was tuned for, the four exposures of the public SENSEI release, the "
         f"hot-column procedure ends up flagging the {n_loud_flagged} loudest columns of the longest exposure and "
-        f"nothing else, all of them inside the mask the collaboration published; it masks "
-        f"{min(union_fracs):.4f}&ndash;{max(union_fracs):.4f} of the image where that published mask takes "
+        f"nothing else, all of them inside the mask the collaboration published. The five adaptive masks together "
+        f"take {min(union_fracs):.4f}&ndash;{max(union_fracs):.4f} of the image, where that published mask takes "
         f"{min(release_fracs):.3f}&ndash;{max(release_fracs):.3f}.")
 
     cross_rows, cross_fire_rows, cross_text, cross_answer = [], [], "", ""
@@ -450,7 +451,7 @@ fewest times that could produce this verdict at all.</p>
         sensor_rows.append([
             SENSOR_NAMES[name], f"{s.nx} &times; {s.ny}", f"{s.thickness_um:.0f}", f"{s.noise_e:.2f}",
             f"{s.exposure_days * 24:.0f} h", sci(s.dark_e_per_pix_day, 1),
-            f"{s.muon_flux_per_cm2_day:.2g}", f"{s.highE_dru:.3g}",
+            sci(s.muon_flux_per_cm2_day, 1), sci(s.highE_dru, 1),
             f"{s.halo_length_um:.0f} / {s.cti_h_length_pix:.0f} / {s.n_hot_columns}"])
 
     if not muon_null:
@@ -766,6 +767,36 @@ is an independent re-run.</p>
 </body>
 </html>
 """
+    # the headline numbers, so the five-page summary reads them instead of computing them again
+    headline = {
+        "n_seeds": n_seeds,
+        "transplant": {
+            "cases": overall["n_transplant"], "harmful": len(overall["paired_harm"]),
+            "no_difference": len(overall["paired_same"]),
+            "worst": None if not overall["worst_harm"] else {
+                "case": describe(overall["worst_harm"][0]),
+                "relative_to_oracle": overall["worst_harm"][1], "no_mask": overall["worst_harm"][2]}},
+        "adaptive": {
+            "cases": overall["n_cases"], "harmful": len(overall["adaptive_paired_harm"]),
+            "harmful_cases": [describe((*k, "adaptive")) for k in overall["adaptive_paired_harm"]],
+            "better_than_no_mask": len(overall["adaptive_benefit"]),
+            "median_of_oracle": overall["median_adaptive"],
+            "beaten_by_a_transplant": len(overall["beats_adaptive"]),
+            "worst": None if overall["worst_adaptive"] is None else {
+                "case": describe((*overall["worst_adaptive"][0], "adaptive")),
+                "median_of_oracle": overall["worst_adaptive"][1],
+                "worst_seed": overall["worst_adaptive_seed"]}},
+        "held_out": None if held is None else {
+            "seeds": len(holdout_idx), "cases": held["n_cases"],
+            "transplant_cases": held["n_transplant"], "transplant_harmful": len(held["paired_harm"]),
+            "adaptive_harmful": len(held["adaptive_paired_harm"]),
+            "adaptive_median_of_oracle": held["median_adaptive"]},
+        "margin": MARGIN, "min_target_events": MIN_TARGET, "oracle_edge_check_passed": edges_checked}
+    numbers_file = RES / "report_numbers.json"
+    numbers_file.write_text(json.dumps(headline, indent=2), encoding="utf-8")
+    write_sidecar(numbers_file, __file__, inputs=seed_files,
+                  notes="the headline numbers of the transplant comparison, for the short summary")
+
     numbers = itertools.count(1)
     page = re.sub("RESULT_N", lambda _: str(next(numbers)), page)
 

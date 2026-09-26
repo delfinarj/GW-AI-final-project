@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Masks that calibrate themselves &mdash; five-page summary</title>
+<style>/* Draft print stylesheet for the five-page summary. A4, 18 mm margins, one column. */
+@page { size: A4; margin: 17mm 16mm 15mm 16mm; }
+
+:root {
+  --ink: #111; --ink-2: #444; --muted: #777; --rule: #d8d7d0; --accent: #2a78d6; --callout: #eef4fc;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0; color: var(--ink); background: #fff;
+  font: 9.6pt/1.42 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+h1 { font-size: 16pt; line-height: 1.15; margin: 0 0 2mm; letter-spacing: -0.01em; }
+h2 { font-size: 11pt; margin: 5mm 0 1.5mm; padding-top: 1.5mm; border-top: 0.6pt solid var(--rule); }
+h3 { font-size: 9.8pt; margin: 3mm 0 1mm; color: var(--ink-2); }
+p { margin: 0 0 2mm; }
+.lede { font-size: 10.5pt; color: var(--ink-2); margin-bottom: 3mm; }
+.byline { color: var(--muted); font-size: 8.2pt; margin-bottom: 4mm; }
+.answer { background: var(--callout); border-left: 2.5pt solid var(--accent);
+          padding: 2.5mm 3mm; margin: 3mm 0; }
+.answer p { margin: 1mm 0; }
+figure { margin: 3mm 0; break-inside: avoid; }
+figure img { width: 100%; height: auto; display: block; }
+figcaption { font-size: 7.8pt; color: var(--ink-2); margin-top: 1mm; }
+table { border-collapse: collapse; width: 100%; font-size: 7.9pt; font-variant-numeric: tabular-nums;
+        margin: 2mm 0; break-inside: avoid; }
+th, td { text-align: left; padding: 0.9mm 1.4mm; border-bottom: 0.4pt solid var(--rule);
+         vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; }
+code { font-family: Consolas, "SFMono-Regular", monospace; font-size: 0.9em; }
+pre { background: #f6f6f4; border: 0.4pt solid var(--rule); padding: 1.5mm 2mm; font-size: 7.6pt;
+      line-height: 1.35; overflow: hidden; break-inside: avoid; }
+.page-break { break-before: page; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.note { color: var(--ink-2); font-size: 8.4pt; }
+ul { margin: 0 0 2mm; padding-left: 4.5mm; }
+li { margin-bottom: 0.8mm; }
+a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<h1>Masks for Skipper-CCD images that do not depend on the sensor</h1>
+<p class="lede">Can the masks that remove readout defects, material defects and unwanted physics be written so that
+they work on a sensor they were never tuned on?</p>
+<p class="byline">D. Rodriguez Juiz and F. P&eacute;rez &middot; final project, <em>Gravitational Waves and
+AI-Assisted Research</em> &middot; full report, code and provenance: <a href="https://delfinarj.github.io/GW-AI-final-project/">https://delfinarj.github.io/GW-AI-final-project/</a></p>
+
+<div class="answer">
+<p><strong>Short answer.</strong> Yes for five of the six masks, and the price is measurable. Of the
+28 cases in which a mask tuned by hand on one sensor was moved unchanged to another, 5
+were worse than using no mask at all in every seed and 2 made no difference; the clearest,
+low-energy clusters on the surface laboratory sensor (tuned on deep underground), scores 0.12 of the mask tuned with truth on that sensor,
+where doing nothing scores 1.00. The same masks written as self-calibrating procedures are
+worse than no mask in 1 of 14 cases and better in 12, and reach a
+median 0.98 of the mask tuned with truth. The exception is low-energy clusters on the surface laboratory sensor (adaptive), which
+fires on charge-transfer trail electrons.</p>
+</div>
+
+<h2>The question and what was built</h2>
+<p>A Skipper-CCD counts single electrons. Before any physics is extracted, analyses discard pixels with masks, each
+aimed at one problem: charge left behind during transfer, hits in the serial register, hot columns and pixels,
+photons around high-energy tracks (the halo), clusters of low-energy events, and muon tracks. Every mask carries
+sizes and thresholds &mdash; a radius, a trail length, a rate cut &mdash; chosen by hand for one sensor and site.</p>
+<p><strong>Hypothesis:</strong> what transfers between sensors is not the numbers but the <em>procedure</em> that
+chooses them. Each of the six masks was therefore written twice: a <strong>fixed</strong> form with hand-set
+constants, and an <strong>adaptive</strong> form that measures its own sizes on the images it is applied to and sets
+its threshold from a false-positive rate (&alpha;&nbsp;=&nbsp;0.01, corrected for the number of tests) or from
+measurable physical properties of the sensor.</p>
+<p>The test bed is a simulator that keeps a separate charge map per source, so a mask can be scored against exactly
+the events it should remove. Three sensors differ the way real deployments do; their geometry, noise, dark rates,
+backgrounds and muon fluxes come from public measurements, while defect populations, which are not published in a
+transferable form, are scenario values chosen to differ between sensors.</p>
+<table><thead><tr><th>Sensor</th><th>Pixels</th><th>Thickness (&micro;m)</th><th>Noise (e&minus;)</th><th>Exposure</th><th>Dark (e&minus;/pix/day)</th><th>Muons (cm&minus;&sup2;/day)</th></tr></thead><tbody><tr><td>Deep underground</td><td>3072&times;512</td><td>665</td><td>0.14</td><td>20 h</td><td>1.4&times;10<sup>-5</sup></td><td>2.9e-05</td></tr><tr><td>Shallow underground</td><td>3072&times;443</td><td>675</td><td>0.14</td><td>20 h</td><td>1.6&times;10<sup>-4</sup></td><td>6.9</td></tr><tr><td>Surface laboratory</td><td>1278&times;1058</td><td>725</td><td>0.17</td><td>1 h</td><td>3.0&times;10<sup>-2</sup></td><td>1.4e+03</td></tr></tbody></table>
+<p>Four forms of every mask were compared on an independent test stack of each sensor: the <strong>oracle</strong>
+(fixed, tuned with the simulator's truth on that sensor), the <strong>transplant</strong> (the oracle constants of a
+different sensor), the <strong>adaptive</strong> form, and <strong>no mask</strong>. The figure of merit is
+S/&radic;(S+B): surviving injected signal against surviving target background.</p>
+
+<div class="page-break"></div>
+<h2>Result 1 &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
+<figure>
+<img src="figures/compare_masks.png" alt="Figure of merit relative to the oracle for each sensor and mask">
+<figcaption>Each mask on each sensor, relative to the oracle of that sensor, over 5 seeds. A
+transplanted mask is the oracle of another sensor; no mask is the reference that says whether masking helps at
+all.</figcaption>
+</figure>
+<p>Moving constants between sensors is not merely suboptimal, it can be worse than not masking: 5 of
+28 transplants score below no mask in every seed, by more than the 1&nbsp;%
+margin used to call a difference real. Self-calibration removes those failures &mdash; 1 of
+14 cases &mdash; but it is not free: in 8 cases a transplanted mask still
+beats the adaptive one in every seed, and the worst adaptive case, charge-transfer trails on the surface laboratory sensor (adaptive), reaches only
+0.38 of the oracle (0.34 in its worst seed).</p>
+<p>The summary statistics were pre-registered before the final run. Cases with fewer than
+20 target events in a seed are excluded from that seed, and a case counts as harmful only
+if it loses by more than the margin in <em>every</em> valid seed. Two seeds (2) were run once after
+the code was frozen and never used to change anything: on them, 4 of
+26 transplants are harmful, 0 of 13 adaptive cases
+are, and the adaptive median is 0.98 of the oracle &mdash; the same picture as
+the development seeds.</p>
+
+<div class="page-break"></div>
+<h2>Result 2 &middot; What the masks fire on when there is nothing to find</h2>
+<p>With every defect switched off on all three sensors, keeping what a real sensor cannot switch off (dark current,
+spurious charge, the injected signal, muon tracks and high-energy deposits), the five statistical masks fired
+5 times in 15 sensor-mask tests of 50 runs each, and every interval
+contains &alpha;. The sixth mask, for muon tracks, cannot be in that test, since tracks are what a real sensor
+cannot switch off; asked separately, in a simulator with the flux set to zero, it fired in 0 of
+600 images.</p>
+<p>That test has a blind spot: switching every defect off at once cannot see a mask firing on <em>another</em>
+mask's defect. So the defects were also switched on one at a time, 60 mask-and-defect cells in
+all, 20 runs each, with the bound each cell must clear taken at
+99.92&nbsp;% confidence to control a
+5&nbsp;% chance of one false call over the whole grid.</p>
+<figure>
+<img src="figures/cross_defect.png" alt="Grid of masks against the single defect switched on, per sensor">
+<figcaption>One defect on at a time. Dot area is the fraction of trials in which the mask fired; orange marks the
+cells above the rate that mask should not exceed; hollow circles are the diagonal, where a mask meets its own
+defect.</figcaption>
+</figure>
+<p>7 of 60 cells fire on a defect that is not their own, and charge-transfer trails
+are what most often set them off. The largest is unambiguous: on the surface sensor, with trails as the only defect
+present, the adaptive low-energy-cluster mask fires in every one of its trials and masks a median
+0.121 of the image. This is the one real failure of self-calibration found here, and it was predicted
+in writing before the run, from a symptom seen in Result&nbsp;1.</p>
+<table><thead><tr><th>Sensor</th><th>Only defect present</th><th>Mask that fired</th><th>Fired/trials</th><th>Rate</th><th>Median fraction masked</th></tr></thead><tbody><tr><td>Surface laboratory</td><td>charge-transfer trails</td><td>low-energy clusters</td><td>40/40</td><td>1.00</td><td>0.1215</td></tr><tr><td>Surface laboratory</td><td>charge-transfer trails</td><td>serial-register hits</td><td>34/40</td><td>0.85</td><td>0.0009</td></tr><tr><td>Shallow underground</td><td>charge-transfer trails</td><td>low-energy clusters</td><td>19/40</td><td>0.47</td><td>0.0000</td></tr><tr><td>Surface laboratory</td><td>charge-transfer trails</td><td>hot columns and pixels</td><td>9/20</td><td>0.45</td><td>0.0000</td></tr><tr><td>Shallow underground</td><td>halo</td><td>low-energy clusters</td><td>10/40</td><td>0.25</td><td>0.0000</td></tr><tr><td>Shallow underground</td><td>low-energy clusters</td><td>serial-register hits</td><td>6/40</td><td>0.15</td><td>0.0000</td></tr><tr><td>Shallow underground</td><td>charge-transfer trails</td><td>serial-register hits</td><td>5/40</td><td>0.12</td><td>0.0000</td></tr></tbody></table>
+
+<div class="page-break"></div>
+<h2>Result 3 &middot; The same procedures on a real sensor</h2>
+<p>Everything above is simulated. The adaptive masks were also run, unchanged, on the 4 exposures of
+the public SENSEI SNOLAB data release: a fourth sensor, real, with a geometry none of the presets has
+(3072&times;16 active superpixels, each binning 32 physical rows). Nothing about it
+was tuned, and the release publishes its own mask, so the two can be compared where they overlap.</p>
+<p>Given only the images, the estimator measures a readout noise of 0.141&ndash;0.142&nbsp;e,
+against 0.1413&ndash;0.1420&nbsp;e from an independent fit on the same files, and a
+single-electron density that grows with exposure. The hot-column procedure flags
+2, 4, 6, 7 columns as the exposure grows, and
+the sets are nested: each keeps the previous columns and adds the next loudest. At the longest exposure the
+7 columns with the highest rate of charged pixels are exactly the ones it flags, all of them inside
+the release's own bad-column mask, and each carries 102 to 1830 times the charged-pixel
+rate of the columns it left alone.</p>
+<table><thead><tr><th>Exposure</th><th>Images</th><th>Trigger pixels</th><th>Noise (e&minus;)</th><th>1e density</th><th>Hot columns</th><th>Halo radius</th><th>We mask</th><th>The release masks</th></tr></thead><tbody><tr><td>0 h</td><td>14</td><td>0</td><td>0.142</td><td>1.3&times;10<sup>-4</sup></td><td>2</td><td>0</td><td>0.0007</td><td>0.042</td></tr><tr><td>2 h</td><td>14</td><td>70</td><td>0.142</td><td>1.7&times;10<sup>-4</sup></td><td>4</td><td>0</td><td>0.0013</td><td>0.055</td></tr><tr><td>6 h</td><td>14</td><td>103</td><td>0.141</td><td>2.9&times;10<sup>-4</sup></td><td>6</td><td>0</td><td>0.0038</td><td>0.061</td></tr><tr><td>20 h</td><td>13</td><td>844</td><td>0.141</td><td>6.5&times;10<sup>-4</sup></td><td>7</td><td>25</td><td>0.0094</td><td>0.130</td></tr></tbody></table>
+<p>Both directions of the agreement matter and both are here. Of what the procedure flags, the release also flags
+0.99&ndash;1.00: it stays inside a mask a person tuned. Of what the release flags,
+the procedure flags 0.027&ndash;0.095: the release masks far more. The first number is the
+easy direction &mdash; a procedure that flagged one true column would score 1.00 &mdash; and it rests on a handful
+of column decisions, not on the hundreds of pixels it is counted over.</p>
+<p>The trail calibration chose length zero on all four exposures, which the registered expectation did not predict.
+The reason is in the result file: the release blinds its hits, so a whole exposure holds
+0, 70, 103, 844 pixels above the trigger. At the longest exposure
+the test does see the excess on the correct side &mdash; 13 single electrons
+downstream of a trigger against 2 upstream,
+p&nbsp;=&nbsp;0.0037 &mdash; but the corrected threshold asks for
+p&nbsp;&lt;&nbsp;6.3e-05. The procedure is refusing to mask on
+evidence this thin, which is what it was built to do.</p>
+
+<div class="page-break"></div>
+<h2>How the work was done, and how it was checked</h2>
+<p>Every line of code and every analysis in this project was produced by AI agents, working from a stated question
+and under rules written down before the work: no number on any page is typed by hand, every output carries a
+sidecar recording the script, the git commit, the hashes of its inputs and its seed, and no private document ever
+enters a tracked file. The method that made this trustworthy, rather than merely fast, was adversarial:</p>
+<ul>
+<li><strong>Expectations were registered before runs.</strong> Written in <code>PLAN.md</code> and committed before
+the analysis ran, so a confirmation could not be invented afterwards. One of them was wrong &mdash; the trail
+length on the real sensor &mdash; and the repository says so, with the numbers that explain why.</li>
+<li><strong>Independent agents reviewed the work</strong> with no access to the conversation that produced it. They
+found real defects: truth from the simulator leaking into an "adaptive" threshold; a headline that measured doing
+nothing; a halo mask measuring distance in superpixels on a binned sensor, which hid the loudest column from the
+hot-column calibration; a verdict applied to sixty cells with no correction for their number. Each is recorded in
+<code>PROVENANCE.md</code> with what was done about it, including the findings that were <em>not</em> acted on.</li>
+<li><strong>Everything was reproduced from a clean clone</strong> &mdash; a fresh checkout sharing nothing with the
+working copy but the commit and the pinned environment &mdash; and compared at a relative tolerance of
+10<sup>&minus;9</sup>. All results but one are bit-identical, figures included; the exception, the
+one-defect-at-a-time run, takes about two hours and was not re-run, which the report states.</li>
+</ul>
+<p>Errors the checks caught are listed on the full report page rather than hidden: a simulator that redrew its hot
+columns every image, a hot-column mask that flagged innocent neighbours, a halo test that treated its reference rate
+as exact, a muon mask that missed crossing tracks, a calibration order that made 69 of 81 flagged columns false.</p>
+
+<h3>What is still wrong with it</h3>
+<ul>
+<li>Defect populations are scenario values, not measurements; only the sensor and background parameters are public
+measurements.</li>
+<li>The defects are switched on one at a time, so nothing here measures what the masks do when several defects
+overlap in the same pixels.</li>
+<li>On the real sensor only four of the six masks can be checked at all: the release publishes no counterpart to the
+low-energy-cluster mask, and its binned superpixels make the muon mask's geometry meaningless.</li>
+<li>One figure of merit, and an oracle tuned mask by mask rather than jointly, so a combined adaptive mask can
+exceed it.</li>
+</ul>
+
+<h3>Where everything is</h3>
+<p>Repository: <a href="https://github.com/delfinarj/GW-AI-final-project">https://github.com/delfinarj/GW-AI-final-project</a> &mdash; <code>README.md</code> reproduces the whole project from a clean
+clone with <code>uv</code>; <code>PLAN.md</code> holds the pre-registered statements; <code>PROVENANCE.md</code>
+records every input, every choice with a defensible alternative, how each result was checked, and every error found
+along the way; <code>report/index.html</code> is the full report, of which this document is a summary.</p>
+
+</body>
+</html>

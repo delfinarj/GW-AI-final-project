@@ -1,0 +1,52 @@
+{
+  "output": "report/summary.html",
+  "output_sha256": "97f7606e26e11a0e594e82f08099a6cae7f671242ab38e10315b9f41c7048395",
+  "script": "analysis/build_summary.py",
+  "git": {
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 11
+  },
+  "git_at_write": {
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 11
+  },
+  "inputs": [
+    {
+      "path": "results/report_numbers.json",
+      "sha256": "20656e9af340917ac7c20c704bc0170ce3924e701657a5d7783fa0707f3840e1"
+    },
+    {
+      "path": "results/null_false_positive_rates/null_rates.json",
+      "sha256": "17624d2da4b7f848ddb23499766a2c0759796c3bef9d79ea233d53dd7b04aef5"
+    },
+    {
+      "path": "results/muon_mask_null_rate/muon_null.json",
+      "sha256": "4122fcc14199699d42844a1d08631d9d93932d7f6c26c759f4a5d28b4db4f870"
+    },
+    {
+      "path": "results/cross_defect_false_positives/cross_defect.json",
+      "sha256": "e481dc2d621cecf028ecb5da18e2e3228b9228c55ba47a32ff5dc621645279d6"
+    },
+    {
+      "path": "results/adaptive_on_public/adaptive_on_public.json",
+      "sha256": "a1355376e7d0b21d2931dfd9aa57cf9bee7f7b8d34bc1bc5fafa26f7a3a9eb80"
+    },
+    {
+      "path": "results/release_rate/release_rate.json",
+      "sha256": "e307903a46ad1e25d5aea2982cbd1c8fc1d3c29aedcd977b85224943209970bf"
+    }
+  ],
+  "parameters": {},
+  "seed": null,
+  "results": {},
+  "notes": "five-page summary; every number read from the inputs",
+  "created": "2026-09-26T01:40:01+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

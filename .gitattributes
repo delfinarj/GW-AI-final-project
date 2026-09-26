@@ -1,0 +1,7 @@
+# One canonical form in the repository: text stored and checked out with LF, so a clone on Linux,
+# macOS and Windows has the same bytes. Sidecar hashes of text files are normalised the same way
+# (src/skmask/provenance.py), so a recorded hash does not depend on who cloned the repository.
+* text=auto eol=lf
+*.png binary
+*.pdf binary
+*.root binary

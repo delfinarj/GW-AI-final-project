@@ -1,0 +1,39 @@
+{
+  "n_seeds": 5,
+  "transplant": {
+    "cases": 28,
+    "harmful": 5,
+    "no_difference": 2,
+    "worst": {
+      "case": "low-energy clusters on the surface laboratory sensor (tuned on deep underground)",
+      "relative_to_oracle": 0.11886393901403837,
+      "no_mask": 1.0
+    }
+  },
+  "adaptive": {
+    "cases": 14,
+    "harmful": 1,
+    "harmful_cases": [
+      "low-energy clusters on the surface laboratory sensor (adaptive)"
+    ],
+    "better_than_no_mask": 12,
+    "median_of_oracle": 0.9788470733846588,
+    "beaten_by_a_transplant": 8,
+    "worst": {
+      "case": "charge-transfer trails on the surface laboratory sensor (adaptive)",
+      "median_of_oracle": 0.3811200902807409,
+      "worst_seed": 0.33731388061417045
+    }
+  },
+  "held_out": {
+    "seeds": 2,
+    "cases": 13,
+    "transplant_cases": 26,
+    "transplant_harmful": 4,
+    "adaptive_harmful": 0,
+    "adaptive_median_of_oracle": 0.98015686485528
+  },
+  "margin": 0.01,
+  "min_target_events": 20,
+  "oracle_edge_check_passed": true
+}

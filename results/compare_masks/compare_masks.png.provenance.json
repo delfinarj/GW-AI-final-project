@@ -3,42 +3,42 @@
   "output_sha256": "1ec987e4bd7e1888bc99edea092786c21d9ab39e4e8a907d88c74c1877d818f9",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "d83ef7cd87aaa25a2ad2424ca30da24ad3cdd2ed",
-    "dirty": false,
-    "changed_outputs": 0
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 5
   },
   "git_at_write": {
-    "commit": "d83ef7cd87aaa25a2ad2424ca30da24ad3cdd2ed",
-    "dirty": false,
-    "changed_outputs": 2
+    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "dirty": true,
+    "changed_outputs": 5
   },
   "inputs": [
     {
       "path": "results/compare_masks/seed_20260915/compare_masks.json",
-      "sha256": "34770a139dfa87cfab9ef8fba59f352258dd0608e5e590fdd6c24efb66b25614"
+      "sha256": "f080d1d19052b15c13d0429963489ebb3dadf380464586fddd2b048895deaaa4"
     },
     {
       "path": "results/compare_masks/seed_20260916/compare_masks.json",
-      "sha256": "31e1622f205422451b82050a0c23d8d377ef6c9a7b3e13eeb9e4798c894842e3"
+      "sha256": "37dbe2322b667c5cc1be8761a3793af1f8c7ba3fbdad1b587295adea27e6beb3"
     },
     {
       "path": "results/compare_masks/seed_20260917/compare_masks.json",
-      "sha256": "f8a380a501fccb2322bce813f62164797a0f64fdec396c568c98d200395062b7"
+      "sha256": "4dd70b9baabeca3e772b2e67266ab9062f56edc419e8b0336b3ab4cac76cf3e1"
     },
     {
       "path": "results/compare_masks/seed_20260920/compare_masks.json",
-      "sha256": "8f45cc27c4c657441631c25a9c45d07ea9f3d29e3b505aedcdeffe8408cd5bd1"
+      "sha256": "f4f3c5bca57e375074b4dc8c175cc7200a67eb93eac74b49d4cd9aa8bf65af37"
     },
     {
       "path": "results/compare_masks/seed_20260921/compare_masks.json",
-      "sha256": "6dcc2da318a1f96ba9a35c68017d9ab658cd5cd76d3a3797664d1637f271ddb9"
+      "sha256": "03e580a80c1ab6ff06085074ec5e50eb60409f41e9fff111d2fdb05cf51448e7"
     }
   ],
   "parameters": {},
   "seed": null,
   "results": {},
   "notes": "figure of R4 over 5 seeds",
-  "created": "2026-09-15T23:36:28+00:00",
+  "created": "2026-09-26T01:27:15+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

@@ -1,0 +1,119 @@
+simulated deep_underground (23 s)
+simulated shallow_underground (50 s)
+simulated surface_lab (286 s)
+oracle deep_underground: {'hot': {'factor': 5, 'min_images': 2}, 'cti': {'length_h': 0, 'length_v': 0}, 'halo': {'radius': 0}, 'serial': {'window': 5, 'min_charged': 3}, 'lec': {'radius': 10, 'min_neighbours': 3}, 'muon': {'min_charge': 2, 'min_length': 1, 'dilation': 0}} (1206 s)
+oracle shallow_underground: {'hot': {'factor': 3, 'min_images': 2}, 'cti': {'length_h': 300, 'length_v': 200}, 'halo': {'radius': 20}, 'serial': {'window': 5, 'min_charged': 4}, 'lec': {'radius': 20, 'min_neighbours': 10}, 'muon': {'min_charge': 2, 'min_length': 1, 'dilation': 2}} (2069 s)
+oracle surface_lab: {'hot': {'factor': 1.2, 'min_images': 3}, 'cti': {'length_h': 600, 'length_v': 200}, 'halo': {'radius': 30}, 'serial': {'window': 20, 'min_charged': 8}, 'lec': {'radius': 1, 'min_neighbours': 1}, 'muon': {'min_charge': 10, 'min_length': 1, 'dilation': 2}} (2957 s)
+oracle edge check: every optimum is inside its grid or on a physical bound
+
+=== deep_underground ===
+hot     adaptive                           target     59 removed 0.559  clean kept 0.999  signal eff 1.000  FoM 24.9
+hot     no_mask                            target     59 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 24.3
+hot     oracle                             target     59 removed 0.780  clean kept 1.000  signal eff 1.000  FoM 25.1
+hot     transplant_from_shallow_underground target     59 removed 0.864  clean kept 0.998  signal eff 0.997  FoM 25.2
+hot     transplant_from_surface_lab        target     59 removed 0.949  clean kept 0.960  signal eff 0.757  FoM 22.0
+cti     adaptive                           target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+cti     no_mask                            target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+cti     oracle                             target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+cti     transplant_from_shallow_underground target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+cti     transplant_from_surface_lab        target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+halo    adaptive                           target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+halo    no_mask                            target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+halo    oracle                             target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+halo    transplant_from_shallow_underground target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+halo    transplant_from_surface_lab        target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+serial  adaptive                           target      7 removed 1.000  clean kept 0.999  signal eff 1.000  FoM 25.4
+serial  no_mask                            target      7 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 25.3
+serial  oracle                             target      7 removed 1.000  clean kept 0.999  signal eff 1.000  FoM 25.4
+serial  transplant_from_shallow_underground target      7 removed 0.286  clean kept 0.999  signal eff 1.000  FoM 25.3
+serial  transplant_from_surface_lab        target      7 removed 0.286  clean kept 0.999  signal eff 1.000  FoM 25.3
+lec     adaptive                           target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+lec     no_mask                            target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+lec     oracle                             target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+lec     transplant_from_shallow_underground target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+lec     transplant_from_surface_lab        target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+muon    adaptive                           target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+muon    no_mask                            target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+muon    oracle                             target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+muon    transplant_from_shallow_underground target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+muon    transplant_from_surface_lab        target      0 removed    -    clean kept 1.000  signal eff 1.000  FoM 25.4
+all     adaptive                           target     66 removed 0.606  clean kept 0.998  signal eff 1.000  FoM 24.9
+all     fixed_tuned_on_deep_underground    target     66 removed 0.803  clean kept 0.998  signal eff 1.000  FoM 25.1
+all     fixed_tuned_on_shallow_underground target     66 removed 0.818  clean kept 0.997  signal eff 0.997  FoM 25.1
+all     fixed_tuned_on_surface_lab         target     66 removed 0.909  clean kept 0.959  signal eff 0.757  FoM 22.0
+all     no_mask                            target     66 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 24.2
+
+=== shallow_underground ===
+hot     adaptive                           target    192 removed 0.698  clean kept 0.998  signal eff 0.996  FoM 21.8
+hot     no_mask                            target    192 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 19.7
+hot     transplant_from_deep_underground   target    192 removed 0.891  clean kept 0.995  signal eff 0.987  FoM 22.4
+hot     oracle                             target    192 removed 1.000  clean kept 0.963  signal eff 0.943  FoM 22.3
+hot     transplant_from_surface_lab        target    192 removed 0.995  clean kept 0.597  signal eff 0.390  FoM 14.3
+cti     adaptive                           target   3237 removed 0.880  clean kept 0.944  signal eff 0.972  FoM 17.1
+cti     no_mask                            target   3237 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 8.6
+cti     transplant_from_deep_underground   target   3237 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 8.6
+cti     oracle                             target   3237 removed 0.996  clean kept 0.871  signal eff 0.905  FoM 21.5
+cti     transplant_from_surface_lab        target   3237 removed 0.999  clean kept 0.800  signal eff 0.822  FoM 20.8
+halo    adaptive                           target    212 removed 0.665  clean kept 0.985  signal eff 0.992  FoM 21.5
+halo    no_mask                            target    212 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 19.4
+halo    transplant_from_deep_underground   target    212 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 19.4
+halo    oracle                             target    212 removed 0.887  clean kept 0.957  signal eff 0.970  FoM 22.1
+halo    transplant_from_surface_lab        target    212 removed 0.967  clean kept 0.919  signal eff 0.936  FoM 22.1
+serial  adaptive                           target     28 removed 1.000  clean kept 0.993  signal eff 0.992  FoM 22.9
+serial  no_mask                            target     28 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 22.4
+serial  transplant_from_deep_underground   target     28 removed 0.714  clean kept 0.979  signal eff 0.985  FoM 22.6
+serial  oracle                             target     28 removed 0.429  clean kept 0.997  signal eff 0.996  FoM 22.6
+serial  transplant_from_surface_lab        target     28 removed 0.714  clean kept 0.997  signal eff 0.998  FoM 22.8
+lec     adaptive                           target    436 removed 1.000  clean kept 0.902  signal eff 0.909  FoM 21.9
+lec     no_mask                            target    436 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 17.0
+lec     transplant_from_deep_underground   target    436 removed 0.839  clean kept 0.963  signal eff 0.966  FoM 21.2
+lec     oracle                             target    436 removed 0.977  clean kept 0.938  signal eff 0.962  FoM 22.3
+lec     transplant_from_surface_lab        target    436 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 17.0
+muon    adaptive                           target  13871 removed 0.998  clean kept 0.996  signal eff 0.998  FoM 22.5
+muon    no_mask                            target  13871 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 4.4
+muon    transplant_from_deep_underground   target  13871 removed 1.000  clean kept 1.000  signal eff 1.000  FoM 22.8
+muon    oracle                             target  13871 removed 1.000  clean kept 0.996  signal eff 1.000  FoM 23.0
+muon    transplant_from_surface_lab        target  13871 removed 1.000  clean kept 0.998  signal eff 1.000  FoM 23.0
+all     adaptive                           target   4105 removed 0.898  clean kept 0.838  signal eff 0.866  FoM 15.4
+all     fixed_tuned_on_deep_underground    target   4105 removed 0.701  clean kept 0.938  signal eff 0.938  FoM 11.9
+all     fixed_tuned_on_shallow_underground target   4105 removed 0.993  clean kept 0.793  signal eff 0.805  FoM 20.0
+all     fixed_tuned_on_surface_lab         target   4105 removed 0.980  clean kept 0.457  signal eff 0.331  FoM 10.9
+all     no_mask                            target   4105 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 7.8
+
+=== surface_lab ===
+hot     adaptive                           target   1657 removed 0.943  clean kept 0.979  signal eff 0.972  FoM 17.4
+hot     no_mask                            target   1657 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 8.6
+hot     transplant_from_deep_underground   target   1657 removed 0.176  clean kept 0.998  signal eff 0.928  FoM 8.7
+hot     transplant_from_shallow_underground target   1657 removed 0.176  clean kept 0.998  signal eff 0.928  FoM 8.7
+hot     oracle                             target   1657 removed 0.999  clean kept 0.887  signal eff 0.885  FoM 18.5
+cti     adaptive                           target  69036 removed 0.839  clean kept 0.500  signal eff 0.588  FoM 2.2
+cti     no_mask                            target  69036 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 1.5
+cti     transplant_from_deep_underground   target  69036 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 1.5
+cti     transplant_from_shallow_underground target  69036 removed 0.994  clean kept 0.185  signal eff 0.225  FoM 3.9
+cti     oracle                             target  69036 removed 0.999  clean kept 0.107  signal eff 0.128  FoM 4.9
+halo    adaptive                           target   2049 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 7.9
+halo    no_mask                            target   2049 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 7.9
+halo    transplant_from_deep_underground   target   2049 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 7.9
+halo    transplant_from_shallow_underground target   2049 removed 0.858  clean kept 0.671  signal eff 0.726  FoM 11.9
+halo    oracle                             target   2049 removed 0.955  clean kept 0.479  signal eff 0.504  FoM 11.6
+serial  adaptive                           target     46 removed 0.652  clean kept 0.998  signal eff 0.997  FoM 19.4
+serial  no_mask                            target     46 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 18.7
+serial  transplant_from_deep_underground   target     46 removed 1.000  clean kept 0.612  signal eff 0.611  FoM 15.5
+serial  transplant_from_shallow_underground target     46 removed 0.826  clean kept 0.954  signal eff 0.959  FoM 19.2
+serial  oracle                             target     46 removed 0.935  clean kept 0.982  signal eff 0.980  FoM 19.5
+lec     adaptive                           target    103 removed 0.340  clean kept 0.859  signal eff 0.857  FoM 16.7
+lec     no_mask                            target    103 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 17.6
+lec     transplant_from_deep_underground   target    103 removed 0.874  clean kept 0.260  signal eff 0.217  FoM 8.6
+lec     transplant_from_shallow_underground target    103 removed 0.990  clean kept 0.080  signal eff 0.084  FoM 5.7
+lec     oracle                             target    103 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 17.6
+muon    adaptive                           target 180384 removed 0.999  clean kept 0.952  signal eff 0.990  FoM 15.8
+muon    no_mask                            target 180384 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 0.9
+muon    transplant_from_deep_underground   target 180384 removed 0.999  clean kept 1.000  signal eff 1.000  FoM 16.7
+muon    transplant_from_shallow_underground target 180384 removed 1.000  clean kept 0.913  signal eff 0.987  FoM 19.5
+muon    oracle                             target 180384 removed 1.000  clean kept 0.971  signal eff 0.997  FoM 19.6
+all     adaptive                           target  72891 removed 0.880  clean kept 0.419  signal eff 0.506  FoM 2.1
+all     fixed_tuned_on_deep_underground    target  72891 removed 0.977  clean kept 0.166  signal eff 0.118  FoM 1.1
+all     fixed_tuned_on_shallow_underground target  72891 removed 0.998  clean kept 0.045  signal eff 0.046  FoM 1.4
+all     fixed_tuned_on_surface_lab         target  72891 removed 0.999  clean kept 0.057  signal eff 0.056  FoM 2.7
+all     no_mask                            target  72891 removed 0.000  clean kept 1.000  signal eff 1.000  FoM 1.4
+done in 3196 s
