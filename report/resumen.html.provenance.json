@@ -4,14 +4,14 @@
   "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/build_summary_es.py",
   "git": {
-    "commit": "fa36ff0d98b6b25745665b41b74d7313ba1c1204",
-    "dirty": true,
-    "changed_outputs": 6
+    "commit": "3b8799c2dce42909857808ddd843131c464438f6",
+    "dirty": false,
+    "changed_outputs": 1
   },
   "git_at_write": {
-    "commit": "fa36ff0d98b6b25745665b41b74d7313ba1c1204",
-    "dirty": true,
-    "changed_outputs": 6
+    "commit": "3b8799c2dce42909857808ddd843131c464438f6",
+    "dirty": false,
+    "changed_outputs": 1
   },
   "inputs": [
     {
@@ -43,7 +43,7 @@
   "seed": null,
   "results": {},
   "notes": "resumen de cinco p\u00e1ginas en espa\u00f1ol; cada n\u00famero le\u00eddo de las entradas",
-  "created": "2026-09-27T17:16:42+00:00",
+  "created": "2026-09-27T17:19:19+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
