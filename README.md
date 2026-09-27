@@ -78,9 +78,11 @@ uv run python analysis/figure_compare_masks.py
 uv run python analysis/build_report.py                  # report/index.html, numbers read from results/
 uv run python analysis/build_summary.py                 # report/summary.html, the five-page version
 uv run python analysis/build_summary_es.py              # report/resumen.html, the same in Spanish
+uv run python analysis/build_slides.py                  # report/slides.html, ten slides for a ten-minute talk
 uv run python scripts/make_pdf.py                       # report/report.pdf (needs Chrome, Chromium or Edge)
 uv run python scripts/make_pdf.py report/summary.html report/summary.pdf
 uv run python scripts/make_pdf.py report/resumen.html report/resumen.pdf
+uv run python scripts/make_pdf.py report/slides.html report/slides.pdf    # one slide per page, 16:9
 uv run python scripts/compare_results.py ../reference/results results   # did the numbers come back?
 uv run python scripts/check_sidecars.py                 # does every file still match its sidecar?
 ```

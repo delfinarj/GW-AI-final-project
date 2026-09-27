@@ -1,0 +1,35 @@
+{
+  "output": "report/slides.pdf",
+  "output_sha256": "3e346c373e8680ce2d82c1cbfc2a54b0e75a9c7d6b010fdff2ad2f5805de902b",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
+  "script": "scripts/make_pdf.py",
+  "git": {
+    "commit": "608ec06eaa6fa9eeb96c8bb1ca643daf03167ee9",
+    "dirty": false,
+    "changed_outputs": 0
+  },
+  "git_at_write": {
+    "commit": "608ec06eaa6fa9eeb96c8bb1ca643daf03167ee9",
+    "dirty": false,
+    "changed_outputs": 0
+  },
+  "inputs": [
+    {
+      "path": "report/slides.html",
+      "sha256": "4eed12e5909406c9661e0329f8e17a681ef34d8b8d2540774791e763ed611834"
+    }
+  ],
+  "parameters": {
+    "browser": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+  },
+  "seed": null,
+  "results": {},
+  "notes": "the report page printed to PDF; same document, no number retyped",
+  "created": "2026-09-27T17:36:45+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}

@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Máscaras que se calibran solas &mdash; diez diapositivas</title>
+<style>/* Ten slides, 16:9, printable to PDF one slide per page and readable on screen. */
+@page { size: 13.333in 7.5in; margin: 0; }   /* 16:9, the size PowerPoint calls widescreen */
+
+:root {
+  --ink: #101010; --ink-2: #444; --muted: #7a7a76; --rule: #dedcd4; --accent: #2a78d6;
+  --accent-2: #eb6834; --surface: #fcfcfb; --callout: #eef4fc;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0; background: #e9e8e3; color: var(--ink);
+  font: 16px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+.slide {
+  position: relative; width: 13.333in; height: 7.5in; background: var(--surface);
+  padding: 0.62in 0.7in 0.5in; margin: 0 auto 0.3in; overflow: hidden;
+  /* the content sits in the middle of the slide rather than hugging the top, which is where a
+     fixed-height box leaves it when the text is short */
+  display: flex; flex-direction: column; justify-content: center;
+}
+.slide:last-child { break-after: auto; margin-bottom: 0; }
+.n { position: absolute; right: 0.4in; bottom: 0.28in; color: var(--muted); font-size: 10pt; }
+.kicker { position: absolute; top: 0.62in; left: 0.7in; color: var(--accent); font-size: 11pt; font-weight: 600; letter-spacing: .04em;
+          text-transform: uppercase; margin-bottom: 3mm; }
+h1 { font-size: 34pt; line-height: 1.1; margin: 0 0 5mm; letter-spacing: -0.02em; }
+h2 { font-size: 24pt; line-height: 1.15; margin: 0 0 5mm; letter-spacing: -0.01em; }
+p, li { font-size: 14pt; color: var(--ink); margin: 0 0 3mm; }
+.lede { font-size: 17pt; color: var(--ink-2); max-width: 75%; }
+ul { margin: 0 0 3mm; padding-left: 6mm; }
+li { margin-bottom: 2.4mm; }
+li strong { color: var(--ink); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10mm; align-items: start; }
+.two.wide-right { grid-template-columns: 0.85fr 1.15fr; }
+figure { margin: 0; }
+figure img { width: 100%; height: auto; display: block; }
+figcaption { font-size: 9.5pt; color: var(--ink-2); margin-top: 2mm; }
+.big { font-size: 40pt; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+.big.accent { color: var(--accent); }
+.big.warn { color: var(--accent-2); }
+.stat { margin-bottom: 6mm; }
+.stat p { font-size: 12.5pt; color: var(--ink-2); margin: 1mm 0 0; }
+.callout { background: var(--callout); border-left: 3pt solid var(--accent); padding: 4mm 5mm;
+           font-size: 14pt; }
+.callout.warn { background: #fdf0ea; border-left-color: var(--accent-2); }
+table { border-collapse: collapse; width: 100%; font-size: 11.5pt; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 1.6mm 2mm; border-bottom: .5pt solid var(--rule); vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; }
+.byline { color: var(--muted); font-size: 12pt; }
+.nb { white-space: nowrap; }
+code { font-family: Consolas, monospace; font-size: .9em; }
+a { color: var(--accent); text-decoration: none; }
+@media screen { body { padding: 8mm 0; } .slide { box-shadow: 0 1mm 4mm rgba(0,0,0,.18); } }
+
+/* In print the slide must be exactly the page and nothing else: any extra margin makes the content
+   taller than the sheet, and the browser then scales every slide down to fit, which silently puts
+   more than one slide on a page. */
+@media print {
+  body { background: #fff; padding: 0; margin: 0; }
+  .slide { margin: 0; box-shadow: none; page-break-after: always; break-after: page; }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+}
+</style>
+</head>
+<body>
+<section class="slide"><div class="kicker">Trabajo final &middot; Ondas Gravitacionales e Investigación Asistida por IA</div>
+<h1>Máscaras para imágenes de Skipper-CCD<br>que no dependen del sensor</h1>
+<p class="lede">Un Skipper-CCD cuenta electrones de a uno. Antes de hacer física, el análisis
+<strong>tira píxeles</strong> con máscaras. Esas máscaras se ajustan a mano, sensor por sensor.</p>
+<p class="lede"><strong>¿Se pueden escribir de modo que funcionen en un sensor para el que nunca
+fueron ajustadas?</strong></p>
+<p class="byline" style="margin-top:8mm">D. Rodriguez Juiz y F. Pérez &middot; https://delfinarj.github.io/GW-AI-final-project/</p><div class="n">1</div></section><section class="slide"><div class="kicker">Por qué importa</div>
+<h2>Seis máscaras, y cada sensor nuevo las vuelve a pedir</h2>
+<div class="two">
+<div>
+<ul>
+<li><strong>Defectos de lectura:</strong> carga que queda atrás en la transferencia, impactos en el
+registro serie.</li>
+<li><strong>Defectos del material:</strong> columnas y píxeles calientes.</li>
+<li><strong>Física que no buscamos:</strong> halo alrededor de trazas, clusters de baja energía,
+muones.</li>
+</ul>
+<p>Cada una lleva un radio, un largo, un corte en tasa &mdash; elegidos para <em>un</em> sensor, en
+<em>un</em> sitio.</p>
+</div>
+<div>
+<div class="callout">
+<p>El costo de equivocarse tiene dos lados: enmascarar de más <strong>tira exposición</strong>
+(y la exposición es el experimento), enmascarar de menos <strong>deja fondo</strong> donde se busca
+una señal de un electrón.</p>
+</div>
+<p style="margin-top:5mm">Y los sensores cambian: SENSEI, DAMIC, Oscura. Entre el
+subterráneo profundo y el laboratorio en superficie de este trabajo, la
+corriente oscura cambia por un factor 2158 y el
+flujo de muones por <span class='nb'>5&times;10<sup>7</sup></span>.</p>
+</div>
+</div><div class="n">2</div></section><section class="slide"><div class="kicker">La hipótesis</div>
+<h2>Lo que se transfiere no son los números: es el procedimiento</h2>
+<div class="two">
+<div>
+<p>Cada máscara se escribió <strong>dos veces</strong>:</p>
+<ul>
+<li><strong>Fija:</strong> constantes puestas a mano. Es lo que se hace hoy.</li>
+<li><strong>Adaptativa:</strong> mide sus propios tamaños sobre las imágenes a las que se aplica, y
+fija su umbral con una tasa de falsos positivos (&alpha; = 0.01, corregida por número de tests) o con
+propiedades físicas medibles del sensor.</li>
+</ul>
+</div>
+<div>
+<table>
+<thead><tr><th>Máscara</th><th>Forma fija</th><th>Forma adaptativa</th></tr></thead>
+<tbody>
+<tr><td>Columnas calientes</td><td>tasa por columna arriba de k &times; mediana</td>
+<td>cola de Poisson de cada columna contra su propia exposición</td></tr>
+<tr><td>Estelas</td><td>L píxeles después de cada píxel brillante</td>
+<td>exceso río abajo vs. río arriba del mismo disparador</td></tr>
+<tr><td>Halo</td><td>disco de radio R</td>
+<td>cada anillo contra todo lo que queda afuera</td></tr>
+</tbody>
+</table>
+</div>
+</div><div class="n">3</div></section><section class="slide"><div class="kicker">Cómo lo probamos</div>
+<h2>Un simulador que recuerda de dónde vino cada electrón</h2>
+<div class="two">
+<div>
+<ul>
+<li>Cada fuente de carga llena <strong>su propio mapa</strong>: una máscara se puntúa contra
+exactamente los eventos que debería remover.</li>
+<li><strong>Tres sensores</strong> con geometría, ruido, fondos y flujos de muones de mediciones
+públicas (SENSEI en SNOLAB y MINOS, Oscura, PDG).</li>
+<li><strong>Un cuarto sensor, real:</strong> el release público de SENSEI.</li>
+</ul>
+</div>
+<div>
+<p>De cada máscara se comparan cuatro formas sobre una pila de prueba independiente:</p>
+<ul>
+<li><strong>Oráculo:</strong> la fija ajustada con la verdad del simulador en ese sensor. El techo.</li>
+<li><strong>Trasplante:</strong> las constantes del oráculo <em>de otro sensor</em>. Lo que pasa hoy
+cuando una máscara se hereda.</li>
+<li><strong>Adaptativa</strong> y <strong>ninguna máscara</strong> &mdash; esta última es la que dice
+si enmascarar sirve de algo.</li>
+</ul>
+<p>Figura de mérito: S/&radic;(S+B), sobre 5 semillas, dos de ellas corridas una sola
+vez después de congelar el código.</p>
+</div>
+</div><div class="n">4</div></section><section class="slide"><div class="kicker">Resultado 1</div>
+<h2>Trasplantar constantes puede ser peor que no enmascarar</h2>
+<div class="two wide-right">
+<div>
+<div class="stat"><div class="big warn">5 de 28</div>
+<p>trasplantes puntúan <strong>por debajo de no enmascarar nada</strong>, en todas las semillas</p></div>
+<div class="stat"><div class="big">0.12</div>
+<p>el peor caso (clusters de baja energía en el sensor de superficie (ajustada en subterráneo profundo)), donde no hacer nada vale
+1.00</p></div>
+<p>No es «un poco subóptimo»: es tirar exposición a cambio de nada.</p>
+</div>
+<figure>
+<img src="figures/compare_masks.png" alt="Figura de mérito relativa al oráculo por sensor y máscara">
+<figcaption>Cada máscara en cada sensor, relativa al oráculo de ese sensor.</figcaption>
+</figure>
+</div><div class="n">5</div></section><section class="slide"><div class="kicker">Resultado 2</div>
+<h2>Calibrarse solo evita los desastres &mdash; y no sale gratis</h2>
+<div class="two">
+<div>
+<div class="stat"><div class="big accent">0.98</div>
+<p>mediana de la adaptativa respecto del oráculo ajustado con la verdad en ese mismo sensor</p></div>
+<div class="stat"><div class="big">1 de 14</div>
+<p>casos adaptativos peores que no enmascarar, contra 5 de 28 trasplantes</p></div>
+</div>
+<div>
+<div class="callout warn">
+<p><strong>El precio:</strong> en 8 casos un trasplante le sigue ganando
+a la adaptativa en todas las semillas, y el peor caso adaptativo
+(estelas de transferencia en el sensor de superficie) llega sólo a 0.38 del oráculo.</p>
+</div>
+<p style="margin-top:5mm">Las semillas <strong>reservadas</strong> &mdash; corridas una sola vez
+después de congelar el código, nunca usadas para cambiar nada &mdash; dicen lo mismo:
+4 de 26 trasplantes dañinos,
+0 de 13 adaptativos, mediana
+0.98.</p>
+</div>
+</div><div class="n">6</div></section><section class="slide"><div class="kicker">Resultado 3</div>
+<h2>La falla que encontramos: una máscara disparando sobre el defecto de otra</h2>
+<div class="two wide-right">
+<div>
+<p>Apagar todos los defectos a la vez no puede ver esto. Así que los encendimos <strong>de a
+uno</strong>: 60 celdas de máscara y defecto, 20
+corridas cada una.</p>
+<div class="stat"><div class="big warn">7 de 60</div>
+<p>celdas disparan sobre un defecto que no es el suyo</p></div>
+<div class="callout warn">
+<p>En superficie, con estelas de transferencia como <strong>único</strong> defecto presente, la
+máscara de clusters de baja energía dispara en <strong>todos</strong> sus ensayos y tapa
+12.1% de la imagen.</p>
+</div>
+<p style="margin-top:4mm">Estaba <strong>predicho por escrito</strong> antes de correr, a partir de un
+síntoma del Resultado 1.</p>
+</div>
+<figure>
+<img src="figures/cross_defect.png" alt="Grilla de máscaras contra el único defecto encendido">
+<figcaption>Un defecto encendido por vez. La columna de «estelas» es la que enciende casi todo.</figcaption>
+</figure>
+</div><div class="n">7</div></section><section class="slide"><div class="kicker">Resultado 4</div>
+<h2>Sobre un sensor real, sin ajustarle nada</h2>
+<div class="two">
+<div>
+<p>Las mismas máscaras adaptativas, sin tocarles un parámetro, sobre las 4 exposiciones
+del release público de SENSEI en SNOLAB &mdash; un sensor real, con una geometría que ningún preset
+tiene.</p>
+<ul>
+<li>Mide el ruido de lectura en
+0.141&ndash;0.142 e, contra
+0.1413&ndash;0.1420 e de un ajuste independiente.</li>
+<li>Marca 2, 4, 6, 7 columnas a
+medida que crece la exposición, y los conjuntos están <strong>anidados</strong>.</li>
+</ul>
+</div>
+<div>
+<div class="callout">
+<p>En la exposición más larga, las <strong>7 columnas más ruidosas de la imagen
+son exactamente las que marca</strong>, y todas están dentro de la máscara de columnas malas que
+publicó la colaboración.</p>
+</div>
+<p style="margin-top:5mm">De lo que marcamos, ellos también marcan
+0.99&ndash;1.00. De lo que ellos marcan, nosotros marcamos
+0.027&ndash;0.095: <strong>el release enmascara mucho más</strong>.
+La primera dirección es la fácil, y lo decimos.</p>
+</div>
+</div><div class="n">8</div></section><section class="slide"><div class="kicker">Cómo se hizo</div>
+<h2>Todo con agentes &mdash; y el método es la mitad del trabajo</h2>
+<div class="two">
+<div>
+<ul>
+<li><strong>Reglas antes de empezar:</strong> ningún número tipeado a mano en una página, cada salida
+con su sidecar (script, commit, hashes de entradas, semilla), ningún documento privado en un archivo
+versionado.</li>
+<li><strong>Expectativas registradas antes de correr</strong> y commiteadas. Una salió mal, y está
+escrita con los números que la explican.</li>
+<li><strong>Seis revisiones independientes</strong>, sin acceso a la conversación que produjo el
+trabajo; una de ellas de otro proveedor, que <em>re-derivó</em> los resultados en vez de auditarlos:
+mismas siete columnas, con otro criterio.</li>
+<li><strong>Todo reproducido desde un clon limpio</strong>, bit a bit, con tolerancia 10<sup>-9</sup>.</li>
+</ul>
+</div>
+<div>
+<div class="callout warn">
+<p><strong>Lo que los agentes hicieron mal</strong> (y lo atraparon los tests o las revisiones, no
+ellos mismos):</p>
+<ul style="margin-top:2mm">
+<li>verdad del simulador filtrándose en un umbral «adaptativo»;</li>
+<li>geometría isótropa en un sensor binado, que escondió la columna más ruidosa;</li>
+<li>un veredicto aplicado a 60 celdas sin corregir por su número;</li>
+<li>un comando del README que en un clon limpio <strong>no hacía nada</strong>.</li>
+</ul>
+</div>
+</div>
+</div><div class="n">9</div></section><section class="slide"><div class="kicker">Qué queda</div>
+<h2>Respuesta, y lo que sigue mal</h2>
+<div class="two">
+<div>
+<div class="callout">
+<p><strong>Sí, para cinco de las seis máscaras</strong>, y el precio se puede medir: mediana
+0.98 del oráculo, con 8 casos donde un trasplante
+todavía gana. La que no: clusters de baja energía en superficie, que dispara sobre estelas.</p>
+</div>
+</div>
+<div>
+<ul>
+<li>Las poblaciones de defectos son valores de escenario, no mediciones.</li>
+<li>Los defectos se encienden de a uno: falta ver qué pasa cuando <strong>se superponen</strong>.</li>
+<li>En el sensor real sólo cuatro de las seis se pueden verificar.</li>
+<li>Una sola figura de mérito, y un oráculo ajustado máscara por máscara.</li>
+</ul>
+<p style="margin-top:4mm"><strong>Todo está acá:</strong> <a href="https://delfinarj.github.io/GW-AI-final-project/">https://delfinarj.github.io/GW-AI-final-project/</a><br>
+informe, resumen de 5 páginas (ES/EN), <code>PROVENANCE.md</code>, <code>METHOD.md</code> y los logs
+de las verificaciones.</p>
+</div>
+</div><div class="n">10</div></section>
+</body>
+</html>

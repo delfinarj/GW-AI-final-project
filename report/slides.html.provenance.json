@@ -1,0 +1,53 @@
+{
+  "output": "report/slides.html",
+  "output_sha256": "4eed12e5909406c9661e0329f8e17a681ef34d8b8d2540774791e763ed611834",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
+  "script": "analysis/build_slides.py",
+  "git": {
+    "commit": "608ec06eaa6fa9eeb96c8bb1ca643daf03167ee9",
+    "dirty": false,
+    "changed_outputs": 0
+  },
+  "git_at_write": {
+    "commit": "608ec06eaa6fa9eeb96c8bb1ca643daf03167ee9",
+    "dirty": false,
+    "changed_outputs": 0
+  },
+  "inputs": [
+    {
+      "path": "results/report_numbers.json",
+      "sha256": "cd7af916659fb900ef13f9e96e84fcf63a7b89c9c76a35454cc7ee2dfe16e85f"
+    },
+    {
+      "path": "results/null_false_positive_rates/null_rates.json",
+      "sha256": "17624d2da4b7f848ddb23499766a2c0759796c3bef9d79ea233d53dd7b04aef5"
+    },
+    {
+      "path": "results/muon_mask_null_rate/muon_null.json",
+      "sha256": "4122fcc14199699d42844a1d08631d9d93932d7f6c26c759f4a5d28b4db4f870"
+    },
+    {
+      "path": "results/cross_defect_false_positives/cross_defect.json",
+      "sha256": "4e7bcef29467022083ad05c60c1a422e3dfc2007b989c783443712cfa937da75"
+    },
+    {
+      "path": "results/adaptive_on_public/adaptive_on_public.json",
+      "sha256": "a1355376e7d0b21d2931dfd9aa57cf9bee7f7b8d34bc1bc5fafa26f7a3a9eb80"
+    },
+    {
+      "path": "results/release_rate/release_rate.json",
+      "sha256": "e307903a46ad1e25d5aea2982cbd1c8fc1d3c29aedcd977b85224943209970bf"
+    }
+  ],
+  "parameters": {},
+  "seed": null,
+  "results": {},
+  "notes": "diez diapositivas; cada n\u00famero le\u00eddo de los archivos de resultados",
+  "created": "2026-09-27T17:36:33+00:00",
+  "environment": {
+    "python": "3.11.16",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  }
+}
