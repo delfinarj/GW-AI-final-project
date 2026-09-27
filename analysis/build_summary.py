@@ -1,4 +1,7 @@
-"""Build report/summary.html, the five-page summary, from the result files.
+"""Build report/summary.html, the five-page summary in English, from the result files.
+
+The Spanish version is `analysis/build_summary_es.py`; both read their numbers from
+`skmask.summary_numbers`, so the two cannot disagree about a value while disagreeing in prose.
 
 Same rule as the full page: no number here is typed by hand. The aggregate figures of the transplant
 comparison come from `results/report_numbers.json`, which `analysis/build_report.py` writes, so the
@@ -14,8 +17,8 @@ from pathlib import Path
 
 import numpy as np
 
-from skmask.presets import PRESETS
 from skmask.provenance import write_sidecar
+from skmask.summary_numbers import collect, sci
 
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "results"
@@ -33,18 +36,8 @@ GROUP_NAMES = {"hot_columns_pixels": "hot columns and pixels", "cti": "charge-tr
                "halo": "halo"}
 
 
-def load(path):
-    return json.loads(Path(path).read_text(encoding="utf-8"))
-
-
 def e(text):
     return html.escape(str(text))
-
-
-def sci(x, digits=1):
-    """Scientific notation that stays on one line inside a narrow table column."""
-    mantissa, exponent = f"{x:.{digits}e}".split("e")
-    return f"<span class='nb'>{mantissa}&times;10<sup>{int(exponent)}</sup></span>"
 
 
 def table(headers, rows):
@@ -55,59 +48,19 @@ def table(headers, rows):
 
 def main():
     FIG.mkdir(parents=True, exist_ok=True)
-    head = load(RES / "report_numbers.json")
-    null = load(RES / "null_false_positive_rates" / "null_rates.json")
-    muon = load(RES / "muon_mask_null_rate" / "muon_null.json")
-    cross = load(RES / "cross_defect_false_positives" / "cross_defect.json")
-    public = load(RES / "adaptive_on_public" / "adaptive_on_public.json")
-    rate = load(RES / "release_rate" / "release_rate.json")
     for src in (RES / "compare_masks" / "compare_masks.png",
                 RES / "cross_defect_false_positives" / "cross_defect.png"):
         shutil.copy2(src, FIG / src.name)
 
-    tr, ad, held = head["transplant"], head["adaptive"], head["held_out"]
-
-    # ---- sensors
-    sensor_rows = [[SENSOR_NAMES[n], f"{s.nx}&times;{s.ny}", f"{s.thickness_um:.0f}", f"{s.noise_e:.2f}",
-                    f"{s.exposure_days * 24:.0f} h", sci(s.dark_e_per_pix_day), f"{s.muon_flux_per_cm2_day:.2g}"]
-                   for n, s in PRESETS.items()]
-
-    # ---- false positives with nothing to find (R3) and the muon mask (R7)
-    null_cells = [v for rows in null["per_sensor"].values() for k, v in rows.items() if isinstance(v, dict)]
-    null_tested = [v for v in null_cells if v["trials"]]
-    null_contains = sum(1 for v in null_tested if v["contains_alpha"])
-    null_fired = sum(v["fired"] for v in null_tested)
-    muon_fired = sum(v["fired"] for v in muon["per_sensor"].values())
-    muon_images = sum(v["images"] for v in muon["per_sensor"].values())
-
-    # ---- one defect at a time (R5)
-    fires = []
-    for sensor, groups in cross["per_sensor"].items():
-        for group, rows in groups.items():
-            for mask, v in rows.items():
-                if isinstance(v, dict) and not v["own_defect"] and v["trials"] and v["verdict"].startswith("fires"):
-                    fires.append((v["rate"], v["median_masked_fraction"] or 0.0, sensor, group, mask, v))
-    fires.sort(reverse=True)
-    run_survivors = [v for *_, v in fires
-                     if v.get("counted_per_run_instead", {}).get("verdict", "").startswith("fires")]
-    fire_rows = [[SENSOR_NAMES[s], GROUP_NAMES[g], MASK_NAMES[m], f"{v['fired']}/{v['trials']}",
-                  f"{r:.2f}", f"{f:.4f}"] for r, f, s, g, m, v in fires]
-    worst_fire = fires[0] if fires else None
-
-    # ---- the real sensor (R6)
-    exposures = [public["per_exposure"][k] for k in sorted(public["per_exposure"], key=int)]
-    last = exposures[-1]
-    public_rows = [[f"{r['exposure_s'] / 3600:.0f} h", r["images"], r["trigger_pixels"]["total"],
-                    f"{r['measured_noise_e']['median']:.3f}", sci(r["measured_density_1e"]["median"]),
-                    f"{len(r['constants_chosen']['hot_columns'])}", f"{r['constants_chosen']['halo_radius']}",
-                    f"{r['masked_fraction_union']:.4f}", f"{r['release_mask_fraction']:.3f}"]
-                   for r in exposures]
-    loud = last["loudest_columns"]
-    n_loud_flagged = next((i for i, c in enumerate(loud) if not c["flagged_by_us"]), len(loud))
-    precision = [r["against_release"]["hot_columns_pixels"]["median_fraction_of_ours_also_theirs"] for r in exposures]
-    recall = [r["against_release"]["hot_columns_pixels"]["median_fraction_of_theirs_also_ours"] for r in exposures]
-    ratios = [x for r in exposures for x in (r["hot_column_evidence"]["ratio_to_common"] or [])]
-    r1_noise = [x["noise"] for x in rate["per_exposure"]]
+    c = collect(SENSOR_NAMES, MASK_NAMES, GROUP_NAMES)
+    head, null, muon, cross, public, rate = c["head"], c["null"], c["muon"], c["cross"], c["public"], c["rate"]
+    tr, ad, held = c["tr"], c["ad"], c["held"]
+    sensor_rows, null_tested, null_fired = c["sensor_rows"], c["null_tested"], c["null_fired"]
+    muon_fired, muon_images = c["muon_fired"], c["muon_images"]
+    fires, run_survivors, fire_rows = c["fires"], c["run_survivors"], c["fire_rows"]
+    worst_fire, exposures, last, public_rows = c["worst_fire"], c["exposures"], c["last"], c["public_rows"]
+    n_loud_flagged, precision, recall = c["n_loud_flagged"], c["precision"], c["recall"]
+    ratios, r1_noise = c["ratios"], c["r1_noise"]
 
     css = (Path(__file__).resolve().parents[1] / "report" / "summary.css").read_text(encoding="utf-8")
 
@@ -287,12 +240,7 @@ along the way; <code>report/index.html</code> is the full report, of which this 
 """
     output = OUT / "summary.html"
     output.write_text(page, encoding="utf-8")
-    inputs = [RES / "report_numbers.json", RES / "null_false_positive_rates" / "null_rates.json",
-              RES / "muon_mask_null_rate" / "muon_null.json",
-              RES / "cross_defect_false_positives" / "cross_defect.json",
-              RES / "adaptive_on_public" / "adaptive_on_public.json",
-              RES / "release_rate" / "release_rate.json"]
-    write_sidecar(output, __file__, inputs=inputs, notes="five-page summary; every number read from the inputs")
+    write_sidecar(output, __file__, inputs=c["inputs"], notes="five-page summary; every number read from the inputs")
     print(f"wrote {output}")
 
 

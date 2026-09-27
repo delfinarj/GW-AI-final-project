@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Máscaras que se calibran solas &mdash; resumen de cinco páginas</title>
+<style>/* Draft print stylesheet for the five-page summary. A4, 18 mm margins, one column. */
+@page { size: A4; margin: 17mm 16mm 15mm 16mm; }
+
+:root {
+  --ink: #111; --ink-2: #444; --muted: #777; --rule: #d8d7d0; --accent: #2a78d6; --callout: #eef4fc;
+}
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0; color: var(--ink); background: #fff;
+  font: 9.6pt/1.42 "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+h1 { font-size: 16pt; line-height: 1.15; margin: 0 0 2mm; letter-spacing: -0.01em; }
+h2 { font-size: 11pt; margin: 5mm 0 1.5mm; padding-top: 1.5mm; border-top: 0.6pt solid var(--rule); }
+h3 { font-size: 9.8pt; margin: 3mm 0 1mm; color: var(--ink-2); }
+p { margin: 0 0 2mm; }
+.lede { font-size: 10.5pt; color: var(--ink-2); margin-bottom: 3mm; }
+.byline { color: var(--muted); font-size: 8.2pt; margin-bottom: 4mm; }
+.answer { background: var(--callout); border-left: 2.5pt solid var(--accent);
+          padding: 2.5mm 3mm; margin: 3mm 0; }
+.answer p { margin: 1mm 0; }
+figure { margin: 3mm 0; break-inside: avoid; }
+figure img { width: 100%; height: auto; display: block; }
+figcaption { font-size: 7.8pt; color: var(--ink-2); margin-top: 1mm; }
+table { border-collapse: collapse; width: 100%; font-size: 7.9pt; font-variant-numeric: tabular-nums;
+        margin: 2mm 0; break-inside: avoid; }
+th, td { text-align: left; padding: 0.9mm 1.4mm; border-bottom: 0.4pt solid var(--rule);
+         vertical-align: top; }
+th { color: var(--ink-2); font-weight: 600; }
+.nb { white-space: nowrap; }
+code { font-family: Consolas, "SFMono-Regular", monospace; font-size: 0.9em; }
+pre { background: #f6f6f4; border: 0.4pt solid var(--rule); padding: 1.5mm 2mm; font-size: 7.6pt;
+      line-height: 1.35; overflow: hidden; break-inside: avoid; }
+.page-break { break-before: page; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+.note { color: var(--ink-2); font-size: 8.4pt; }
+ul { margin: 0 0 2mm; padding-left: 4.5mm; }
+li { margin-bottom: 0.8mm; }
+a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<h1>Máscaras para imágenes de Skipper-CCD que no dependen del sensor</h1>
+<p class="lede">¿Se pueden escribir las máscaras que descartan defectos de lectura, defectos del material y física no
+buscada de modo que funcionen en un sensor para el que nunca fueron ajustadas?</p>
+<p class="byline">D. Rodriguez Juiz y F. P&eacute;rez &middot; trabajo final, <em>Ondas Gravitacionales e
+Investigación Asistida por IA</em> &middot; informe completo, código y procedencia:
+<a href="https://delfinarj.github.io/GW-AI-final-project/">https://delfinarj.github.io/GW-AI-final-project/</a></p>
+
+<div class="answer">
+<p><strong>Respuesta corta.</strong> Sí para cinco de las seis máscaras, y el precio se puede medir. De los
+28 casos en que una máscara ajustada a mano en un sensor se trasladó sin cambios a otro, 5
+fueron peores que no enmascarar nada en todas las semillas y 2 no cambiaron nada; el más claro,
+clusters de baja energía en el sensor de superficie (ajustada en subterráneo profundo), obtiene 0.12 de lo que obtiene la máscara
+ajustada con la verdad en ese mismo sensor, donde no hacer nada obtiene 1.00. Las mismas
+máscaras escritas como procedimientos que se calibran solos son peores que no enmascarar en 1 de
+14 casos y mejores en 12, y alcanzan una mediana de
+0.98 de la máscara ajustada con la verdad. La excepción es
+clusters de baja energía en el sensor de superficie (adaptativa), que dispara sobre electrones de las estelas de transferencia de carga.</p>
+</div>
+
+<h2>La pregunta y qué se construyó</h2>
+<p>Un Skipper-CCD cuenta electrones de a uno. Antes de extraer cualquier física, los análisis descartan píxeles con
+máscaras, cada una apuntada a un problema: carga que queda atrás durante la transferencia, impactos en el registro
+serie, columnas y píxeles calientes, fotones alrededor de trazas de alta energía (el halo), clusters de eventos de
+baja energía y trazas de muones. Cada máscara lleva tamaños y umbrales &mdash; un radio, un largo de estela, un
+corte en tasa &mdash; elegidos a mano para un sensor y un sitio.</p>
+<p><strong>Hipótesis:</strong> lo que se transfiere entre sensores no son los números sino el <em>procedimiento</em>
+que los elige. Por eso cada una de las seis máscaras se escribió dos veces: una forma <strong>fija</strong>, con
+constantes puestas a mano, y una forma <strong>adaptativa</strong>, que mide sus propios tamaños sobre las imágenes
+a las que se aplica y fija su umbral con una tasa de falsos positivos (&alpha;&nbsp;=&nbsp;0.01, corregida por el
+número de tests) o con propiedades físicas medibles del sensor.</p>
+<p>El banco de pruebas es un simulador que guarda un mapa de carga separado por fuente, de modo que una máscara se
+puede puntuar contra exactamente los eventos que debería remover. Tres sensores difieren como difieren los
+despliegues reales; su geometría, ruido, tasas de corriente oscura, fondos y flujos de muones salen de mediciones
+públicas, mientras que las poblaciones de defectos, que no se publican de forma transferible, son valores de
+escenario elegidos para diferir entre sensores.</p>
+<table><thead><tr><th>Sensor</th><th>Píxeles</th><th>Espesor (&micro;m)</th><th>Ruido (e&minus;)</th><th>Exposición</th><th>Oscura (e&minus;/pix/día)</th><th>Muones (cm&minus;&sup2;/día)</th></tr></thead><tbody><tr><td>Subterráneo profundo</td><td>3072&times;512</td><td>665</td><td>0.14</td><td>20 h</td><td><span class='nb'>1.4&times;10<sup>-5</sup></span></td><td>2.9e-05</td></tr><tr><td>Subterráneo somero</td><td>3072&times;443</td><td>675</td><td>0.14</td><td>20 h</td><td><span class='nb'>1.6&times;10<sup>-4</sup></span></td><td>6.9</td></tr><tr><td>Laboratorio en superficie</td><td>1278&times;1058</td><td>725</td><td>0.17</td><td>1 h</td><td><span class='nb'>3.0&times;10<sup>-2</sup></span></td><td>1.4e+03</td></tr></tbody></table>
+<p>De cada máscara se compararon cuatro formas sobre una pila de prueba independiente de cada sensor: el
+<strong>oráculo</strong> (la forma fija ajustada con la verdad del simulador en ese sensor), el
+<strong>trasplante</strong> (las constantes del oráculo de otro sensor), la forma <strong>adaptativa</strong> y
+<strong>ninguna máscara</strong>. La figura de mérito es S/&radic;(S+B): señal inyectada que sobrevive contra fondo
+buscado que sobrevive.</p>
+
+<div class="page-break"></div>
+<h2>Resultado 1 &middot; Trasplantar constantes puede hacer daño; calibrarse solo evita los desastres, pero cuesta</h2>
+<figure>
+<img src="figures/compare_masks.png" alt="Figura de mérito relativa al oráculo para cada sensor y cada máscara">
+<figcaption>Cada máscara en cada sensor, relativa al oráculo de ese sensor, sobre 5 semillas. Una
+máscara trasplantada es el oráculo de otro sensor; «ninguna máscara» es la referencia que dice si enmascarar sirve
+de algo.</figcaption>
+</figure>
+<p>Mover constantes entre sensores no es apenas subóptimo: puede ser peor que no enmascarar. 5 de
+28 trasplantes puntúan por debajo de no enmascarar en todas las semillas, por más del
+1&nbsp;% de margen que se usa para llamar real a una diferencia. La autocalibración elimina
+esos desastres &mdash; 1 de 14 casos &mdash; pero no sale gratis: en
+8 casos un trasplante le sigue ganando a la adaptativa en todas las semillas, y el peor
+caso adaptativo, estelas de transferencia de carga en el sensor de superficie (adaptativa), llega sólo a 0.38 del oráculo
+(0.34 en su peor semilla).</p>
+<p>Los estadísticos del resumen se registraron antes de la corrida final. Los casos con menos de
+20 eventos buscados en una semilla quedan excluidos de esa semilla, y un caso cuenta como
+dañino sólo si pierde por más del margen en <em>todas</em> las semillas válidas. Dos semillas (2) se
+corrieron una sola vez después de congelar el código y nunca se usaron para cambiar nada: en ellas,
+4 de 26 trasplantes son dañinos, 0 de
+13 casos adaptativos lo son, y la mediana adaptativa es 0.98 del
+oráculo &mdash; el mismo cuadro que en las semillas de desarrollo.</p>
+
+<div class="page-break"></div>
+<h2>Resultado 2 &middot; Sobre qué disparan las máscaras cuando no hay nada que encontrar</h2>
+<p>Con todos los defectos apagados en los tres sensores, y dejando lo que un sensor real no puede apagar (corriente
+oscura, carga espuria, la señal inyectada, trazas de muones y depósitos de alta energía), las cinco máscaras
+estadísticas dispararon 5 veces en 15 tests de sensor y máscara de
+50 corridas cada uno, y todos los intervalos contienen &alpha;. La sexta máscara, la de muones, no
+puede estar en ese test, porque las trazas son justamente lo que un sensor real no puede apagar; preguntado aparte,
+en un simulador con el flujo en cero, disparó en 0 de 600 imágenes.</p>
+<p>Ese test tiene un punto ciego: apagar todos los defectos a la vez no puede ver una máscara disparando sobre el
+defecto <em>de otra</em>. Así que los defectos también se encendieron de a uno, 60 celdas de
+máscara y defecto en total, 20 corridas cada una, con el límite que cada celda debe superar
+tomado al 99.92&nbsp;% de confianza para controlar un
+5&nbsp;% de probabilidad de una falsa alarma en toda la grilla.</p>
+<figure>
+<img src="figures/cross_defect.png" alt="Grilla de máscaras contra el único defecto encendido, por sensor">
+<figcaption>Un defecto encendido por vez. El área del punto es la fracción de ensayos en que la máscara disparó; el
+naranja marca las celdas por encima de la tasa que esa máscara no debería superar; los círculos huecos son la
+diagonal, donde una máscara se encuentra con su propio defecto.</figcaption>
+</figure>
+<p>7 de 60 celdas disparan sobre un defecto que no es el suyo &mdash; y las
+6 contadas por imagen sobreviven a recontarlas de a una corrida, que es la forma conservadora de
+tratar dos imágenes que comparten una calibración. Las estelas de transferencia de carga son lo que más veces las
+enciende. La mayor no deja lugar a dudas: en el sensor de superficie, con las estelas como único defecto presente,
+la máscara adaptativa de clusters de baja energía dispara en todos sus ensayos y enmascara una mediana de
+0.121 de la imagen. Es la única falla real de la autocalibración encontrada acá, y estaba predicha por
+escrito antes de la corrida, a partir de un síntoma visto en el Resultado&nbsp;1.</p>
+<table><thead><tr><th>Sensor</th><th>Único defecto presente</th><th>Máscara que disparó</th><th>Disparos/ensayos</th><th>Tasa</th><th>Fracción mediana enmascarada</th></tr></thead><tbody><tr><td>Laboratorio en superficie</td><td>estelas de transferencia de carga</td><td>clusters de baja energía</td><td>40/40</td><td>1.00</td><td>0.1215</td></tr><tr><td>Laboratorio en superficie</td><td>estelas de transferencia de carga</td><td>impactos en el registro serie</td><td>34/40</td><td>0.85</td><td>0.0009</td></tr><tr><td>Subterráneo somero</td><td>estelas de transferencia de carga</td><td>clusters de baja energía</td><td>19/40</td><td>0.47</td><td>0.0000</td></tr><tr><td>Laboratorio en superficie</td><td>estelas de transferencia de carga</td><td>columnas y píxeles calientes</td><td>9/20</td><td>0.45</td><td>0.0000</td></tr><tr><td>Subterráneo somero</td><td>halo</td><td>clusters de baja energía</td><td>10/40</td><td>0.25</td><td>0.0000</td></tr><tr><td>Subterráneo somero</td><td>clusters de baja energía</td><td>impactos en el registro serie</td><td>6/40</td><td>0.15</td><td>0.0000</td></tr><tr><td>Subterráneo somero</td><td>estelas de transferencia de carga</td><td>impactos en el registro serie</td><td>5/40</td><td>0.12</td><td>0.0000</td></tr></tbody></table>
+
+<div class="page-break"></div>
+<h2>Resultado 3 &middot; Los mismos procedimientos sobre un sensor real</h2>
+<p>Todo lo anterior es simulado. Las máscaras adaptativas también se corrieron, sin cambiarles nada, sobre las
+4 exposiciones del release público de SENSEI en SNOLAB: un cuarto sensor, real, con una geometría que
+ningún preset tiene (3072&times;16 superpíxeles activos, cada uno binando 32 filas
+físicas). No se ajustó nada para él, y el release publica su propia máscara, así que las dos se pueden comparar
+donde se superponen.</p>
+<p>Con sólo las imágenes, el estimador mide un ruido de lectura de 0.141&ndash;0.142&nbsp;e,
+contra 0.1413&ndash;0.1420&nbsp;e de un ajuste independiente sobre los mismos archivos, y
+una densidad de un electrón que crece con la exposición. El procedimiento de columnas calientes marca
+2, 4, 6, 7 columnas a medida que crece la
+exposición, y los conjuntos están anidados: cada uno conserva las anteriores y agrega la siguiente más ruidosa. En
+la exposición más larga, las 7 columnas con mayor tasa de píxeles cargados son exactamente las
+que marca, todas dentro de la máscara de columnas malas del propio release, y cada una carga entre
+102 y 1830 veces la tasa de píxeles cargados de las columnas que dejó en paz.</p>
+<table><thead><tr><th>Exposición</th><th>Imágenes</th><th>Píxeles disparadores</th><th>Ruido (e&minus;)</th><th>Densidad 1e</th><th>Columnas calientes</th><th>Radio de halo</th><th>Enmascaramos</th><th>Enmascara el release</th></tr></thead><tbody><tr><td>0 h</td><td>14</td><td>0</td><td>0.142</td><td><span class='nb'>1.3&times;10<sup>-4</sup></span></td><td>2</td><td>0</td><td>0.0007</td><td>0.042</td></tr><tr><td>2 h</td><td>14</td><td>70</td><td>0.142</td><td><span class='nb'>1.7&times;10<sup>-4</sup></span></td><td>4</td><td>0</td><td>0.0013</td><td>0.055</td></tr><tr><td>6 h</td><td>14</td><td>103</td><td>0.141</td><td><span class='nb'>2.9&times;10<sup>-4</sup></span></td><td>6</td><td>0</td><td>0.0038</td><td>0.061</td></tr><tr><td>20 h</td><td>13</td><td>844</td><td>0.141</td><td><span class='nb'>6.5&times;10<sup>-4</sup></span></td><td>7</td><td>25</td><td>0.0094</td><td>0.130</td></tr></tbody></table>
+<p>Las dos direcciones del acuerdo dicen cosas distintas y las dos están acá. De lo que el procedimiento marca, el
+release también marca 0.99&ndash;1.00: se queda adentro de una máscara que ajustó
+una persona. De lo que marca el release, el procedimiento marca 0.027&ndash;0.095: el
+release enmascara mucho más. El primer número es la dirección fácil &mdash; un procedimiento que marcara una sola
+columna verdadera sacaría 1.00 &mdash; y se apoya en un puñado de decisiones por columna, no en los cientos de
+píxeles sobre los que se cuenta.</p>
+<p>La calibración de estelas eligió largo cero en las cuatro exposiciones, algo que la expectativa registrada no
+predijo. El motivo está en el archivo de resultados: el release oculta sus impactos, así que una exposición entera
+tiene 0, 70, 103, 844 píxeles por encima del disparador. En la
+exposición más larga el test sí ve el exceso del lado correcto &mdash; 13
+electrones simples río abajo de un disparador contra 2 río arriba,
+p&nbsp;=&nbsp;0.0037 &mdash; pero el umbral corregido pide
+p&nbsp;&lt;&nbsp;6.3e-05. El procedimiento se niega a enmascarar con
+evidencia tan flaca, que es para lo que fue construido.</p>
+
+<div class="page-break"></div>
+<h2>Cómo se hizo el trabajo, y cómo se verificó</h2>
+<p>Cada línea de código y cada análisis de este proyecto los produjeron agentes de IA, a partir de una pregunta
+explícita y bajo reglas escritas antes de empezar: ningún número de ninguna página se escribe a mano, cada salida
+lleva un sidecar con el script, el commit de git, los hashes de sus entradas y su semilla, y ningún documento
+privado entra jamás en un archivo versionado. Lo que hizo esto confiable, y no solamente rápido, fue el método
+adversarial:</p>
+<ul>
+<li><strong>Las expectativas se registraron antes de correr.</strong> Escritas en <code>PLAN.md</code> y
+commiteadas antes de que el análisis corriera, para que una confirmación no se pudiera inventar después. Una de
+ellas estuvo equivocada &mdash; el largo de estela en el sensor real &mdash; y el repositorio lo dice, con los
+números que lo explican.</li>
+<li><strong>Agentes independientes revisaron el trabajo</strong> sin acceso a la conversación que lo produjo.
+Encontraron defectos reales: verdad del simulador filtrándose en un umbral «adaptativo»; un titular que medía no
+hacer nada; una máscara de halo midiendo distancias en superpíxeles sobre un sensor binado, que escondía la columna
+más ruidosa de la calibración de columnas calientes; un veredicto aplicado a sesenta celdas sin corregir por su
+número. Cada uno está en <code>PROVENANCE.md</code> con lo que se hizo al respecto, incluidos los hallazgos que
+<em>no</em> se corrigieron.</li>
+<li><strong>Todos los resultados se reprodujeron desde un clon limpio</strong> &mdash; un checkout nuevo que no
+comparte nada con la copia de trabajo salvo el commit y el entorno fijado &mdash; y se compararon con una
+tolerancia relativa de 10<sup>&minus;9</sup>. Todos volvieron idénticos, figuras incluidas. El más lento, de dos
+horas y media, hubo que retomarlo después de que algo lo matara por la mitad, y eso fue lo que mostró que el
+comando que un desconocido correría para reproducirlo no hacía nada en un clon limpio: encontraba el archivo
+terminado que publicamos y se salteaba el trabajo.</li>
+</ul>
+<p>Los errores que atraparon las verificaciones están listados en la página del informe completo, no escondidos: un
+simulador que volvía a sortear sus columnas calientes en cada imagen, una máscara de columnas calientes que marcaba
+vecinas inocentes, un test de halo que trataba su tasa de referencia como exacta, una máscara de muones que perdía
+las trazas cruzadas, y un orden de calibración que hacía falsas 69 de 81 columnas marcadas.</p>
+
+<h3>Qué sigue mal</h3>
+<ul>
+<li>Las poblaciones de defectos son valores de escenario, no mediciones; sólo los parámetros del sensor y de los
+fondos son mediciones públicas.</li>
+<li>Los defectos se encienden de a uno, así que nada de esto mide qué hacen las máscaras cuando varios defectos se
+superponen en los mismos píxeles.</li>
+<li>En el sensor real sólo cuatro de las seis máscaras se pueden verificar: el release no publica contraparte de la
+máscara de clusters de baja energía, y sus superpíxeles binados hacen que la geometría de la máscara de muones no
+tenga sentido.</li>
+<li>Una sola figura de mérito, y un oráculo ajustado máscara por máscara y no en conjunto, así que una máscara
+adaptativa combinada puede superarlo.</li>
+</ul>
+
+<h3>Dónde está todo</h3>
+<p>Repositorio: <a href="https://github.com/delfinarj/GW-AI-final-project">https://github.com/delfinarj/GW-AI-final-project</a> &mdash; <code>README.md</code> reproduce el proyecto entero desde un
+clon limpio con <code>uv</code>; <code>PLAN.md</code> tiene las afirmaciones registradas de antemano;
+<code>PROVENANCE.md</code> registra cada entrada, cada elección que tenía una alternativa defendible, cómo se
+verificó cada resultado y cada error encontrado en el camino; <code>report/index.html</code> es el informe completo,
+del que este documento es un resumen.</p>
+
+</body>
+</html>

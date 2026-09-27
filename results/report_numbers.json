@@ -6,6 +6,11 @@
     "no_difference": 2,
     "worst": {
       "case": "low-energy clusters on the surface laboratory sensor (tuned on deep underground)",
+      "parts": {
+        "sensor": "surface_lab",
+        "mask": "lec",
+        "source": "deep_underground"
+      },
       "relative_to_oracle": 0.11886393901403837,
       "no_mask": 1.0
     }
@@ -16,11 +21,21 @@
     "harmful_cases": [
       "low-energy clusters on the surface laboratory sensor (adaptive)"
     ],
+    "harmful_case_parts": [
+      {
+        "sensor": "surface_lab",
+        "mask": "lec"
+      }
+    ],
     "better_than_no_mask": 12,
     "median_of_oracle": 0.9788470733846588,
     "beaten_by_a_transplant": 8,
     "worst": {
       "case": "charge-transfer trails on the surface laboratory sensor (adaptive)",
+      "parts": {
+        "sensor": "surface_lab",
+        "mask": "cti"
+      },
       "median_of_oracle": 0.3811200902807409,
       "worst_seed": 0.33731388061417045
     }

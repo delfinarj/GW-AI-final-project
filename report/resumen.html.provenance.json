@@ -1,22 +1,22 @@
 {
-  "output": "report/summary.html",
-  "output_sha256": "ab0a24d36b001128b2b2eadff4c50301918b6d665863c4cc7dcd0299023027f8",
+  "output": "report/resumen.html",
+  "output_sha256": "e509e359a5c1ba45eabad3e6f36b85ef7d46f8753c8773bffe7c6a8a191b3b9e",
   "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
-  "script": "analysis/build_summary.py",
+  "script": "analysis/build_summary_es.py",
   "git": {
     "commit": "fa36ff0d98b6b25745665b41b74d7313ba1c1204",
     "dirty": true,
-    "changed_outputs": 0
+    "changed_outputs": 6
   },
   "git_at_write": {
     "commit": "fa36ff0d98b6b25745665b41b74d7313ba1c1204",
     "dirty": true,
-    "changed_outputs": 0
+    "changed_outputs": 6
   },
   "inputs": [
     {
       "path": "results/report_numbers.json",
-      "sha256": "20656e9af340917ac7c20c704bc0170ce3924e701657a5d7783fa0707f3840e1"
+      "sha256": "cd7af916659fb900ef13f9e96e84fcf63a7b89c9c76a35454cc7ee2dfe16e85f"
     },
     {
       "path": "results/null_false_positive_rates/null_rates.json",
@@ -42,8 +42,8 @@
   "parameters": {},
   "seed": null,
   "results": {},
-  "notes": "five-page summary; every number read from the inputs",
-  "created": "2026-09-27T17:13:29+00:00",
+  "notes": "resumen de cinco p\u00e1ginas en espa\u00f1ol; cada n\u00famero le\u00eddo de las entradas",
+  "created": "2026-09-27T17:16:42+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

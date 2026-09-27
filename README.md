@@ -77,8 +77,10 @@ uv run python analysis/figure_cross_defect.py
 uv run python analysis/figure_compare_masks.py
 uv run python analysis/build_report.py                  # report/index.html, numbers read from results/
 uv run python analysis/build_summary.py                 # report/summary.html, the five-page version
+uv run python analysis/build_summary_es.py              # report/resumen.html, the same in Spanish
 uv run python scripts/make_pdf.py                       # report/report.pdf (needs Chrome, Chromium or Edge)
 uv run python scripts/make_pdf.py report/summary.html report/summary.pdf
+uv run python scripts/make_pdf.py report/resumen.html report/resumen.pdf
 uv run python scripts/compare_results.py ../reference/results results   # did the numbers come back?
 uv run python scripts/check_sidecars.py                 # does every file still match its sidecar?
 ```
@@ -104,7 +106,10 @@ Without uv, `environment.yml` builds the same environment with conda (slower, an
 versions itself, so small numerical differences are possible).
 
 The presented page is [`report/index.html`](report/index.html) and the PDF
-[`report/report.pdf`](report/report.pdf).
+[`report/report.pdf`](report/report.pdf). The five-page summary exists in both languages,
+[`report/summary.pdf`](report/summary.pdf) and [`report/resumen.pdf`](report/resumen.pdf); both are
+generated from `skmask.summary_numbers`, so they can differ in prose but not in a number, and
+`tests/test_summaries_agree.py` checks that they carry the same figures.
 
 Every script writes its output under `results/` with a `.provenance.json` sidecar (script, git
 commit, inputs with hashes, parameters, seed). [`PROVENANCE.md`](PROVENANCE.md) lists every result

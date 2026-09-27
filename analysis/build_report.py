@@ -785,15 +785,20 @@ working copy but the commit and the pinned environment.</p>
             "no_difference": len(overall["paired_same"]),
             "worst": None if not overall["worst_harm"] else {
                 "case": describe(overall["worst_harm"][0]),
+                # the parts as well as the sentence, so a summary in another language can name the
+                # case in that language instead of translating a string built here
+                "parts": dict(zip(("sensor", "mask", "source"), overall["worst_harm"][0])),
                 "relative_to_oracle": overall["worst_harm"][1], "no_mask": overall["worst_harm"][2]}},
         "adaptive": {
             "cases": overall["n_cases"], "harmful": len(overall["adaptive_paired_harm"]),
             "harmful_cases": [describe((*k, "adaptive")) for k in overall["adaptive_paired_harm"]],
+            "harmful_case_parts": [{"sensor": s, "mask": m} for s, m in overall["adaptive_paired_harm"]],
             "better_than_no_mask": len(overall["adaptive_benefit"]),
             "median_of_oracle": overall["median_adaptive"],
             "beaten_by_a_transplant": len(overall["beats_adaptive"]),
             "worst": None if overall["worst_adaptive"] is None else {
                 "case": describe((*overall["worst_adaptive"][0], "adaptive")),
+                "parts": dict(zip(("sensor", "mask"), overall["worst_adaptive"][0])),
                 "median_of_oracle": overall["worst_adaptive"][1],
                 "worst_seed": overall["worst_adaptive_seed"]}},
         "held_out": None if held is None else {
