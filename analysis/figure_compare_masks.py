@@ -5,6 +5,8 @@ one panel per sensor, one row per mask (and the six combined). The oracle is the
 Within a row the series are offset vertically so no marker hides another: blue circles are the
 adaptive masks, orange markers the fixed masks transplanted from each of the other two sensors
 (marker shape names the source), and a grey tick is the figure of merit of applying no mask at all,
+which is the comparison that decides whether a mask is worth applying; the dashed line at 1 is only the
+oracle, the quantity everything is divided by,
 the level any mask must beat to be worth using. Markers are the median over seeds, whiskers the
 min-max range.
 
@@ -61,7 +63,11 @@ def main():
                              constrained_layout=True)
     summary = {}
     for ax, preset in zip(axes, presets):
-        ax.axvline(1.0, color=ps.INK_SECONDARY, linewidth=1)
+        # The oracle, which is only the normalisation: everything on this axis is divided by it, so it
+        # sits at 1 by construction. It is drawn as recessive chrome, dashed and light, because a solid
+        # grey rule here reads as the grey "no mask" series, which is the comparison that does decide
+        # something. It is named in the legend for the same reason.
+        ax.axvline(1.0, color=ps.AXIS, linewidth=1, linestyle=(0, (4, 3)), zorder=0)
         for i, mask in enumerate(masks):
             for key, colour, shape, name, dy in series_of(preset, mask, presets):
                 values = np.array([relative(run[preset], preset, mask, key) for run in runs])
@@ -86,6 +92,8 @@ def main():
     handles += [Line2D([], [], **ps.marker(ps.SERIES[1], SHAPES[s], SIZES[SHAPES[s]]),
                        label=f"fixed, tuned on {SENSORS[s]}") for s in presets]
     handles += [Line2D([], [], **ps.marker(ps.MUTED, "|", 7), label="no mask at all")]
+    handles += [Line2D([], [], color=ps.AXIS, linewidth=1, linestyle=(0, (4, 3)),
+                       label="the oracle, which is 1 by construction")]
     fig.legend(handles=handles, loc="outside upper center", ncols=3, fontsize=8)
     fig.savefig(OUTPUT, dpi=200)
     summary_path = RESULTS / "relative_fom_summary.json"

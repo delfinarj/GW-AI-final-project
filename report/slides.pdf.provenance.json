@@ -1,22 +1,22 @@
 {
   "output": "report/slides.pdf",
-  "output_sha256": "3e346c373e8680ce2d82c1cbfc2a54b0e75a9c7d6b010fdff2ad2f5805de902b",
+  "output_sha256": "424d39413f46b3776d8bde5b94c71b53a5265996d17e094ae48ecb12fc8a6806",
   "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "scripts/make_pdf.py",
   "git": {
-    "commit": "608ec06eaa6fa9eeb96c8bb1ca643daf03167ee9",
-    "dirty": false,
-    "changed_outputs": 0
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
+    "dirty": true,
+    "changed_outputs": 20
   },
   "git_at_write": {
-    "commit": "608ec06eaa6fa9eeb96c8bb1ca643daf03167ee9",
-    "dirty": false,
-    "changed_outputs": 0
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
+    "dirty": true,
+    "changed_outputs": 20
   },
   "inputs": [
     {
       "path": "report/slides.html",
-      "sha256": "4eed12e5909406c9661e0329f8e17a681ef34d8b8d2540774791e763ed611834"
+      "sha256": "1ff35bc19f259385611abfb9cfe93552c0f04caddcec1d7b6057fa4d4bc36d6d"
     }
   ],
   "parameters": {
@@ -25,7 +25,7 @@
   "seed": null,
   "results": {},
   "notes": "the report page printed to PDF; same document, no number retyped",
-  "created": "2026-09-27T17:36:45+00:00",
+  "created": "2026-10-01T18:21:29+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

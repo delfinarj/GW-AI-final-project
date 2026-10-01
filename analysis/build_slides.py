@@ -159,7 +159,8 @@ vez después de congelar el código.</p>
 </div>
 <figure>
 <img src="figures/compare_masks.png" alt="Figura de mérito relativa al oráculo por sensor y máscara">
-<figcaption>Cada máscara en cada sensor, relativa al oráculo de ese sensor.</figcaption>
+<figcaption>Cada máscara en cada sensor, relativa al oráculo de ese sensor. La línea punteada en 1 es el
+oráculo (el divisor); la barra gris es no enmascarar, que es contra lo que hay que comparar.</figcaption>
 </figure>
 </div>"""),
 

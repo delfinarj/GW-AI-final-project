@@ -116,8 +116,9 @@ S/&radic;(S+B): surviving injected signal against surviving target background.</
 <figure>
 <img src="figures/compare_masks.png" alt="Figure of merit relative to the oracle for each sensor and mask">
 <figcaption>Each mask on each sensor, relative to the oracle of that sensor, over {head["n_seeds"]} seeds. A
-transplanted mask is the oracle of another sensor; no mask is the reference that says whether masking helps at
-all.</figcaption>
+transplanted mask is the oracle of another sensor. The dashed line at 1 is that oracle, which is where the division
+puts it; the grey tick is no mask, and that is the comparison that decides whether a mask is worth
+applying.</figcaption>
 </figure>
 <p>Moving constants between sensors is not merely suboptimal, it can be worse than not masking: {tr["harmful"]} of
 {tr["cases"]} transplants score below no mask in every seed, by more than the {100 * head["margin"]:.0f}&nbsp;%

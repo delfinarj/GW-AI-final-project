@@ -1,16 +1,17 @@
 {
   "output": "results/compare_masks/relative_fom_summary.json",
   "output_sha256": "96dabe751dd9d9f44630e18bbe82115f782a3d3fec906b588d236dd6b0190059",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
     "dirty": true,
-    "changed_outputs": 5
+    "changed_outputs": 0
   },
   "git_at_write": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
     "dirty": true,
-    "changed_outputs": 6
+    "changed_outputs": 2
   },
   "inputs": [
     {
@@ -38,7 +39,7 @@
   "seed": null,
   "results": {},
   "notes": "relative figure of merit, median and range over seeds",
-  "created": "2026-09-26T01:27:15+00:00",
+  "created": "2026-10-01T18:19:59+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

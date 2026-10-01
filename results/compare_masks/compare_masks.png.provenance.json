@@ -1,16 +1,17 @@
 {
   "output": "results/compare_masks/compare_masks.png",
-  "output_sha256": "1ec987e4bd7e1888bc99edea092786c21d9ab39e4e8a907d88c74c1877d818f9",
+  "output_sha256": "bf14a40d1ef8aecd9d6ae98fce22c07011989cfdba800297953a990f30f567e1",
+  "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/figure_compare_masks.py",
   "git": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
     "dirty": true,
-    "changed_outputs": 5
+    "changed_outputs": 0
   },
   "git_at_write": {
-    "commit": "6c9401a95d041416a35465a3bf33a84e0e79433a",
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
     "dirty": true,
-    "changed_outputs": 5
+    "changed_outputs": 1
   },
   "inputs": [
     {
@@ -38,7 +39,7 @@
   "seed": null,
   "results": {},
   "notes": "figure of R4 over 5 seeds",
-  "created": "2026-09-26T01:27:15+00:00",
+  "created": "2026-10-01T18:19:59+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",

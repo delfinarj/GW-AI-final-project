@@ -701,7 +701,9 @@ visible as well.</p>
 <h2>Result RESULT_N &middot; Transplanted constants can do harm; self-calibration avoids the large failures, at a cost</h2>
 <div class="wide">
 {figure("compare_masks.png", "Small multiples for three sensors: figure of merit of adaptive masks and of fixed masks transplanted from other sensors, relative to the oracle.",
-        f"Figure of merit relative to the oracle tuned with truth on the same sensor (vertical line). Markers are medians over {n_seeds} seed{'s' if n_seeds > 1 else ''}"
+        f"Figure of merit relative to the oracle tuned with truth on the same sensor, which the dashed line at 1 marks "
+        f"because it is the divisor; the grey tick is no mask, the comparison that decides whether masking helps. "
+        f"Markers are medians over {n_seeds} seed{'s' if n_seeds > 1 else ''}"
         + (", whiskers the range" if n_seeds > 1 else "") + ". The deep-underground sensor has few target events, so every version sits near 1 there.")}
 </div>
 {table(["Evaluated on", "Mask", "Target events", "No mask", "Adaptive", "Fixed, tuned on deep", "Fixed, tuned on shallow", "Fixed, tuned on surface"], fom_rows)}

@@ -4,12 +4,12 @@
   "hash_convention": "sha256; text normalised to LF before hashing, binary hashed byte for byte",
   "script": "analysis/build_report.py",
   "git": {
-    "commit": "fa36ff0d98b6b25745665b41b74d7313ba1c1204",
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
     "dirty": true,
     "changed_outputs": 3
   },
   "git_at_write": {
-    "commit": "fa36ff0d98b6b25745665b41b74d7313ba1c1204",
+    "commit": "bbb1d7bb722ed223985882c4e67bb70e99275ea1",
     "dirty": true,
     "changed_outputs": 4
   },
@@ -39,7 +39,7 @@
   "seed": null,
   "results": {},
   "notes": "the headline numbers of the transplant comparison, for the short summary",
-  "created": "2026-09-27T17:14:30+00:00",
+  "created": "2026-10-01T18:20:46+00:00",
   "environment": {
     "python": "3.11.16",
     "platform": "Windows-10-10.0.19045-SP0",
